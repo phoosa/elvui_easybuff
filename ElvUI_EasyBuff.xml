@@ -1,0 +1,56 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+  <Script file='init.lua'/>
+  <Script file='EasyBuff.lua'/>
+  <Script file='Data\Buffs.lua'/>
+  <Script file='Data\DefaultSettings.lua'/>
+  <Script file='Config.lua'/>
+  <MessageFrame name="ELVUI_EASYBUFF_ANNOUNCE_FRAME"
+                frameStrata="MEDIUM"
+                insertMode="TOP"
+                parent="UIParent"
+                enableMouse="true"
+                enableKeyboard="false"
+                toplevel="true"
+                movable="true"
+                fade="true"
+                fadeDuration="1.0"
+                displayDuration="3.0"
+    >
+    <Size>
+      <AbsDimension x="400" y="100" />
+    </Size>
+    <Anchors>
+      <Anchor point="TOPLEFT">
+        <Offset>
+          <AbsDimension x="4" y="-4" />
+        </Offset>
+      </Anchor>
+    </Anchors>
+    <FontString inherits="NumberFontNormalHuge" justifyH="LEFT" justifyV="MIDDLE"/>
+  </MessageFrame>
+  <Button name="ELVUI_EASYBUFF_PERFORM_BUTTON"
+          inherits="SecureActionButtonTemplate"
+          parent="UIParent"
+          toplevel="true"
+          hidden="false"
+          frameStrata="LOW"
+          movable="false"
+  >
+    <Size>
+      <AbsDimension x="1" y="1"/>
+    </Size> 
+    <Anchors>
+      <Anchor point="BOTTOMRIGHT">
+        <Offset>
+          <AbsDimension x="0" y="100" />
+        </Offset>
+      </Anchor>
+    </Anchors>
+    <Scripts>
+      <OnLoad>
+        self:SetScript("PreClick", EasyBuff.OnPreClick);
+        self:SetScript("PostClick", EasyBuff.OnPostClick);
+      </OnLoad>
+    </Scripts>
+  </Button>
+</Ui>
