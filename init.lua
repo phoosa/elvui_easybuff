@@ -137,7 +137,7 @@ end
 	Colorize Text
 ]]--
 function EasyBuff:Colorize(text, color)
-	return format("%s%s%s", color, text, "|r") 
+	return format("%s%s%s", color, tostring(text), "|r") 
 end
 
 

@@ -235,7 +235,8 @@ function EasyBuff:AnnounceUnbuffedUnits()
 		for unitName,auraGroupKeys in pairs(EasyBuff.UnitBuffQueue) do
 			-- TODO: Display this on the screen somewhere
 			if (auraGroupKeys ~= nil and auraGroupKeys ~= {} and auraGroupKeys[1] ~= nil) then
-				EasyBuff:Announce(EasyBuff:Colorize(unitName, format(L["%s is missing %s"], EasyBuff.CLASS_COLORS[UnitClass(unitName)]), EasyBuff:GetAuraGroup(auraGroupKeys[1]).name))
+				if (unitName == "player") then unitName = EasyBuff.PLAYER_NAME; end
+				EasyBuff:Announce(format(L["%s is missing %s"], EasyBuff:Colorize(unitName, EasyBuff.CLASS_COLORS[UnitClass(unitName)]),EasyBuff:GetAuraGroup(auraGroupKeys[1]).name));
 			end
 		end
 	end
