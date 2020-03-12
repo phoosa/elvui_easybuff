@@ -52,12 +52,6 @@ local EasyBuff_AuraGroups = {
 		selfOnly = true,
 		multi 	 = nil
 	},
-	AOTB = {
-		class 	 = "Hunter",
-		name     = "Aspect of the Beast",
-		selfOnly = true,
-		multi 	 = nil
-	},
 	AOTC = {
 		class 	 = "Hunter",
 		name     = "Aspect of the Cheetah",
@@ -186,10 +180,34 @@ local EasyBuff_AuraGroups = {
 		name     = "Inner Fire",
 		selfOnly = true,
 		multi 	 = nil
-	}
+	},
 	-- Rogue
 	-- Shaman
 	-- Warlock
+	DemonArmor = {
+		class 	 = "Warlock",
+		name	 = "Demon Armor",
+		selfOnly = true,
+		multi	 = nil
+	},
+	ShadowWard = {
+		class 	 = "Warlock",
+		name	 = "Shadow Ward",
+		selfOnly = true,
+		multi	 = nil
+	},
+	DetectInvis = {
+		class	 = "Warlock",
+		name	 = "Detect Invisibility",
+		selfOnly = false,
+		multi    = nil
+	},
+	UnendingBreath = {
+		class 	 = "Warlock",
+		name	 = "Unending Breath",
+		selfOnly = false,
+		multi    = nil
+	}
 	-- Warrior
 };
 
@@ -268,6 +286,93 @@ local EasyBuff_Auras = {
 	["16864"] = {
 		rank = 1,
 		group = "OOC"
+	},
+	-- Hunter: Trueshot Aura
+	["19506"] = {
+		rank  = 1,
+		group = "TSA"
+	},
+	["20905"] = {
+		rank  = 2,
+		group = "TSA"
+	},
+	["20906"] = {
+		rank  = 3,
+		group = "TSA"
+	},
+	-- Hunter: Aspect of the Hawk
+	["13165"] = {
+		rank  = 1,
+		group = "AOTH"
+	},
+	["14318"] = {
+		rank  = 2,
+		group = "AOTH"
+	},
+	["14319"] = {
+		rank  = 3,
+		group = "AOTH"
+	},
+	["14320"] = {
+		rank  = 4,
+		group = "AOTH"
+	},
+	["14321"] = {
+		rank  = 5,
+		group = "AOTH"
+	},
+	["14322"] = {
+		rank  = 6,
+		group = "AOTH"
+	},
+	["25296"] = {
+		rank  = 7,
+		group = "AOTH"
+	},
+	-- Hunter: Aspect of the Monkey
+	["13163"] = {
+		rank  = 1,
+		group = "AOTM"
+	},
+	-- Hunter: Improved Aspect of the Monkey
+	["19549"] = {
+		rank  = 2,
+		group = "AOTM"
+	},
+	["19550"] = {
+		rank  = 3,
+		group = "AOTM"
+	},
+	["19551"] = {
+		rank  = 4,
+		group = "AOTM"
+	},
+	["24386"] = {
+		rank  = 5,
+		group = "AOTM"
+	},
+	["24387"] = {
+		rank  = 6,
+		group = "AOTM"
+	},
+	-- Hunter: Aspect of the Wild
+	["20043"] = {
+		rank  = 1,
+		group = "AOTW"
+	},
+	["20190"] = {
+		rank  = 2,
+		group = "AOTW"
+	},
+	-- Hunter: Aspect of the Cheetah
+	["5118"] = {
+		rank  = 1,
+		group = "AOTC"
+	},
+	-- Hunter: Aspect of the Pack
+	["13159"] = {
+		rank  = 1,
+		group = "AOTP"
 	},
 	-- Mage: Arcane Intellect
 	["1459"] = {
@@ -457,6 +562,146 @@ local EasyBuff_Auras = {
 		rank  = 4,
 		group = "AmplifyMagic"
 	},
+	-- Paladin: Blessing of Might
+	["19740"] = {
+		rank  = 1,
+		group = "BOM"
+	},
+	["19834"] = {
+		rank  = 2,
+		group = "BOM"
+	},
+	["19835"] = {
+		rank  = 3,
+		group = "BOM"
+	},
+	["19836"] = {
+		rank  = 4,
+		group = "BOM"
+	},
+	["19837"] = {
+		rank  = 5,
+		group = "BOM"
+	},
+	["19838"] = {
+		rank  = 6,
+		group = "BOM"
+	},
+	["25291"] = {
+		rank  = 7,
+		group = "BOM"
+	},
+	-- Paladin: Greater Blessing of Might
+	["25782"] = {
+		rank  = 1,
+		group = "BOM",
+		multi = true
+	},
+	["25916"] = {
+		rank  = 2,
+		group = "BOM",
+		multi = true
+	},
+	-- Paladin: Blessing of Wisdom
+	["19742"] = {
+		rank  = 1,
+		group = "BOW"
+	},
+	["19850"] = {
+		rank  = 2,
+		group = "BOW"
+	},
+	["19852"] = {
+		rank  = 3,
+		group = "BOW"
+	},
+	["19853"] = {
+		rank  = 4,
+		group = "BOW"
+	},
+	["19854"] = {
+		rank  = 5,
+		group = "BOW"
+	},
+	["25290"] = {
+		rank  = 6,
+		group = "BOW"
+	},
+	-- Paladin: Greater Blessing of Wisdom
+	["25894"] = {
+		rank  = 1,
+		group = "BOW",
+		multi = true
+	},
+	["25918"] = {
+		rank  = 2,
+		group = "BOW",
+		multi = true
+	},
+	-- Paladin: Blessing of Salvation
+	["1038"] = {
+		rank  = 1,
+		group = "BOSLV"
+	},
+	-- Paladin: Greater Blessing of Salvation
+	["25895"] = {
+		rank  = 1,
+		group = "BOSLV",
+		multi = true
+	},
+	-- Paladin: Blessing of Kings
+	["20217"] = {
+		rank  = 1,
+		group = "BOSLV"
+	},
+	-- Paladin: Greater Blessing of Kings
+	["25898"] = {
+		rank  = 1,
+		group = "BOK",
+		multi = true
+	},
+	-- Paladin: Blessing of Sanctuary
+	["20911"] = {
+		rank  = 1,
+		group = "BOSNC"
+	},
+	["20912"] = {
+		rank  = 2,
+		group = "BOSNC"
+	},
+	["20913"] = {
+		rank  = 3,
+		group = "BOSNC"
+	},
+	["20914"] = {
+		rank  = 4,
+		group = "BOSNC"
+	},
+	-- Paladin: Greater Blessing of Sanctuary
+	["25899"] = {
+		rank  = 1,
+		group = "BOSNC",
+		multi = true
+	},
+	-- Paladin: Blessing of Light
+	["19977"] = {
+		rank  = 1,
+		group = "BOL"
+	},
+	["19978"] = {
+		rank  = 2,
+		group = "BOL"
+	},
+	["19979"] = {
+		rank  = 3,
+		group = "BOL"
+	},
+	-- Paladin: Greater Blessing of Light
+	["25890"] = {
+		rank  = 1,
+		group = "BOL",
+		multi = true
+	},
 	-- Priest: Power Word: Fortitude
 	["1243"] = {
 		rank  = 1,
@@ -537,6 +782,61 @@ local EasyBuff_Auras = {
 		rank  = 6,
 		group = "InnerFire"
 	},
+	-- Warlock: Demon Armor
+	["706"] = {
+		rank  = 1,
+		group = "DemonArmor"
+	},
+	["1086"] = {
+		rank  = 2,
+		group = "DemonArmor"
+	},
+	["11733"] = {
+		rank  = 3,
+		group = "DemonArmor"
+	},
+	["11734"] = {
+		rank  = 4,
+		group = "DemonArmor"
+	},
+	["11735"] = {
+		rank  = 5,
+		group = "DemonArmor"
+	},
+	-- Warlock: Shadow Ward
+	["6229"] = {
+		rank  = 1,
+		group = "ShadowWard"
+	},
+	["11739"] = {
+		rank  = 2,
+		group = "ShadowWard"
+	},
+	["11740"] = {
+		rank  = 3,
+		group = "ShadowWard"
+	},
+	["28610"] = {
+		rank  = 4,
+		group = "ShadowWard"
+	},
+	-- Warlock: Detect Invisibility
+	["132"] = {
+		rank  = 1,
+		group = "DetectInvis"
+	},
+	["2970"] = {
+		rank  = 2,
+		group = "DetectInvis"
+	},
+	["11743"] = {
+		rank  = 3,
+		group = "DetectInvis"
+	},
+	["5697"] = {
+		rank  = 1,
+		group = "UnendingBreath"
+	}
 };
 
 
