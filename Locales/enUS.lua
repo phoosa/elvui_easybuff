@@ -32,4 +32,5 @@ L["Cast this instead of %s"] = true;
 L["Select which context configuration to use. (recommended) Auto-detect will automatically switch the context depending on group size/type, or zone."] = true;
 L["How would you like to be notified of players missing Buffs?"] = true;
 L["Select the Chat Window to display Easy Buff announcements in."] = true;
-
+L["not learned"] = true;
+L["Myself"] = true;

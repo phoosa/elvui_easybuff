@@ -41,19 +41,25 @@ function EasyBuff:ConfigOptions()
 	local raidMulti = {};
 	local bgMulti = {};
 	local buffOptions = EasyBuff.CLASSES;
-	buffOptions["self"] = "|cff03fc07<Myself>|r";
+	buffOptions["self"] = "|cff03fc07<"..L["Myself"]..">|r";
 	local divider = {
 		name = "",
 		type = "header",
 		order = 9
 	};
 	local isNotSelfOnly = false;
+	local disabledBuffOptions = {self = "<"..L["Myself"]..">"};
+	for k,v in pairs(buffOptions) do
+		disabledBuffOptions[k] = k;
+	end
 
 	-- Load Player Supported Buffs.
 	local myAuras = EasyBuff:GetClassAuraGroups(EasyBuff.PLAYER_CLASS);
 	for k, v in pairs(myAuras) do
 		local bo = buffOptions;
 		local position = 10;
+		local _, _, spellIcon, _, _, _, spellId = GetSpellInfo(v.name);
+		local appendName = "";
 
 		-- Is this a self-only buff?
 		if (v.selfOnly ~= true) then
@@ -62,62 +68,87 @@ function EasyBuff:ConfigOptions()
 			position = 5;
 		end
 
+		-- Prepare Buff Options to Display
+		if (v.selfOnly) then
+			bo = {["self"] = buffOptions[EasyBuff.RELATION_SELF]};
+		end
+		if (spellId == nil) then
+			appendName = format(" %s(%s)|r", EasyBuff.ERROR_COLOR, L["not learned"]);
+			if (v.selfOnly) then
+				bo = {["self"] = disabledBuffOptions[EasyBuff.RELATION_SELF]};
+			else
+				bo = disabledBuffOptions;
+			end
+		end
+
 		-- Does this buff have a multi option?
 		if (v.multi ~= nil) then
+			local _, _, multiIcon, _, _, _, multiId = GetSpellInfo(v.multi);
+			if (multiId == nil) then
+				appendMulti = format(" %s(%s)|r", EasyBuff.ERROR_COLOR, L["not learned"]);
+			end
 			-- Add the "Multi" config option
 			partyMulti[k] = {
-				name = v.multi,
+				name = v.multi..appendMulti,
 				desc = format(L["Cast this instead of %s"], v.name),
 				type = "toggle",
+				disabled = (multiId == nil),
+				width = "double",
 				get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_PARTY, k, "multi"); end,
 				set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_PARTY, k, "multi", value); end
 			};
 			raidMulti[k] = {
-				name = v.multi,
+				name = v.multi..appendMulti,
 				desc = format(L["Cast this instead of %s"], v.name),
 				type = "toggle",
+				disabled = (multiId == nil),
+				width = "double",
 				get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_RAID, k, "multi"); end,
 				set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_RAID, k, "multi", value); end
 			};
 			bgMulti[k] = {
-				name = v.multi,
+				name = v.multi..appendMulti,
 				desc = format(L["Cast this instead of %s"], v.name),
 				type = "toggle",
+				disabled = (multiId == nil),
+				width = "double",
 				get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_BG, k, "multi"); end,
 				set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_BG, k, "multi", value); end
 			};
 		end
-		if (v.selfOnly) then
-			bo = {["self"] = buffOptions[EasyBuff.RELATION_SELF]};
-		end
+
 		soloAuras[k]  = {
-			name = v.name,
+			name = v.name..appendName,
 			type = "multiselect",
 			values = {["self"] = buffOptions[EasyBuff.RELATION_SELF]},
+			disabled = (spellId == nil),
 			order = position,
 			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_SOLO, k, i); end,
 			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_SOLO, k, i, value); end
 		};
 		partyAuras[k] = {
-			name = v.name,
+			name = v.name..appendName,
 			type = "multiselect",
 			values = bo,
+			disabled = (spellId == nil),
 			order = position,
 			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_PARTY, k, i); end,
 			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_PARTY, k, i, value); end
 		};
 		raidAuras[k]  = {
-			name = v.name,
+			name = v.name..appendName,
 			type = "multiselect",
 			values = bo,
+			disabled = (spellId == nil),
 			order = position,
 			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_RAID, k, i); end,
 			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_RAID, k, i, value); end
 		};
 		bgAuras[k]    = {
-			name = v.name,
+			name = v.name..appendName,
 			type = "multiselect",
 			values = bo,
+			disabled = (spellId == nil),
 			order = position,
 			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_BG, k, i); end,
 			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_BG, k, i, value); end
@@ -317,7 +348,7 @@ end
 	Get General Config Value
 ]]--
 function EasyBuff:GetGeneralConfigValue(key)
-	return E.db.EasyBuff.general[key];
+	return P.EasyBuff.general[key];
 end
 
 
@@ -325,7 +356,7 @@ end
 	Set General Config Value
 ]]--
 function EasyBuff:SetGeneralConfigValue(key, value)
-	E.db.EasyBuff.general[key] = value;
+	P.EasyBuff.general[key] = value;
 end
 
 
@@ -333,8 +364,8 @@ end
 	Get Context Config Value
 ]]--
 function EasyBuff:GetContextConfigValue(context, spell, key)
-	if (E.db.EasyBuff.context[context][key] ~= nil) then
-		return E.db.EasyBuff.context[context][key][spell];
+	if (P.EasyBuff.context[context][key] ~= nil) then
+		return P.EasyBuff.context[context][key][spell];
 	else
 		return nil;
 	end
@@ -345,13 +376,13 @@ end
 	Set Context Config Value
 ]]--
 function EasyBuff:SetContextConfigValue(context, spell, key, value)
-	if (E.db.EasyBuff.context[context] == nil) then
-		E.db.EasyBuff.context[context] = {};
+	if (P.EasyBuff.context[context] == nil) then
+		P.EasyBuff.context[context] = {};
 	end
-	if (E.db.EasyBuff.context[context][key] == nil) then
-		E.db.EasyBuff.context[context][key] = {};
+	if (P.EasyBuff.context[context][key] == nil) then
+		P.EasyBuff.context[context][key] = {};
 	end
-	E.db.EasyBuff.context[context][key][spell] = value;
+	P.EasyBuff.context[context][key][spell] = value;
 end
 
 
@@ -359,8 +390,8 @@ end
 	Get Config for Context
 ]]--
 function EasyBuff:GetContextConfigValues(context)
-	if (E.db.EasyBuff.context[context] ~= nil) then
-		return E.db.EasyBuff.context[context];
+	if (P.EasyBuff.context[context] ~= nil) then
+		return P.EasyBuff.context[context];
 	else
 		return nil;
 	end
