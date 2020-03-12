@@ -42,13 +42,26 @@ function EasyBuff:ConfigOptions()
 	local bgMulti = {};
 	local buffOptions = EasyBuff.CLASSES;
 	buffOptions["self"] = "|cff03fc07<Myself>|r";
+	local divider = {
+		name = "",
+		type = "header",
+		order = 9
+	};
+	local hasMultiBuff = false;
 
 	-- Load Player Supported Buffs.
 	local myAuras = EasyBuff:GetClassAuraGroups(EasyBuff.PLAYER_CLASS);
 	for k, v in pairs(myAuras) do
 		local bo = buffOptions;
+		local position = 10;
+		local displayWidth = "0.3";
 		-- Does this buff have a multi option?
 		if (v.multi ~= nil) then
+			hasMultiBuff = true;
+			displayWidth = "full";
+			-- Change the "order" so this buff displays at the top of the list.
+			position = 5;
+			-- Add the "Multi" config option
 			partyMulti[k] = {
 				name = v.multi,
 				desc = format(L["Cast this instead of %s"], v.name),
@@ -78,6 +91,7 @@ function EasyBuff:ConfigOptions()
 			name = v.name,
 			type = "multiselect",
 			values = {["self"] = buffOptions[EasyBuff.RELATION_SELF]},
+			order = position,
 			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_SOLO, k, i); end,
 			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_SOLO, k, i, value); end
 		};
@@ -85,6 +99,7 @@ function EasyBuff:ConfigOptions()
 			name = v.name,
 			type = "multiselect",
 			values = bo,
+			order = position,
 			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_PARTY, k, i); end,
 			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_PARTY, k, i, value); end
 		};
@@ -92,6 +107,7 @@ function EasyBuff:ConfigOptions()
 			name = v.name,
 			type = "multiselect",
 			values = bo,
+			order = position,
 			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_RAID, k, i); end,
 			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_RAID, k, i, value); end
 		};
@@ -99,9 +115,17 @@ function EasyBuff:ConfigOptions()
 			name = v.name,
 			type = "multiselect",
 			values = bo,
+			order = position,
 			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_BG, k, i); end,
 			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_BG, k, i, value); end
 		};
+	end
+
+	-- Add Divider between Group buffs and Self-Only Buffs
+	if (hasMultiBuff) then
+		partyAuras["_divider"] = divider;
+		raidAuras["_divider"] = divider;
+		bgAuras["_divider"] = divider;
 	end
 
 	-- Set Configuration Options.

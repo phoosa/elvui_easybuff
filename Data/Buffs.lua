@@ -77,6 +77,60 @@ local EasyBuff_AuraGroups = {
 		selfOnly = false,
 		multi 	 = "Arcane Brilliance"
 	},
+	IceArmor = {
+		class 	 = "Mage",
+		name     = "Ice Armor",
+		selfOnly = true,
+		multi 	 = nil
+	},
+	FrostArmor = {
+		class 	 = "Mage",
+		name     = "Frost Armor",
+		selfOnly = true,
+		multi 	 = nil
+	},
+	MageArmor = {
+		class 	 = "Mage",
+		name     = "Mage Armor",
+		selfOnly = true,
+		multi 	 = nil
+	},
+	IceBarrier = {
+		class 	 = "Mage",
+		name     = "Ice Barrier",
+		selfOnly = true,
+		multi 	 = nil
+	},
+	FrostWard = {
+		class 	 = "Mage",
+		name     = "Frost Ward",
+		selfOnly = true,
+		multi 	 = nil
+	},
+	FireWard = {
+		class 	 = "Mage",
+		name     = "Fire Ward",
+		selfOnly = true,
+		multi 	 = nil
+	},
+	ManaShield = {
+		class 	 = "Mage",
+		name     = "Mana Shield",
+		selfOnly = true,
+		multi 	 = nil
+	},
+	DampenMagic = {
+		class 	 = "Mage",
+		name     = "Dampen Magic",
+		selfOnly = true,
+		multi 	 = nil
+	},
+	AmplifyMagic = {
+		class 	 = "Mage",
+		name     = "Amplify Magic",
+		selfOnly = true,
+		multi 	 = nil
+	},
 	-- Paladin
 	BOM = {
 		class 	 = "Paladin",
@@ -139,7 +193,7 @@ local EasyBuff_AuraGroups = {
 	Used to define an Aura by SpellID
 ]]--
 local EasyBuff_Auras = {
-	-- Mark of the Wild
+	-- Druid: Mark of the Wild
 	["1126"] = {
 		rank  = 1,
 		group = "MOTW"
@@ -168,7 +222,7 @@ local EasyBuff_Auras = {
 		rank  = 7,
 		group = "MOTW"
 	},
-	-- Gift of the Wild
+	-- Druid: Gift of the Wild
 	["21849"] = {
 		rank  = 1,
 		group = "MOTW",
@@ -179,7 +233,7 @@ local EasyBuff_Auras = {
 		group = "MOTW",
 		multi = true
 	},
-	-- Thorns
+	-- Druid: Thorns
 	["467"] = {
 		rank  = 1,
 		group = "Thorns"
@@ -204,11 +258,199 @@ local EasyBuff_Auras = {
 		rank  = 6,
 		group = "Thorns"
 	},
-	-- Omen of Clarity
+	-- Druid: Omen of Clarity
 	["16864"] = {
 		rank = 1,
 		group = "OOC"
-	}
+	},
+	-- Mage: Arcane Intellect
+	["1459"] = {
+		rank  = 1,
+		group = "AI"
+	},
+	["1460"] = {
+		rank  = 2,
+		group = "AI"
+	},
+	["1461"] = {
+		rank  = 3,
+		group = "AI"
+	},
+	["10156"] = {
+		rank  = 4,
+		group = "AI"
+	},
+	["10157"] = {
+		rank  = 5,
+		group = "AI"
+	},
+	-- Mage: Arcane Brilliance
+	["23028"] = {
+		rank  = 1,
+		group = "AI",
+		multi = true
+	},
+	-- Mage: Ice Armor
+	["7302"] = {
+		rank  = 1,
+		group = "IceArmor"
+	},
+	["7320"] = {
+		rank  = 2,
+		group = "IceArmor"
+	},
+	["10219"] = {
+		rank  = 3,
+		group = "IceArmor"
+	},
+	["10220"] = {
+		rank  = 4,
+		group = "IceArmor"
+	},
+	-- Mage: Frost Armor
+	["168"] = {
+		rank  = 1,
+		group = "FrostArmor"
+	},
+	["7300"] = {
+		rank  = 2,
+		group = "FrostArmor"
+	},
+	["7301"] = {
+		rank  = 3,
+		group = "FrostArmor"
+	},
+	-- Mage: Mage Armor
+	["6117"] = {
+		rank  = 1,
+		group = "MageArmor"
+	},
+	["22782"] = {
+		rank  = 2,
+		group = "DampMageArmorenMagic"
+	},
+	["22783"] = {
+		rank  = 3,
+		group = "MageArmor"
+	},
+	-- Mage: Ice Barrier
+	["11426"] = {
+		rank  = 1,
+		group = "IceBarrier"
+	},
+	["13031"] = {
+		rank  = 2,
+		group = "IceBarrier"
+	},
+	["13032"] = {
+		rank  = 3,
+		group = "IceBarrier"
+	},
+	["13033"] = {
+		rank  = 4,
+		group = "IceBarrier"
+	},
+	-- Mage: Frost Ward
+	["6143"] = {
+		rank  = 1,
+		group = "FrostWard"
+	},
+	["8461"] = {
+		rank  = 2,
+		group = "FrostWard"
+	},
+	["8462"] = {
+		rank  = 3,
+		group = "FrostWard"
+	},
+	["10177"] = {
+		rank  = 4,
+		group = "FrostWard"
+	},
+	-- Mage: Fire Ward
+	["543"] = {
+		rank  = 1,
+		group = "FireWard"
+	},
+	["8457"] = {
+		rank  = 2,
+		group = "FireWard"
+	},
+	["8458"] = {
+		rank  = 3,
+		group = "FireWard"
+	},
+	["10223"] = {
+		rank  = 4,
+		group = "FireWard"
+	},
+	["10225"] = {
+		rank  = 5,
+		group = "FireWard"
+	},
+	-- Mage: Mana Shield
+	["1463"] = {
+		rank  = 1,
+		group = "ManaShield"
+	},
+	["8494"] = {
+		rank  = 2,
+		group = "ManaShield"
+	},
+	["8495"] = {
+		rank  = 3,
+		group = "ManaShield"
+	},
+	["10191"] = {
+		rank  = 4,
+		group = "ManaShield"
+	},
+	["10192"] = {
+		rank  = 5,
+		group = "ManaShield"
+	},
+	["10193"] = {
+		rank  = 6,
+		group = "ManaShield"
+	},
+	-- Mage: Dampen Magic
+	["604"] = {
+		rank  = 1,
+		group = "DampenMagic"
+	},
+	["8450"] = {
+		rank  = 2,
+		group = "DampenMagic"
+	},
+	["8451"] = {
+		rank  = 3,
+		group = "DampenMagic"
+	},
+	["10173"] = {
+		rank  = 4,
+		group = "DampenMagic"
+	},
+	["10174"] = {
+		rank  = 5,
+		group = "DampenMagic"
+	},
+	-- Mage: Amplify Magic
+	["1008"] = {
+		rank  = 1,
+		group = "AmplifyMagic"
+	},
+	["8455"] = {
+		rank  = 2,
+		group = "AmplifyMagic"
+	},
+	["10169"] = {
+		rank  = 3,
+		group = "AmplifyMagic"
+	},
+	["10170"] = {
+		rank  = 4,
+		group = "AmplifyMagic"
+	},
 };
 
 
