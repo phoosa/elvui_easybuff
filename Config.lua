@@ -47,20 +47,23 @@ function EasyBuff:ConfigOptions()
 		type = "header",
 		order = 9
 	};
-	local hasMultiBuff = false;
+	local isNotSelfOnly = false;
 
 	-- Load Player Supported Buffs.
 	local myAuras = EasyBuff:GetClassAuraGroups(EasyBuff.PLAYER_CLASS);
 	for k, v in pairs(myAuras) do
 		local bo = buffOptions;
 		local position = 10;
-		local displayWidth = "0.3";
-		-- Does this buff have a multi option?
-		if (v.multi ~= nil) then
-			hasMultiBuff = true;
-			displayWidth = "full";
+
+		-- Is this a self-only buff?
+		if (v.selfOnly ~= true) then
+			isNotSelfOnly = true;
 			-- Change the "order" so this buff displays at the top of the list.
 			position = 5;
+		end
+
+		-- Does this buff have a multi option?
+		if (v.multi ~= nil) then
 			-- Add the "Multi" config option
 			partyMulti[k] = {
 				name = v.multi,
@@ -122,7 +125,7 @@ function EasyBuff:ConfigOptions()
 	end
 
 	-- Add Divider between Group buffs and Self-Only Buffs
-	if (hasMultiBuff) then
+	if (isNotSelfOnly) then
 		partyAuras["_divider"] = divider;
 		raidAuras["_divider"] = divider;
 		bgAuras["_divider"] = divider;
