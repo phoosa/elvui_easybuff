@@ -180,6 +180,12 @@ local EasyBuff_AuraGroups = {
 		name     = "Shadow Protection",
 		selfOnly = false,
 		multi    = "Greater Shadow Protection"
+	},
+	InnerFire = {
+		class 	 = "Priest",
+		name     = "Inner Fire",
+		selfOnly = true,
+		multi 	 = nil
 	}
 	-- Rogue
 	-- Shaman
@@ -450,6 +456,86 @@ local EasyBuff_Auras = {
 	["10170"] = {
 		rank  = 4,
 		group = "AmplifyMagic"
+	},
+	-- Priest: Power Word: Fortitude
+	["1243"] = {
+		rank  = 1,
+		group = "FORT"
+	},
+	["1244"] = {
+		rank  = 2,
+		group = "FORT"
+	},
+	["1245"] = {
+		rank  = 3,
+		group = "FORT"
+	},
+	["2791"] = {
+		rank  = 4,
+		group = "FORT"
+	},
+	["10937"] = {
+		rank  = 5,
+		group = "FORT"
+	},
+	["10938"] = {
+		rank  = 6,
+		group = "FORT"
+	},
+	-- Priest: Prayer of Fortitude
+	["21562"] = {
+		rank  = 1,
+		group = "FORT",
+		multi = true
+	},
+	["21564"] = {
+		rank  = 2,
+		group = "FORT",
+		multi = true
+	},
+	-- Priest: Shadow Protection
+	["976"] = {
+		rank  = 1,
+		group = "SP"
+	},
+	["10957"] = {
+		rank  = 2,
+		group = "SP"
+	},
+	["10958"] = {
+		rank  = 3,
+		group = "SP"
+	},
+	-- Priest: Prayer of Shadow Protection
+	["27683"] = {
+		rank  = 1,
+		group = "SP",
+		multi = true
+	},
+	-- Priest: Inner Fire
+	["588"] = {
+		rank  = 1,
+		group = "InnerFire"
+	},
+	["7128"] = {
+		rank  = 2,
+		group = "InnerFire"
+	},
+	["602"] = {
+		rank  = 3,
+		group = "InnerFire"
+	},
+	["1006"] = {
+		rank  = 4,
+		group = "InnerFire"
+	},
+	["10951"] = {
+		rank  = 5,
+		group = "InnerFire"
+	},
+	["10952"] = {
+		rank  = 6,
+		group = "InnerFire"
 	},
 };
 
