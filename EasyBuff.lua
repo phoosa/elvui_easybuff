@@ -294,7 +294,7 @@ function EasyBuff:RebuildBuffQueue()
 				-- Loop over the units buffs to see if they have this buff
 				local buffFound = false;
 				local index = 1;
-				local buff = {UnitBuff(unit, 1, "PLAYER")};
+				local buff = {UnitBuff(unit, 1)};
 				while (buff ~= nil and buff[10] ~= nil) do
 					-- Do we know this spellId, and is it part of the auragroup we are currently checking?
 					local a = monitoredSpells[tostring(buff[10])];
@@ -302,7 +302,7 @@ function EasyBuff:RebuildBuffQueue()
 						buffFound = true;
 					break end
 					index = index + 1;
-					buff = {UnitBuff(unit, index, "PLAYER")};
+					buff = {UnitBuff(unit, index)};
 				end
 				-- Did we find the buff?
 				if (buffFound == false) then
