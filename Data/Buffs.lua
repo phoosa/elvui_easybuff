@@ -1,5 +1,16 @@
-local E, _, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 EasyBuff = E:GetModule("EasyBuff");
+
+-- Castable_AuraGroups
+-- Spells that I can cast, keyed by Group
+-- ids and multi ids are keyed by rank
+-- Foo = {ids={1=21,2=23,3=764}},multiIds={1=42,2=191},hasMulti=true}
+local Castable_AuraGroups = {};
+-- Trackable_Auras
+-- Spells that my class can cast, keyed by ID
+-- {ids={1,23,764}},multiIds={42,191}}
+-- 23 = {group="ABC",multi=false,name="Foo",rank=1}
+local Trackable_Auras = {};
 
 
 --[[
@@ -841,6 +852,50 @@ local EasyBuff_Auras = {
 
 
 --[[
+	Init Auras
+	Initialize the Castable and Trackable Auras for the current player
+]]--
+function EasyBuff:InitAuras()
+	local spellName, spellRank, spellIcon, castTime, minRange, maxRange, spellId;
+	local auraGroup;
+	local canCast;
+	for k, v in pairs(EasyBuff_Auras) do
+		if (v ~= nil) then
+			-- Get the AuraGroup for this Spell.
+			auraGroup = EasyBuff_AuraGroups[v.group];
+			if (auraGroup ~= nil) then
+				-- Get the Spell Info
+				spellName, _, spellIcon, castTime, minRange, maxRange, spellId = GetSpellInfo(k);
+				-- Can I cast this spell?
+				local _usable, _nomana = IsUsableSpell(spellId);
+				canCast = (_usable == true or _nomana);
+				if (canCast) then
+					Trackable_Auras[tostring(spellId)] = {
+						group = v.group,
+						multi = v.multi,
+						name = spellName,
+						rank = v.rank
+					};
+				end
+				-- Can my class cast this spell?
+				if (EasyBuff.PLAYER_CLASS == L[auraGroup.class]) then
+					if (Castable_AuraGroups[v.group] == nil) then
+						Castable_AuraGroups[v.group] = {ids={},multiIds={},hasMulti=false};
+					end
+					if (v.multi) then
+						Castable_AuraGroups[v.group].hasMulti = true;
+						Castable_AuraGroups[v.group].multiIds[v.rank] = spellId;
+					else
+						Castable_AuraGroups[v.group].ids[v.rank] = spellId;
+					end
+				end
+			end
+		end
+	end
+end
+
+
+--[[
 	Get Aura Groups for Class
 ]]--
 function EasyBuff:GetClassAuraGroups(className)
@@ -859,15 +914,43 @@ end
 	Get Tracked Spells
 ]]--
 function EasyBuff:GetTrackedSpells()
-	return EasyBuff_Auras;
+	return Trackable_Auras;
+	-- return EasyBuff_Auras;
 end
 
 
 --[[
-	Get Aura Group by Index
+	Get Tracked Spell by ID
 ]]--
-function EasyBuff:GetAuraGroup(index)
-	return EasyBuff_AuraGroups[index];
+function EasyBuff:GetTrackedSpell(id)
+	return Trackable_Auras[tostring(id)];
+end
+
+
+--[[
+	Get Castable Aura Group by Group Name
+]]--
+function EasyBuff:GetAuraGroup(groupName)
+	return Castable_AuraGroups[groupName];
+end
+
+
+--[[
+	Get Castable Group Spell
+]]--
+function EasyBuff:GetCastableGroupSpell(groupName, multi)
+	local group = Castable_AuraGroups[groupName];
+	local highestRank = 1;
+	if (group ~= nil) then
+		if (multi and group.hasMulti) then
+			highestRank = table.getn(group.multiIds);
+			return group.multiIds[highestRank];
+		else
+			highestRank = table.getn(group.ids);
+			return group.ids[highestRank];
+		end
+	end
+	return nil;
 end
 
 
@@ -875,9 +958,9 @@ end
 	Get Aura Group by Spell Id
 ]]--
 function EasyBuff:GetAuraGroupBySpellId(spellId)
-	local aura = EasyBuff_Auras[tostring(spellId)];
+	local aura = EasyBuff:GetTrackedSpell(spellId);
 	if (aura ~= nil) then
-		return aura.group, EasyBuff_AuraGroups[aura.group];
+		return aura.group, EasyBuff:GetAuraGroup(aura.group);
 	end
 	return nil, nil;
 end

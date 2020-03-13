@@ -24,6 +24,7 @@ EasyBuff.ERROR_COLOR 	= "|cfffa2f47";
 EasyBuff.CHAT_COLOR 	= "|cffFF4BFC";
 
 EasyBuff.PLAYER_NAME, EasyBuff.PLAYER_REALM = UnitName("player");
+EasyBuff.PLAYER_REALM = GetRealmName();
 EasyBuff.PLAYER_CLASS = UnitClass("player");
 
 EasyBuff.RELATION_SELF  = "self";
@@ -98,11 +99,12 @@ if LCD then LCD:Register(EasyBuff.TITLE) end
 
 
 --[[
-	On Player Enter World
+	On Player Login
 ]]--
-function EasyBuff:OnPlayerEnterWorld()
+function EasyBuff:OnPlayerLogin()
 	local faction, _ = UnitFactionGroup("player");
-	EasyBuff:InitializeForFaction(faction)
+	EasyBuff:InitializeForFaction(faction);
+	EasyBuff:InitAuras();
 end
 
 
@@ -119,10 +121,12 @@ end
 	This manages our EasyBuff UnitBuffQueue state, and triggers alerts.
 ]]--
 function EasyBuff:MonitorBuffs()
-	-- Check and Refresh Unbuffed Units
-	EasyBuff:RebuildBuffQueue();
-	-- Announce Unbuffed Units
-	EasyBuff:AnnounceUnbuffedUnits();
+	if (EasyBuff:GetGeneralConfigValue("enable")) then
+		-- Check and Refresh Unbuffed Units
+		EasyBuff:RebuildBuffQueue();
+		-- Announce Unbuffed Units
+		EasyBuff:AnnounceUnbuffedUnits();
+	end
 end
 
 
@@ -177,8 +181,8 @@ function EasyBuff:Initialize()
 	EasyBuff:CreateAnchorFrame();
 
 	-- Bind Event Handlers.
-	self:RegisterEvent("PLAYER_LOGIN", "UpdateContext");
-	self:RegisterEvent("PLAYER_ENTERING_WORLD", "OnPlayerEnterWorld");
+	self:RegisterEvent("PLAYER_LOGIN", "OnPlayerLogin");
+	self:RegisterEvent("PLAYER_ENTERING_WORLD", "UpdateContext");
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA", "UpdateContext");
 	self:RegisterEvent("GROUP_JOINED", "UpdateContext");
 	self:RegisterEvent("GROUP_FORMED", "UpdateContext");

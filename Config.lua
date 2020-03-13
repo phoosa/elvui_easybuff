@@ -387,7 +387,8 @@ end
 	Get General Config Value
 ]]--
 function EasyBuff:GetGeneralConfigValue(key)
-	return E.db.EasyBuff[EasyBuff.PLAYER_NAME].general[key];
+	-- return V.EasyBuff.general[key];
+	return E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].general[key];
 end
 
 
@@ -395,7 +396,8 @@ end
 	Set General Config Value
 ]]--
 function EasyBuff:SetGeneralConfigValue(key, value)
-	E.db.EasyBuff[EasyBuff.PLAYER_NAME].general[key] = value;
+	-- V.EasyBuff.general[key] = value;
+	E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].general[key] = value;
 end
 
 
@@ -403,8 +405,10 @@ end
 	Get Context Config Value
 ]]--
 function EasyBuff:GetContextConfigValue(context, spell, key)
-	if (E.db.EasyBuff[EasyBuff.PLAYER_NAME].context[context][key] ~= nil) then
-		return E.db.EasyBuff[EasyBuff.PLAYER_NAME].context[context][key][spell];
+	-- if (V.EasyBuff.context[context][key] ~= nil) then
+	-- 	return V.EasyBuff.context[context][key][spell];
+	if (E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context][key] ~= nil) then
+		return E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context][key][spell];
 	else
 		return nil;
 	end
@@ -415,33 +419,29 @@ end
 	Set Context Config Value
 ]]--
 function EasyBuff:SetContextConfigValue(context, spell, key, value)
-	if (E.db.EasyBuff[EasyBuff.PLAYER_NAME].context[context] == nil) then
-		E.db.EasyBuff[EasyBuff.PLAYER_NAME].context[context] = {};
+	-- if (V.EasyBuff.context[context] == nil) then
+	-- 	V.EasyBuff.context[context] = {};
+	-- end
+	-- if (V.EasyBuff.context[context][key] == nil) then
+	-- 	V.EasyBuff.context[context][key] = {};
+	-- end
+	-- V.EasyBuff.context[context][key][spell] = value;
+	if (E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context] == nil) then
+		E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context] = {};
 	end
-	if (E.db.EasyBuff[EasyBuff.PLAYER_NAME].context[context][key] == nil) then
-		E.db.EasyBuff[EasyBuff.PLAYER_NAME].context[context][key] = {};
+	if (E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context][key] == nil) then
+		E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context][key] = {};
 	end
-	E.db.EasyBuff[EasyBuff.PLAYER_NAME].context[context][key][spell] = value;
+	E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context][key][spell] = value;
 end
 
-
-function EasyBuff:GetSelfCastBuffConfig(context)
-	if (E.db.EasyBuff[EasyBuff.PLAYER_NAME].context[context]) then
-		for k, v in pairs(E.db.EasyBuff[EasyBuff.PLAYER_NAME].context[context]) do
-		end
-	end
-	-- Needs to return list of spells, ie: ["MOTW", "OOC"]
-	-- GetContextConfigValue returns boolean for list of classes, ie: ["self", "Mage", "Priest"] 
-end
-
-function EasyBuff:SetSelfCastBuffConfig(context, value)
-end
 
 --[[
 	Get Config for Context
 ]]--
 function EasyBuff:GetContextConfigValues(context)
-	return E.db.EasyBuff[EasyBuff.PLAYER_NAME].context[context];
+	-- return V.EasyBuff.context[context];
+	return E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context];
 end
 
 

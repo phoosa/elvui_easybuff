@@ -66,7 +66,9 @@ end
 	Prepare and execute Spell Cast on Unit
 ]]--
 function EasyBuff:OnPreClick(button, down)
-	EasyBuff:CastNextBuff();
+	if (EasyBuff:GetGeneralConfigValue("enable")) then
+		EasyBuff:CastNextBuff();
+	end
 end
 
 
@@ -93,25 +95,27 @@ end
 	Remove the unit/buff from the queue if we just performed a queue action.
 ]]--
 function EasyBuff:OnSpellCastSucceeded(event, unitTarget, castGUID, spellId)
-	if (unitTarget ~= "target") then
-		local unitName = unitTarget;
-		if (unitTarget == "player") then
-			unitName = EasyBuff.PLAYER_NAME;
-		end
-		-- Was this the buff and unit we just queue'd up?
-		if (ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("type") == "spell" and ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("unit") == unitName) then
-			local auraGroupKey, auraGroup = EasyBuff:GetAuraGroupBySpellId(spellId);
-			if (auraGroup ~= nil and auraGroup.name == ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("spell")) then
-				-- Remove the buff from the table.
-				EasyBuff:RemoveFromBuffQueue(unitTarget, auraGroupKey);
+	if (EasyBuff:GetGeneralConfigValue("enable")) then
+		if (unitTarget ~= "target") then
+			local unitName = unitTarget;
+			if (unitTarget == "player") then
+				unitName = EasyBuff.PLAYER_NAME;
 			end
-		end
+			-- Was this the buff and unit we just queue'd up?
+			if (ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("type") == "spell" and ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("unit") == unitName and  ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("spell") == spellId) then
+				local auraGroupKey, auraGroup = EasyBuff:GetAuraGroupBySpellId(spellId);
+				if (auraGroup ~= nil and auraGroupKey ~= nil) then
+					-- Remove the buff from the table.
+					EasyBuff:RemoveFromBuffQueue(unitTarget, auraGroupKey);
+				end
+			end
 
-		if (not InCombatLockdown()) then
-			ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("type", nil);
-			ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("spell", nil);
-			ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("unit", nil);
-			EasyBuff:CastNextBuff();
+			if (not InCombatLockdown()) then
+				ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("type", nil);
+				ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("spell", nil);
+				ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("unit", nil);
+				EasyBuff:CastNextBuff();
+			end
 		end
 	end
 end
@@ -181,14 +185,10 @@ function EasyBuff:CastNextBuff(combatLockdown)
 					if (canCast) then
 						-- Get the next spell to cast
 						if (auraGroupKeys ~= nil and auraGroupKeys ~= {} and auraGroupKeys[1] ~= nil) then
-							local auraGroup = EasyBuff:GetAuraGroup(auraGroupKeys[1]);
-							local spellToCast = auraGroup.name;
-							-- Should we cast the group version of this buff?
-							-- @TODO
-							if (auraGroup.multi ~= nil and EasyBuff:GetContextConfigValue(EasyBuff:GetContext(), auraGroupKeys[1], "multi")) then
-								spellToCast = auraGroup.multi;
+							local spellToCast = EasyBuff:GetCastableGroupSpell(auraGroupKeys[1], EasyBuff:GetContextConfigValue(EasyBuff:GetContext(), auraGroupKeys[1], "multi"));
+							if (spellToCast) then
+								EasyBuff:CastSpellOnTarget(spellToCast, unitName);
 							end
-							EasyBuff:CastSpellOnTarget(spellToCast, unitName);
 						break end
 					end
 				end
@@ -203,8 +203,12 @@ end
 	@NOTE: We can't simply execute a cast directly via a command, we have to route it through a button
 ]]--
 function EasyBuff:CastSpellOnTarget(spellToCast, unitName)
+	local type = "spell";
+	if (not spellToCast) or (not unitName) then
+		type = nil;
+	end
 	if (not InCombatLockdown()) then
-		ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("type", "spell");
+		ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("type", type);
 		ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("spell", spellToCast);
 		ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("unit", unitName);
 	end
@@ -237,7 +241,10 @@ function EasyBuff:AnnounceUnbuffedUnits()
 			-- TODO: Display this on the screen somewhere
 			if (auraGroupKeys ~= nil and auraGroupKeys ~= {} and auraGroupKeys[1] ~= nil) then
 				if (unitName == "player") then unitName = EasyBuff.PLAYER_NAME; end
-				EasyBuff:Announce(format(L["%s is missing %s"], EasyBuff:Colorize(unitName, EasyBuff.CLASS_COLORS[UnitClass(unitName)]),EasyBuff:GetAuraGroup(auraGroupKeys[1]).name));
+				local spellId = EasyBuff:GetCastableGroupSpell(auraGroupKeys[1], EasyBuff:GetContextConfigValue(EasyBuff:GetContext(), auraGroupKeys[1], "multi"));
+				if (spellId ~= nil) then
+					EasyBuff:Announce(format(L["%s is missing %s"], EasyBuff:Colorize(unitName, EasyBuff.CLASS_COLORS[UnitClass(unitName)]), tostring(EasyBuff:GetTrackedSpell(spellId).name)));
+				end
 			end
 		end
 	end
@@ -278,7 +285,7 @@ function EasyBuff:RebuildBuffQueue()
 	local currentConfig = EasyBuff:GetContextConfigValues(EasyBuff:GetContext());
 
 	-- Get the Buffs that I can monitor
-	local monitoredSpells = EasyBuff:GetTrackedSpells(EasyBuff.PLAYER_CLASS);
+	local monitoredSpells = EasyBuff:GetTrackedSpells();
 
 	-- Closure, returns the keys from EasyBuff_AuraGroups for missing buffs
 	local checkNeedsBuff = function(group, unit)
