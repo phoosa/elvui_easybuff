@@ -1,3 +1,4 @@
+--Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local E, L, V, P, G = unpack(ElvUI);
 local EasyBuff = E:GetModule("EasyBuff");
 
