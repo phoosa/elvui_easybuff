@@ -22,7 +22,6 @@ EasyBuff.VERSION 		= GetAddOnMetadata("ElvUI_EasyBuff", "Version");
 EasyBuff.COMMAND        = "elveb";
 EasyBuff.DEBUG_STATUS   = 0;
 EasyBuff.CAST_DELAY     = 2; -- seconds
-EasyBuff.LAST_CAST_TIME = 0;
 
 EasyBuff.ERROR_COLOR 	= "|cfffa2f47";
 EasyBuff.CHAT_COLOR 	= "|cffFF4BFC";
@@ -89,6 +88,8 @@ EasyBuff.UnitBuffQueue = nil;
 -- Persist our current Buff Context
 EasyBuff.Context = nil;
 
+-- Persist the last time easybuff cast was successful, used for throttling
+EasyBuff.LastCastTime = 0;
 
 -- ========================================== --
 --                                            --

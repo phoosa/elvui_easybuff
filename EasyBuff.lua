@@ -182,7 +182,7 @@ function EasyBuff:CastNextBuff(combatLockdown)
 		), 2);
 	return end
 	-- Throttle?
-	if ((EasyBuff.LAST_CAST_TIME + EasyBuff.CAST_DELAY) > GetServerTime()) then
+	if ((EasyBuff.LastCastTime + EasyBuff.CAST_DELAY) > GetServerTime()) then
 		EasyBuff:Debug("Cast Prevented - Throttled", 2);
 	return end
 
@@ -275,7 +275,7 @@ function EasyBuff:CastSpellOnTarget(spellToCast, unitName)
 		ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("type", type);
 		ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("spell", spellToCast);
 		ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("unit", unitName);
-		EasyBuff.LAST_CAST_TIME = GetServerTime();
+		EasyBuff.LastCastTime = GetServerTime();
 	end
 end
 
