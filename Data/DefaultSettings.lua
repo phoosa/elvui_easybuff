@@ -11,7 +11,9 @@ P.EasyBuff = {
 				context = EasyBuff.CFG_CONTEXT_AUTO,
 				announce = EasyBuff.CFG_ANN_HUD,
 				announceWindow = nil,
-				announceContextChange = true
+				announceContextChange = true,
+				notifyEarly = true,
+				removeExistingBuff = true
 			},
 			context = {
 				solo = {

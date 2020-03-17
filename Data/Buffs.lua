@@ -888,6 +888,7 @@ function EasyBuff:InitAuras()
 					else
 						Castable_AuraGroups[v.group].ids[v.rank] = spellId;
 					end
+					Castable_AuraGroups[v.group].selfOnly = auraGroup.selfOnly
 				end
 			end
 		end

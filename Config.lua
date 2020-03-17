@@ -250,21 +250,15 @@ function EasyBuff:ConfigOptions()
 						name = L["Enable"],
 						desc = L["Enables / disables the addon"],
 						order = 1,
-						width = "full",
+						width = 3.5,
 						type = "toggle",
 						get = function(info, i) return EasyBuff:GetGeneralConfigValue("enable"); end,
 						set = function(info, value) EasyBuff:SetGeneralConfigValue("enable", value); end
 					},
-					_sp1 = {
-						type = "description",
-						order = 2,
-						width = "full",
-						name = "\n"
-					},
 					context = {
 						name = L["Active Context"],
 						desc = L["Select which context configuration to use. (recommended) Auto-detect will automatically switch the context depending on group size/type, or zone."],
-						order = 3,
+						order = 2,
 						type = "select",
 						values = {
 							[EasyBuff.CFG_CONTEXT_AUTO] = L["Auto-detect"],
@@ -279,44 +273,78 @@ function EasyBuff:ConfigOptions()
 							EasyBuff:UpdateContext();
 						end
 					},
-					_sp2 = {
-						type = "description",
-						order = 4,
+					_sp1 = {
+						type = "header",
+						order = 3,
 						width = "full",
-						name = "\n"
+						name = ""
 					},
-					announceContextChange = {
-						name = L["Announce Context Change"],
+					_announceGroup = {
+						type = "group",
 						order = 10,
-						width = "full",
-						type = "toggle",
-						get = function(info, i) return EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE_CC); end,
-						set = function(info, value) EasyBuff:SetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE_CC, value); end
+						inline = true,
+						name = L["Announcements"],
+						args = {
+							announceContextChange = {
+								name = L["Announce Context Change"],
+								order = 10,
+								width = "full",
+								type = "toggle",
+								get = function(info, i) return EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE_CC); end,
+								set = function(info, value) EasyBuff:SetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE_CC, value); end
+							},
+							announce = {
+								name = L["Announce To"],
+								desc = L["How would you like to be notified of players missing Buffs?"],
+								order = 11,
+								type = "select",
+								values = {
+									[EasyBuff.CFG_ANN_HUD]  = L["HUD"],
+									[EasyBuff.CFG_ANN_CHAT] = L["Chat Window"]
+								},
+								get = function(info, i) return EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE); end,
+								set = function(info, value) 
+									EasyBuff:SetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE, value);
+									E.Options.args.EasyBuff.args.general.args.announceWindow.disabled = (EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE) ~= EasyBuff.CFG_ANN_CHAT);
+								end
+							},
+							announceWindow = {
+								name = L["Chat Window"],
+								desc = L["Select the Chat Window to display Easy Buff announcements in."],
+								order = 12,
+								type = "select",
+								disabled = (EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE) ~= EasyBuff.CFG_ANN_CHAT),
+								values = EasyBuff.GetChatWindows,
+								get = function(info, i) return EasyBuff:GetGeneralConfigValue("announceWindow"); end,
+								set = function(info, value) EasyBuff:SetGeneralConfigValue("announceWindow", value); end
+							}
+						}
 					},
-					announce = {
-						name = L["Announce To"],
-						desc = L["How would you like to be notified of players missing Buffs?"],
-						order = 11,
-						type = "select",
-						values = {
-							[EasyBuff.CFG_ANN_HUD]  = L["HUD"],
-							[EasyBuff.CFG_ANN_CHAT] = L["Chat Window"]
-						},
-						get = function(info, i) return EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE); end,
-						set = function(info, value) 
-							EasyBuff:SetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE, value);
-							E.Options.args.EasyBuff.args.general.args.announceWindow.disabled = (EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE) ~= EasyBuff.CFG_ANN_CHAT);
-						end
-					},
-					announceWindow = {
-						name = L["Chat Window"],
-						desc = L["Select the Chat Window to display Easy Buff announcements in."],
-						order = 12,
-						type = "select",
-						disabled = (EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE) ~= EasyBuff.CFG_ANN_CHAT),
-						values = EasyBuff.GetChatWindows,
-						get = function(info, i) return EasyBuff:GetGeneralConfigValue("announceWindow"); end,
-						set = function(info, value) EasyBuff:SetGeneralConfigValue("announceWindow", value); end
+					_miscSettings = {
+						type = "group",
+						order = 15,
+						inline = true,
+						name = L["Miscellaneous"],
+						args = {
+							notifyEarly = {
+								name = L["Early Monitoring"],
+								desc = L["Announce and refresh buffs before they expire."],
+								order = 10,
+								width = "full",
+								type = "toggle",
+								get = function(info, i) return EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_NOTIFY_EARLY); end,
+								set = function(info, value) EasyBuff:SetGeneralConfigValue(EasyBuff.CFG_NOTIFY_EARLY, value); end
+							},
+							removeExistingBuff = {
+								name = L["Auto-Remove before self-buff"],
+								desc = L["Automatically remove buff before applying new buff. Lesser buffs cannot overwrite greater, enabling this feature will ensure refreshing a buff doesn't error. This is only necessary with 'Early Monitoring' enabled."],
+								order = 10,
+								width = "full",
+								type = "toggle",
+								get = function(info, i) return EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_REMOVE_EXISTING); end,
+								set = function(info, value) EasyBuff:SetGeneralConfigValue(EasyBuff.CFG_REMOVE_EXISTING, value); end
+							},
+						}
 					}
 				}
 			},
@@ -387,7 +415,6 @@ end
 	Get General Config Value
 ]]--
 function EasyBuff:GetGeneralConfigValue(key)
-	-- return V.EasyBuff.general[key];
 	return E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].general[key];
 end
 
@@ -396,7 +423,7 @@ end
 	Set General Config Value
 ]]--
 function EasyBuff:SetGeneralConfigValue(key, value)
-	-- V.EasyBuff.general[key] = value;
+	EasyBuff:Debug(format("SetConfig:General %s=%s", tostring(key), tostring(value)), 1);
 	E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].general[key] = value;
 end
 
@@ -405,8 +432,6 @@ end
 	Get Context Config Value
 ]]--
 function EasyBuff:GetContextConfigValue(context, spell, key)
-	-- if (V.EasyBuff.context[context][key] ~= nil) then
-	-- 	return V.EasyBuff.context[context][key][spell];
 	if (E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context][key] ~= nil) then
 		return E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context][key][spell];
 	else
@@ -419,13 +444,7 @@ end
 	Set Context Config Value
 ]]--
 function EasyBuff:SetContextConfigValue(context, spell, key, value)
-	-- if (V.EasyBuff.context[context] == nil) then
-	-- 	V.EasyBuff.context[context] = {};
-	-- end
-	-- if (V.EasyBuff.context[context][key] == nil) then
-	-- 	V.EasyBuff.context[context][key] = {};
-	-- end
-	-- V.EasyBuff.context[context][key][spell] = value;
+	EasyBuff:Debug(format("SetConfig:Context %s-%s-%s=%s", tostring(context), tostring(key), tostring(spell), tostring(value)), 1);
 	if (E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context] == nil) then
 		E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context] = {};
 	end
@@ -440,7 +459,6 @@ end
 	Get Config for Context
 ]]--
 function EasyBuff:GetContextConfigValues(context)
-	-- return V.EasyBuff.context[context];
 	return E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context];
 end
 
@@ -479,6 +497,19 @@ end
 -- Helpers                                    --
 --                                            --
 -- ========================================== --
+
+
+--[[
+	Get Config Key for Aura Group
+]]--
+function EasyBuff:GetAuraGroupConfigKey(auraGroupKey)
+	local ag = EasyBuff:GetAuraGroup(auraGroupKey);
+	local cfgKey = "multi";
+	if (ag.selfOnly) then
+		cfgKey = "self";
+	end
+	return cfgKey;
+end
 
 
 --[[

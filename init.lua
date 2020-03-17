@@ -19,13 +19,21 @@ local addonName, addonTable = ...;
 
 EasyBuff.TITLE 			= "Easy Buff";
 EasyBuff.VERSION 		= GetAddOnMetadata("ElvUI_EasyBuff", "Version");
+EasyBuff.COMMAND        = "elveb";
+EasyBuff.DEBUG_STATUS   = 0;
+EasyBuff.CAST_DELAY     = 2; -- seconds
+EasyBuff.LAST_CAST_TIME = 0;
 
 EasyBuff.ERROR_COLOR 	= "|cfffa2f47";
 EasyBuff.CHAT_COLOR 	= "|cffFF4BFC";
+EasyBuff.RANGE_COLOR 	= "|cff999999";
 
 EasyBuff.PLAYER_NAME, EasyBuff.PLAYER_REALM = UnitName("player");
 EasyBuff.PLAYER_REALM = GetRealmName();
 EasyBuff.PLAYER_CLASS = UnitClass("player");
+
+EasyBuff.EXPIRATION_PERCENT = .1; -- notify when buff reaches percent of buff duration left
+EasyBuff.EXPIRATION_BUFFER  = 3;  -- seconds to add to percent to account for shorter buffs
 
 EasyBuff.RELATION_SELF  = "self";
 
@@ -41,6 +49,8 @@ EasyBuff.CFG_ANNOUNCE_CC     = "announceContextChange";
 EasyBuff.CFG_ANNOUNCE_WINDOW = "announceWindow";
 EasyBuff.CFG_ANN_HUD      	 = "hud";
 EasyBuff.CFG_ANN_CHAT     	 = "chat";
+EasyBuff.CFG_NOTIFY_EARLY    = "notifyEarly";
+EasyBuff.CFG_REMOVE_EXISTING = "removeExistingBuff";
 
 EasyBuff.CLASS_COLORS = {
 	["Druid"]    = "|cffFF7D0A",
@@ -132,6 +142,91 @@ end
 
 -- ========================================== --
 --                                            --
+-- Slash Command                              --
+--                                            --
+-- ========================================== --
+
+
+--[[
+	Chat Command
+	Process Command Line Input
+]]--
+function EasyBuff:ChatCommand(input)
+	local wid = 1;
+	local opt = nil;
+	local args = {};
+	local commands = {
+		["debug"] = function(args)
+			local level = tonumber(args[1]);
+			local status = "";
+			local color = EasyBuff.CLASS_COLORS["Shaman"];
+
+			if (level == nil) then
+				level = 0;
+			else
+				status = "level "..level;
+			end
+
+			EasyBuff.DEBUG_STATUS = level;
+			if (EasyBuff.DEBUG_STATUS == 0) then
+				status = "disabled";
+				color = EasyBuff.ERROR_COLOR;
+			end
+			EasyBuff:PrintToChat(format("Debugging %s", EasyBuff:Colorize(status, color)), wid);
+		end,
+		["queue"] = function()
+			if (EasyBuff.UnitBuffQueue ~= nil) then
+				local combined = "";
+				for unitName,auraGroupKeys in pairs(EasyBuff.UnitBuffQueue) do
+					local unitBuffs = "";
+					for i=1, table.getn(auraGroupKeys), 1 do
+						unitBuffs = format("%s  %d-%s", unitBuffs, i, auraGroupKeys[i]);
+					end
+					combined = format(combined.."\n%s: %s", unitName, unitBuffs);
+				end
+				EasyBuff:PrintToChat("Unit Buff Queue: "..combined, wid);
+			else
+				EasyBuff:PrintToChat("No Units/Buffs in the queue", wid);
+			end
+		end,
+		["help"] = function()
+			EasyBuff:PrintToChat(format("Available Commands:\n%s %s - %s\n%s %s - %s",
+
+				EasyBuff:Colorize("/"..EasyBuff.COMMAND, EasyBuff.CLASS_COLORS["Mage"]),
+				EasyBuff:Colorize("debug", EasyBuff.CLASS_COLORS["Mage"]),
+				"Set Debug Level (0=off) (1=info) (2=events) (3=verbose)",
+
+				EasyBuff:Colorize("/"..EasyBuff.COMMAND, EasyBuff.CLASS_COLORS["Mage"]),
+				EasyBuff:Colorize("queue", EasyBuff.CLASS_COLORS["Mage"]),
+				"Show the current Buff Queue"
+			), wid);
+		end
+	};
+
+	if (input ~= nil) then
+		if (string.match(input, "%s")) then
+			for str in string.gmatch(input, "([^%s]+)") do
+				if (opt == nil) then
+					opt = str;
+				else
+					table.insert(args, str);
+				end
+			end
+		else
+			opt = input;
+		end
+	end
+
+	if (opt == nil or commands[opt] == nil) then
+		commands["help"]();
+	else
+		commands[opt](args);
+	end
+end
+
+
+-- ========================================== --
+--                                            --
 -- Misc Helpers                               --
 --                                            --
 -- ========================================== --
@@ -141,7 +236,7 @@ end
 	Colorize Text
 ]]--
 function EasyBuff:Colorize(text, color)
-	return format("%s%s%s", color, tostring(text), "|r") 
+	return format("%s%s%s", color, tostring(text), "|r") ;
 end
 
 
@@ -156,7 +251,17 @@ function EasyBuff:ContextKeyToLanguage(context)
 		[EasyBuff.CONTEXT_BG]     = L["Battleground"],
 	};
 
-	return map[context]
+	return map[context];
+end
+
+
+--[[
+	Print Debug Message
+]]--
+function EasyBuff:Debug(msg, lvl)
+	if (lvl and EasyBuff.DEBUG_STATUS and (lvl <= EasyBuff.DEBUG_STATUS)) then
+		EasyBuff:PrintToChat(date('%H:%M:%S', GetServerTime()).." - "..msg, 1);
+	end
 end
 
 
@@ -180,6 +285,8 @@ function EasyBuff:Initialize()
 
 	EasyBuff:CreateAnchorFrame();
 
+	-- Bind Console Commands.
+	self:RegisterChatCommand(EasyBuff.COMMAND, "ChatCommand");
 	-- Bind Event Handlers.
 	self:RegisterEvent("PLAYER_LOGIN", "OnPlayerLogin");
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "UpdateContext");
