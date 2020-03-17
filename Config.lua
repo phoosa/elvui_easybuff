@@ -40,10 +40,11 @@ function EasyBuff:ConfigOptions()
 	local bgMulti = {};
 	local buffOptions = EasyBuff.CLASSES;
 	buffOptions[EasyBuff.RELATION_SELF] = "|cff03fc07<"..L["Myself"]..">|r";
-	local disabledBuffOptions = {[EasyBuff.RELATION_SELF] = "<"..L["Myself"]..">"};
+	local disabledBuffOptions = {};
 	for k,v in pairs(buffOptions) do
 		disabledBuffOptions[k] = k;
 	end
+	disabledBuffOptions = {[EasyBuff.RELATION_SELF] = "<"..L["Myself"]..">"};
 
 	-- Load Player Supported Buffs.
 	local myAuras = EasyBuff:GetClassAuraGroups(EasyBuff.PLAYER_CLASS);
