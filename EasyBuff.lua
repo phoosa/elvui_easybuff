@@ -16,7 +16,7 @@ local EasyBuff = E:GetModule("EasyBuff");
 function EasyBuff:GetContext()
 	if (EasyBuff.Context == nil) then
 		-- This should never happen...
-		self:Announce(EasyBuff.ERROR_COLOR..L["NO CONTEXT FOUND!"].."|r");
+		self:AnnounceBuff(EasyBuff.ERROR_COLOR..L["NO CONTEXT FOUND!"].."|r");
 		return EasyBuff.CONTEXT_SOLO;
 	end
 	return EasyBuff.Context;
@@ -35,8 +35,8 @@ function EasyBuff:SetContext(context)
 		EasyBuff.Context = context;
 		-- Reset tracked units needing buffs
 		EasyBuff.UnitBuffQueue = nil;
-		if (EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE_CC)) then
-			EasyBuff:Announce(EasyBuff.CLASS_COLORS["Warrior"]..format(L["Context changed to: %s"], EasyBuff:ContextKeyToLanguage(context)).."|r");
+		if (EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE_CC)) then
+			EasyBuff:AnnounceBuff(EasyBuff.CLASS_COLORS["Warrior"]..format(L["Context changed to: %s"], EasyBuff:ContextKeyToLanguage(context)).."|r");
 		end
 	end
 end
@@ -67,7 +67,7 @@ end
 	Prepare and execute Spell Cast on Unit
 ]]--
 function EasyBuff:OnPreClick(button, down)
-	if (EasyBuff:GetGeneralConfigValue("enable")) then
+	if (EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ENABLE)) then
 		EasyBuff:CastNextBuff();
 	end
 end
@@ -96,17 +96,29 @@ end
 	Remove the unit/buff from the queue if we just performed a queue action.
 ]]--
 function EasyBuff:OnSpellCastSucceeded(event, unitTarget, castGUID, spellId)
-	if (EasyBuff:GetGeneralConfigValue("enable")) then
+	if (EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ENABLE)) then
 		if (unitTarget ~= "target") then
 			local unitName = unitTarget;
 			if (unitTarget == "player") then
 				unitName = EasyBuff.PLAYER_NAME;
 			end
 			local spellInfo = {GetSpellInfo(spellId)};
+			EasyBuff:Debug(format("OnSpellCastSucceeded - unit[%s] spell[%s] - button unit[%s] spell[%s] - spellInfo[isNil:%s]",
+				tostring(unitTarget),
+				tostring(spellId),
+				tostring(ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("unit")),
+				tostring(ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("spell")),
+				tostring((spellInfo == nil))
+			), 2);
 			if (spellInfo ~= nil) then
 				-- Was this the buff and unit we just queue'd up?
 				if (ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("type") == "spell" and ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("unit") == unitName and ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("spell") == spellInfo[1]) then
 					local auraGroupKey, auraGroup = EasyBuff:GetAuraGroupBySpellId(spellId);
+					EasyBuff:Debug(format("OnSpellCastSucceeded:RemoveFromBuffQueue - spellId[%s] auraGroupKey[%s] auraGroup[isNil:%s]",
+						tostring(spellId),
+						tostring(auraGroupKey),
+						tostring(nil == auraGroup)
+					), 3);
 					if (auraGroup ~= nil and auraGroupKey ~= nil) then
 						-- Remove the buff from the table.
 						EasyBuff:RemoveFromBuffQueue(unitTarget, auraGroupKey);
@@ -137,7 +149,7 @@ end
 ]]--
 function EasyBuff:UpdateContext()
 	-- Is Auto-Context Switching Enabled?
-	local contextCfg = EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_CONTEXT);
+	local contextCfg = EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_CONTEXT);
 	if (contextCfg == EasyBuff.CFG_CONTEXT_AUTO) then
 		-- Is the player in a BG or Group?
 		if (EasyBuff:IsInBG()) then
@@ -180,11 +192,19 @@ function EasyBuff:CastNextBuff(combatLockdown)
 			tostring(IsMounted()),
 			tostring(EasyBuff.UnitBuffQueue == nil)
 		), 2);
-	return end
+		return
+	end
 	-- Throttle?
 	if ((EasyBuff.LastCastTime + EasyBuff.CAST_DELAY) > GetServerTime()) then
 		EasyBuff:Debug("Cast Prevented - Throttled", 2);
-	return end
+		return
+	end
+
+	-- Disable casting on others?
+	local selfOnlyCast = EasyBuff:GetContextConfigValue(EasyBuff:GetContext(), "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL);
+	if (selfOnlyCast == nil) then
+		selfOnlyCast = false;
+	end
 
 	local canCast = false;
 	if (not combatLockdown) then
@@ -195,12 +215,12 @@ function EasyBuff:CastNextBuff(combatLockdown)
 				-- Are there buffs to cast on this unit?
 				if (table.getn(auraGroupKeys) > 0) then
 					-- Can we cast on this unit?
-					canCast = false;
+					canCast = EasyBuff:CanCastOnUnit(unitName);
 					if (unitName == "player") then
 						unitName = EasyBuff.PLAYER_NAME;
-						canCast = true;
-					else
-						canCast = UnitInRange(unitName) and UnitIsVisible(unitName);
+					end
+					if (unitName ~= EasyBuff.PLAYER_NAME and selfOnlyCast) then
+						canCast = false;
 					end
 					EasyBuff:Debug(format("Attempting Cast canCast[%s] unitName[%s] buff[%s]",
 						tostring(canCast),
@@ -215,7 +235,7 @@ function EasyBuff:CastNextBuff(combatLockdown)
 								local spellInfo = {GetSpellInfo(spellId)};
 								if (spellInfo ~= nil) then
 									-- Remove existing buff?
-									if (EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_REMOVE_EXISTING) and unitName == EasyBuff.PLAYER_NAME) then
+									if (EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_REMOVE_EXISTING) and unitName == EasyBuff.PLAYER_NAME) then
 										local ag = EasyBuff:GetAuraGroup(auraGroupKeys[1]);
 										local checkSpellIds = {};
 										for _k, _v in pairs(ag.ids) do
@@ -226,14 +246,14 @@ function EasyBuff:CastNextBuff(combatLockdown)
 										if (ag ~= nil and ag.ids) then
 											local bcIndex = 1;
 											local buffToCheck;
-											while (bcIndex == 1 or (buffToCheck ~= nil and buffToCheck[10] ~= nil)) do
-												buffToCheck = {UnitBuff(unitName, bcIndex)};
+											while (bcIndex == 1 or (buffToCheck ~= nil and buffToCheck.spellId ~= nil)) do
+												buffToCheck = EasyBuff:UnitBuff(unitName, bcIndex);
+												-- buffToCheck = {UnitBuff(unitName, bcIndex)};
 												if (buffToCheck ~= nil and buffToCheck[10] ~= nil) then
 													if (checkSpellIds[buffToCheck[10]]) then
-														-- print("Removing "..spellInfo[1]);
 														EasyBuff:Debug(format("Remove Existing Buff unitName[%s] buff[%s]",
 															unitName,
-															buffToCheck[10]
+															buffToCheck.spellId
 														), 2);
 														CancelUnitBuff("player", buffToCheck[10]);
 													break end
@@ -242,6 +262,7 @@ function EasyBuff:CastNextBuff(combatLockdown)
 											end
 										end
 									end
+									-- print("Queue up "..spellInfo[1].." on "..unitName);
 									-- Finally, buff the target
 									EasyBuff:CastSpellOnTarget(spellInfo[1], unitName);
 								end
@@ -307,20 +328,21 @@ end
 	Announce units in buff queue
 ]]--
 function EasyBuff:AnnounceUnbuffedUnits()
+	ELVUI_EASYBUFF_ANNOUNCE_FRAME:Clear();
 	if (EasyBuff.UnitBuffQueue ~= nil) then
 		for unitName,auraGroupKeys in pairs(EasyBuff.UnitBuffQueue) do
 			local textColor = "";
 			if (auraGroupKeys ~= nil and auraGroupKeys ~= {} and auraGroupKeys[1] ~= nil) then
 				if (unitName == "player") then
 					unitName = EasyBuff.PLAYER_NAME;
-				elseif (not UnitInRange(unitName)) then
+				elseif (not EasyBuff:CanCastOnUnit(unitName)) then
 					textColor = EasyBuff.RANGE_COLOR;
 				end
 				local spellId = EasyBuff:GetCastableGroupSpell(auraGroupKeys[1], EasyBuff:GetContextConfigValue(EasyBuff:GetContext(), auraGroupKeys[1], EasyBuff:GetAuraGroupConfigKey(auraGroupKeys[1])));
 				if (spellId ~= nil) then
 					local spellInfo = {GetSpellInfo(spellId)};
 					if (spellInfo ~= nil) then
-						EasyBuff:Announce(format(L["%s needs %s"].."|r", EasyBuff:Colorize(unitName, EasyBuff.CLASS_COLORS[UnitClass(unitName)])..textColor, tostring(spellInfo[1])));
+						EasyBuff:AnnounceBuff(format(L["%s needs %s"].."|r", EasyBuff:Colorize(unitName, EasyBuff.CLASS_COLORS[UnitClass(unitName)])..textColor, tostring(spellInfo[1])));
 					end
 				end
 			end
@@ -330,10 +352,10 @@ end
 
 
 --[[
-	Announce Message
+	Announce Buff Message
 ]]--
-function EasyBuff:Announce(msg)
-	local announce = EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE);
+function EasyBuff:AnnounceBuff(msg)
+	local announce = EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE);
 	if (announce == EasyBuff.CFG_ANN_HUD) then
 		ELVUI_EASYBUFF_ANNOUNCE_FRAME:AddMessage(msg, 1, 1, 1, 1.0);
 	elseif (announce == EasyBuff.CFG_ANN_CHAT) then
@@ -341,12 +363,13 @@ function EasyBuff:Announce(msg)
 	end
 end
 
+
 --[[
 	Print Message to Chat Frame
 ]]--
 function EasyBuff:PrintToChat(msg, window)
 	if (window == nil) then
-		local windowName = EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE_WINDOW);
+		local windowName = EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE_WINDOW);
 		for i = 1, NUM_CHAT_WINDOWS, 1 do
 			local name, fontSize, r, g, b, alpha, shown, locked, docked, uninteractable = GetChatWindowInfo(i);
 			if (name) and (name:trim() ~= "") and (tostring(name) == tostring(windowName)) then
@@ -380,41 +403,67 @@ function EasyBuff:RebuildBuffQueue()
 
 	-- Get the Buffs that I can monitor
 	local monitoredSpells = EasyBuff:GetTrackedSpells();
+	-- Reload the Tracked spells if for some reason we don't have any.
+	-- I don't know why this sometimes happens.. but this should fix it
+	if (monitoredSpells == nil) then
+		EasyBuff:InitAuras();
+		monitoredSpells = EasyBuff:GetTrackedSpells();
+	end
 
 	-- Closure, returns the keys from EasyBuff_AuraGroups for missing buffs
 	local checkNeedsBuff = function(group, unit)
 		local missingAuraGroupKeys = {};
 		if (currentConfig[group] == nil) then
 			-- No Config for this group.
+			EasyBuff:Debug(format("BuffQueue: NO CONFIG FOR GROUP: %s", tostring(group)), 2);
 			return nil;
 		end
-		-- Iterate over the buffs we track for this group
-		for auraGroupKey,tracked in pairs(currentConfig[group]) do
-			-- Only check for tracked buffs
-			if (tracked == true) then
-				-- Loop over the units buffs to see if they have this buff
-				local buffFound = false;
-				local index = 1;
-				local buff = {UnitBuff(unit, 1)};
-				while (buff ~= nil and buff[10] ~= nil) do
-					-- Do we know this spellId, and is it part of the auragroup we are currently checking?
-					local a = monitoredSpells[tostring(buff[10])];
-					-- for z,b in pairs(a) do print(format("Key[%s] %s", z, tostring(b))) end
-					if (a ~= nil and a.group == auraGroupKey) then
-						buffFound = true;
-						-- Is it expiring soon?
-						if (EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_NOTIFY_EARLY)) then
-							if (buff[6] > 0 and (buff[5]*EasyBuff.EXPIRATION_PERCENT)+EasyBuff.EXPIRATION_BUFFER >= (buff[6]-curTime)) then
-								table.insert(missingAuraGroupKeys, auraGroupKey);
+		-- Can we cast on this unit?
+		if (EasyBuff:CanCastOnUnit(unit)) then
+			-- Iterate over the buffs we track for this group
+			for auraGroupKey,tracked in pairs(currentConfig[group]) do
+				-- print(auraGroupKey);
+				-- Only check for tracked buffs
+				if (tracked == true) then
+					-- Loop over the units buffs to see if they have this buff
+					local buffFound = false;
+					for index=1,40 do
+						local buff = EasyBuff:UnitBuff(unit, index);
+						-- local buff = {UnitBuff(unit, index)};
+						if (buff ~= nil and buff.spellId ~= nil) then
+							EasyBuff:Debug(format("RebuildBuffQueue:Check [%s] Buff [%s]", unit, buff.spellId), 3);
+							-- Do we know this spellId, and is it part of the auragroup we are currently checking?
+							local a = monitoredSpells[tostring(buff.spellId)];
+							-- print(index.." - "..tostring(buff[10]).." - "..tostring(a ~= nil));
+							if (a ~= nil and a.group == auraGroupKey) then
+								buffFound = true;
+								-- Is it expiring soon?
+								-- print(format("%s: %s <= %s", buff.name, buff.remainingTime, ((buff.duration*EasyBuff.EXPIRATION_PERCENT)+EasyBuff.EXPIRATION_BUFFER)));
+								if (EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_NOTIFY_EARLY)) then
+									if (buff.expirationTime > 0
+										and buff.remainingTime <= (buff.duration*EasyBuff.EXPIRATION_PERCENT)+EasyBuff.EXPIRATION_BUFFER
+										and buff.remainingTime <= EasyBuff.EXPIRATION_MINIMUM
+									) then
+										-- almost out of time
+										EasyBuff:Debug(format("BuffQueue:Add [%s] to [%s] Almost out of Time", tostring(auraGroupKey), unit), 3);
+										table.insert(missingAuraGroupKeys, auraGroupKey);
+									elseif (buff.count == 1) then
+										-- only 1 stack left
+										EasyBuff:Debug(format("BuffQueue:Add [%s] to [%s] Almost out of Stacks", tostring(auraGroupKey), unit), 3);
+										table.insert(missingAuraGroupKeys, auraGroupKey);
+									end
+								end
+								break
+							elseif (a ~= nil) then
+								EasyBuff:Debug(format("-- No Match [%s] Buff [%s]", auraGroupKey, a.group), 4);
 							end
 						end
-					break end
-					index = index + 1;
-					buff = {UnitBuff(unit, index)};
-				end
-				-- Did we find the buff?
-				if (buffFound == false) then
-					table.insert(missingAuraGroupKeys, auraGroupKey);
+					end
+					-- Did we find the buff?
+					if (buffFound == false) then
+						EasyBuff:Debug(format("BuffQueue:Add [%s] to [%s] Buff not found after scanning [%d] Buffs", tostring(auraGroupKey), unit, 40), 3);
+						table.insert(missingAuraGroupKeys, auraGroupKey);
+					end
 				end
 			end
 		end
@@ -455,4 +504,15 @@ function EasyBuff:RebuildBuffQueue()
 	else
 		EasyBuff.UnitBuffQueue = UnitsToBuff;
 	end
+end
+
+
+--[[
+	Helper function to determine if we can cast on a unit
+]]--
+function EasyBuff:CanCastOnUnit(unitName)
+	local isSelf = (unitName == EasyBuff.PLAYER_NAME or unitName == "player");
+	EasyBuff:Debug(format("CanCastOnUnit:%s self:%s range:%s visible:%s dead:%s", tostring(unitName), tostring(isSelf), tostring(UnitInRange(unitName)), tostring(UnitIsVisible(unitName)), tostring(UnitIsDead(unitName))), 2);
+
+	return isSelf or (UnitInRange(unitName) and UnitIsVisible(unitName) and not UnitIsDead(unitName));
 end

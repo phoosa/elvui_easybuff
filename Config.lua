@@ -11,8 +11,6 @@ local EasyBuff = E:GetModule("EasyBuff");
 ]]--
 function EasyBuff:ConfigOptions()
 	local soloAuras = {};
-		
-	
 	local partyAuras = {
 		_h1 = {
 			name = L["Select who should be monitored for each Buff.  If none are selected, the Buff will not be monitored.\n"],
@@ -139,31 +137,82 @@ function EasyBuff:ConfigOptions()
 
 	-- Prepare the Party Buff Config Options
 	local partyBuffCfg = {
+		general = {
+			type = "group",
+			name = L["General Context Settings"],
+			order = 1,
+			inline = true,
+			args = {
+				selfOnlyCast = {
+					name = L["Cast on self only"],
+					desc = L["Disables mousewheel buff casting on players other than yourself. You will still be notified of other players needed buffs, but you will have to manually buff them."],
+					type = "toggle",
+					order = 1,
+					width = "double",
+					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_PARTY, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL); end,
+					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_PARTY, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL, value); end
+				}
+			}
+		},
 		partyBuffs = {
 			type = "group",
 			name = L["Buffs to Monitor on my Party"],
 			desc = L["Select the buffs that you want to monitor, and who you would like to monitor for each buff."],
-			order = 3,
+			order = 11,
 			inline = true,
 			args =  partyAuras
 		}
 	};
 	local raidBuffCfg = {
+		general = {
+			type = "group",
+			name = L["General Context Settings"],
+			order = 1,
+			inline = true,
+			args = {
+				selfOnlyCast = {
+					name = L["Cast on self only"],
+					desc = L["Disables mousewheel buff casting on players other than yourself. You will still be notified of other players needed buffs, but you will have to manually buff them."],
+					type = "toggle",
+					order = 1,
+					width = "double",
+					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_RAID, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL); end,
+					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_RAID, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL, value); end
+				}
+			}
+		},
 		raidBuffs = {
 			type = "group",
 			name = L["Buffs to Monitor on my Raid"],
 			desc = L["Select the buffs that you want to monitor, and who you would like to monitor for each buff."],
-			order = 3,
+			order = 11,
 			inline = true,
 			args =  raidAuras
 		}
 	};
 	local bgBuffCfg = {
+		general = {
+			type = "group",
+			name = L["General Context Settings"],
+			order = 1,
+			inline = true,
+			args = {
+				selfOnlyCast = {
+					name = L["Cast on self only"],
+					desc = L["Disables mousewheel buff casting on players other than yourself. You will still be notified of other players needed buffs, but you will have to manually buff them."],
+					type = "toggle",
+					order = 1,
+					width = "double",
+					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_BG, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL); end,
+					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_BG, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL, value); end
+				}
+			}
+		},
 		bgBuffs = {
 			type = "group",
 			name = L["Buffs to Monitor on my Team"],
 			desc = L["Select the buffs that you want to monitor, and who you would like to monitor for each buff."],
-			order = 3,
+			order = 11,
 			inline = true,
 			args =  bgAuras
 		}
@@ -174,7 +223,7 @@ function EasyBuff:ConfigOptions()
 			desc = L["Select the buffs that you want to keep on yourself when playing.\n"],
 			type = "multiselect",
 			values = selfOnlyBuffs,
-			order = 2,
+			order = 10,
 			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_PARTY, i, EasyBuff.RELATION_SELF); end,
 			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_PARTY, i, EasyBuff.RELATION_SELF, value); end
 		};
@@ -183,7 +232,7 @@ function EasyBuff:ConfigOptions()
 			desc = L["Select the buffs that you want to keep on yourself when playing.\n"],
 			type = "multiselect",
 			values = selfOnlyBuffs,
-			order = 2,
+			order = 10,
 			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_RAID, i, EasyBuff.RELATION_SELF); end,
 			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_RAID, i, EasyBuff.RELATION_SELF, value); end
 		};
@@ -192,7 +241,7 @@ function EasyBuff:ConfigOptions()
 			desc = L["Select the buffs that you want to keep on yourself when playing.\n"],
 			type = "multiselect",
 			values = selfOnlyBuffs,
-			order = 2,
+			order = 10,
 			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_BG, i, EasyBuff.RELATION_SELF); end,
 			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_BG, i, EasyBuff.RELATION_SELF, value); end
 		};
@@ -202,7 +251,7 @@ function EasyBuff:ConfigOptions()
 			type = "group",
 			name = L["Greater Buffs"],
 			desc = L["To cast the greater/multi version of a buff instead of the individual version, select it here. You must still have the lesser/individual version selected in order for the buff to be monitored."],
-			order = 4,
+			order = 12,
 			inline = true,
 			args = partyMulti
 		};
@@ -212,7 +261,7 @@ function EasyBuff:ConfigOptions()
 			type = "group",
 			name = L["Greater Buffs"],
 			desc = L["To cast the greater/multi version of a buff instead of the individual version, select it here. You must still have the lesser/individual version selected in order for the buff to be monitored."],
-			order = 4,
+			order = 12,
 			inline = true,
 			args = raidMulti
 		};
@@ -222,12 +271,11 @@ function EasyBuff:ConfigOptions()
 			type = "group",
 			name = L["Greater Buffs"],
 			desc = L["To cast the greater/multi version of a buff instead of the individual version, select it here. You must still have the lesser/individual version selected in order for the buff to be monitored."],
-			order = 4,
+			order = 12,
 			inline = true,
 			args = bgMulti
 		};
 	end
-
 
 	-- Set Configuration Options.
 	E.Options.args.EasyBuff = {
@@ -241,164 +289,245 @@ function EasyBuff:ConfigOptions()
 				type = "header",
 				name = format(L["%s (v%s) by %sPhoosa|r"], EasyBuff.TITLE, EasyBuff.VERSION, EasyBuff.CLASS_COLORS["Druid"]),
 			},
-			general = {
+			wanted = {
 				order = 2,
 				type = "group",
-				-- inline = true,
-				name = L["General"],
+				childGroups = "tree",
+				name = L["Wanted Buffs"],
 				args = {
-					enable = {
-						name = L["Enable"],
-						desc = L["Enables / disables the addon"],
+					general = {
+						name = L["General Settings"],
 						order = 1,
-						width = 3.5,
-						type = "toggle",
-						get = function(info, i) return EasyBuff:GetGeneralConfigValue("enable"); end,
-						set = function(info, value) EasyBuff:SetGeneralConfigValue("enable", value); end
-					},
-					context = {
-						name = L["Active Context"],
-						desc = L["Select which context configuration to use. (recommended) Auto-detect will automatically switch the context depending on group size/type, or zone."],
-						order = 2,
-						type = "select",
-						values = {
-							[EasyBuff.CFG_CONTEXT_AUTO] = L["Auto-detect"],
-							[EasyBuff.CONTEXT_SOLO]     = L["Solo"],
-							[EasyBuff.CONTEXT_PARTY]    = L["Party"],
-							[EasyBuff.CONTEXT_RAID]     = L["Raid"],
-							[EasyBuff.CONTEXT_BG]       = L["Battleground"],
-						},
-						get = function(info, i) return EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_CONTEXT); end,
-						set = function(info, value)
-							EasyBuff:SetGeneralConfigValue(EasyBuff.CFG_CONTEXT, value);
-							EasyBuff:UpdateContext();
-						end
-					},
-					_sp1 = {
-						type = "header",
-						order = 3,
-						width = "full",
-						name = ""
-					},
-					_announceGroup = {
 						type = "group",
-						order = 10,
-						inline = true,
-						name = L["Announcements"],
 						args = {
-							announceContextChange = {
-								name = L["Announce Context Change"],
-								order = 10,
+							header = {
+								order = 1,
+								type = "description",
+								name = format(L["Buff Casting bound to: %s"], EasyBuff:Colorize("Mousewheel Down", EasyBuff.CHAT_COLOR)),
+								width = "full"
+							},
+							enable = {
+								name = L["Enable"],
+								desc = L["Enables / disables wanted buff monitoring"],
+								order = 2,
+								-- width = "full",
+								type = "toggle",
+								get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ENABLE); end,
+								set = function(info, value) EasyBuff:SetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ENABLE, value); end
+							},
+							notifyEarly = {
+								name = L["Early Monitoring"],
+								desc = L["Announce and refresh buffs before they expire."],
+								order = 3,
+								-- width = "full",
+								type = "toggle",
+								get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_NOTIFY_EARLY); end,
+								set = function(info, value) EasyBuff:SetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_NOTIFY_EARLY, value); end
+							},
+							removeExistingBuff = {
+								name = L["Auto-Remove before self-buff"],
+								desc = L["Automatically remove buff before applying new buff. Lesser buffs cannot overwrite greater, enabling this feature will ensure refreshing a buff doesn't error. This is only necessary with 'Early Monitoring' enabled."],
+								order = 4,
 								width = "full",
 								type = "toggle",
-								get = function(info, i) return EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE_CC); end,
-								set = function(info, value) EasyBuff:SetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE_CC, value); end
+								get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_REMOVE_EXISTING); end,
+								set = function(info, value) EasyBuff:SetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_REMOVE_EXISTING, value); end
+							},
+							context = {
+								name = L["Active Context"],
+								desc = L["Select which context configuration to use. (recommended) Auto-detect will automatically switch the context depending on group size/type, or zone."],
+								order = 5,
+								type = "select",
+								values = {
+									[EasyBuff.CFG_CONTEXT_AUTO] = L["Auto-detect"],
+									[EasyBuff.CONTEXT_SOLO]     = L["Solo"],
+									[EasyBuff.CONTEXT_PARTY]    = L["Party"],
+									[EasyBuff.CONTEXT_RAID]     = L["Raid"],
+									[EasyBuff.CONTEXT_BG]       = L["Battleground"],
+								},
+								get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_CONTEXT); end,
+								set = function(info, value)
+									EasyBuff:SetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_CONTEXT, value);
+									EasyBuff:UpdateContext();
+								end
+							},
+							announceContextChange = {
+								name = L["Announce Context Change"],
+								order = 6,
+								width = 2,
+								type = "toggle",
+								get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE_CC); end,
+								set = function(info, value) EasyBuff:SetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE_CC, value); end
 							},
 							announce = {
 								name = L["Announce To"],
 								desc = L["How would you like to be notified of players missing Buffs?"],
-								order = 11,
+								order = 7,
 								type = "select",
 								values = {
 									[EasyBuff.CFG_ANN_HUD]  = L["HUD"],
 									[EasyBuff.CFG_ANN_CHAT] = L["Chat Window"]
 								},
-								get = function(info, i) return EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE); end,
-								set = function(info, value) 
-									EasyBuff:SetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE, value);
-									E.Options.args.EasyBuff.args.general.args.announceWindow.disabled = (EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE) ~= EasyBuff.CFG_ANN_CHAT);
+								get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE); end,
+								set = function(info, value)
+									EasyBuff:SetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE, value);
+									E.Options.args.EasyBuff.args.wanted.args.general.args.announceWindow.disabled = (EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE) ~= EasyBuff.CFG_ANN_CHAT);
 								end
 							},
 							announceWindow = {
 								name = L["Chat Window"],
 								desc = L["Select the Chat Window to display Easy Buff announcements in."],
-								order = 12,
+								order = 8,
 								type = "select",
-								disabled = (EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_ANNOUNCE) ~= EasyBuff.CFG_ANN_CHAT),
+								disabled = (EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE) ~= EasyBuff.CFG_ANN_CHAT),
 								values = EasyBuff.GetChatWindows,
-								get = function(info, i) return EasyBuff:GetGeneralConfigValue("announceWindow"); end,
-								set = function(info, value) EasyBuff:SetGeneralConfigValue("announceWindow", value); end
+								get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE_WINDOW); end,
+								set = function(info, value) EasyBuff:SetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE_WINDOW, value); end
 							}
 						}
 					},
-					_miscSettings = {
+					solo = {
+						order = 100,
 						type = "group",
-						order = 15,
-						inline = true,
-						name = L["Miscellaneous"],
+						name = L["Solo Context"],
 						args = {
-							notifyEarly = {
-								name = L["Early Monitoring"],
-								desc = L["Announce and refresh buffs before they expire."],
-								order = 10,
-								width = "full",
-								type = "toggle",
-								get = function(info, i) return EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_NOTIFY_EARLY); end,
-								set = function(info, value) EasyBuff:SetGeneralConfigValue(EasyBuff.CFG_NOTIFY_EARLY, value); end
-							},
-							removeExistingBuff = {
-								name = L["Auto-Remove before self-buff"],
-								desc = L["Automatically remove buff before applying new buff. Lesser buffs cannot overwrite greater, enabling this feature will ensure refreshing a buff doesn't error. This is only necessary with 'Early Monitoring' enabled."],
-								order = 10,
-								width = "full",
-								type = "toggle",
-								get = function(info, i) return EasyBuff:GetGeneralConfigValue(EasyBuff.CFG_REMOVE_EXISTING); end,
-								set = function(info, value) EasyBuff:SetGeneralConfigValue(EasyBuff.CFG_REMOVE_EXISTING, value); end
-							},
-						}
-					}
-				}
-			},
-			solo = {
-				order = 100,
-				type = "group",
-				-- childGroups = "tree",
-				name = L["Solo Context"],
-				args = {
-					buffs = {
-						type = "group",
-						name = L["Buffs"],
-						order = 2,
-						inline = true,
-						args = {
-							selfBuffs = {
-								name = L["Buffs to monitor on myself"],
-								desc = L["Select the buffs that you want to monitor on yourself."],
-								type = "multiselect",
-								values = soloAuras,
-								order = 4,
-								get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_SOLO, i, EasyBuff.RELATION_SELF); end,
-								set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_SOLO, i, EasyBuff.RELATION_SELF, value); end
+							buffs = {
+								type = "group",
+								name = L["Buffs"],
+								order = 2,
+								inline = true,
+								args = {
+									selfBuffs = {
+										name = L["Buffs to monitor on myself"],
+										desc = L["Select the buffs that you want to monitor on yourself."],
+										type = "multiselect",
+										values = soloAuras,
+										order = 4,
+										get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_SOLO, i, EasyBuff.RELATION_SELF); end,
+										set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_SOLO, i, EasyBuff.RELATION_SELF, value); end
+									}	
+								}
 							}
-						-- 	-- get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_SOLO, k, i); end,
-						-- 	-- set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_SOLO, k, i, value); end
-						-- 	-- EasyBuff:GetContextConfigValue(context, spell, key)
-						-- 	-- E.db.EasyBuff[EasyBuff.PLAYER_NAME].context[context][key][spell]
-						-- 	-- return E.db.EasyBuff[EasyBuff.PLAYER_NAME].context[context][key][spell];
-						-- 	-- Returns list of Classes
-						-- 	-- Needs to return list of Buffs (ie: [MOTW, OOC])
-							
 						}
+					},
+					party = {
+						order = 101,
+						type = "group",
+						name = L["Party Context"],
+						args = partyBuffCfg
+					},
+					raid = {
+						order = 102,
+						type = "group",
+						name = L["Raid Context"],
+						args = raidBuffCfg
+					},
+					bg = {
+						order = 103,
+						type = "group",
+						name = L["Battleground Context"],
+						args = bgBuffCfg
 					}
 				}
 			},
-			party = {
-				order = 101,
+			unwanted = {
+				order = 3,
 				type = "group",
-				name = L["Party Context"],
-				args = partyBuffCfg
-			},
-			raid = {
-				order = 102,
-				type = "group",
-				name = L["Raid Context"],
-				args = raidBuffCfg
-			},
-			bg = {
-				order = 103,
-				type = "group",
-				name = L["Battleground Context"],
-				args = bgBuffCfg
+				name = L["Unwanted Buffs"],
+				args = {
+					header = {
+						order = 1,
+						type = "description",
+						name = format(L["Buff Removal bound to: %s"], EasyBuff:Colorize("Control + Mousewheel Down", EasyBuff.CHAT_COLOR)),
+						width = "full"
+					},
+					enable = {
+						name = L["Enable"],
+						desc = L["Enables / disables removing unwanted buffs"],
+						order = 2,
+						width = "full",
+						type = "toggle",
+						get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ENABLE); end,
+						set = function(info, value)
+							EasyBuff:SetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ENABLE, value);
+							EasyBuff:CreateUnwantedActionButton();
+						end
+					},
+					autoRemove = {
+						name = L["Auto-Remove"],
+						desc = L["Autmatically remove unwanted buffs when OUT OF COMBAT"],
+						order = 3,
+						width = "full",
+						type = "toggle",
+						get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_AUTOREMOVE); end,
+						set = function(info, value)
+							EasyBuff:SetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_AUTOREMOVE, value);
+							EasyBuff:CreateUnwantedActionButton();
+						end
+					},
+					announce = {
+						name = L["Announce To"],
+						desc = L["How would you like to be notified of unwanted Buffs?"],
+						order = 4,
+						type = "select",
+						values = {
+							[EasyBuff.CFG_ANN_HUD]  = L["HUD"],
+							[EasyBuff.CFG_ANN_CHAT] = L["Chat Window"]
+						},
+						get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE); end,
+						set = function(info, value)
+							EasyBuff:SetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE, value);
+							E.Options.args.EasyBuff.args.unwanted.args.announceWindow.disabled = (EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE) ~= EasyBuff.CFG_ANN_CHAT);
+						end
+					},
+					announceWindow = {
+						name = L["Chat Window"],
+						desc = L["Select the Chat Window to display Easy Buff Unwanted Buff announcements in."],
+						order = 5,
+						type = "select",
+						disabled = (EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE) ~= EasyBuff.CFG_ANN_CHAT),
+						values = EasyBuff.GetChatWindows,
+						get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE_WINDOW); end,
+						set = function(info, value) EasyBuff:SetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE_WINDOW, value); end
+					},
+					addremove = {
+						name = L["Add/Remove Unwanted Buffs"],
+						desc = L["Add/Remove Buffs in the Unwanted Buff List. NOTE: This will force a UI reload."],
+						type = "group",
+						inline = true,
+						order = 6,
+						args = {
+							addBuff = {
+								name = L["Add Buff"],
+								usage = L["Type the numeric ID of the buff you would like to add to the list of managed Unwanted Buffs."],
+								order = 1,
+								type = "input",
+								pattern = "^[0-9][0-9]+$",
+								get = function(info, i) end,
+								set = function(info, i, value) EasyBuff:AddUnwantedBuff(i); end
+							},
+							removeBuff = {
+								name = L["Remove Buff"],
+								usage = L["Type the numeric ID of the buff you would like to remove from list of managed Unwanted Buffs."],
+								order = 2,
+								type = "input",
+								pattern = "^[0-9][0-9]+$",
+								get = function(info, i) end,
+								set = function(info, i, value) EasyBuff:RemoveUnwantedBuff(i); end
+							}
+						}
+					},
+					auras = {
+						name = L["Unwanted Buffs"],
+						desc = L["Select which buffs you want to automatically remove when cast on you."],
+						order = 7,
+						type = "multiselect",
+						width = "full",
+						values = EasyBuff:GetUnwantedConfigAuras(),
+						get = function(info, i) return EasyBuff:GetUnwantedAuraConfigValue(i); end,
+						set = function(info, i, value) EasyBuff:SetUnwantedAuraConfigValue(i, value); end
+					}
+				}
 			}
 		}
 	};
@@ -415,17 +544,16 @@ end
 --[[
 	Get General Config Value
 ]]--
-function EasyBuff:GetGeneralConfigValue(key)
-	return E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].general[key];
+function EasyBuff:GetConfigValue(feature, group, setting)
+	return E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][feature][group][setting];
 end
 
 
 --[[
 	Set General Config Value
 ]]--
-function EasyBuff:SetGeneralConfigValue(key, value)
-	EasyBuff:Debug(format("SetConfig:General %s=%s", tostring(key), tostring(value)), 1);
-	E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].general[key] = value;
+function EasyBuff:SetConfigValue(feature, group, setting, value)
+	E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][feature][group][setting] = value;
 end
 
 
@@ -433,11 +561,11 @@ end
 	Get Context Config Value
 ]]--
 function EasyBuff:GetContextConfigValue(context, spell, key)
-	if (E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context][key] ~= nil) then
-		return E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context][key][spell];
-	else
-		return nil;
+	if (E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_WANTED][EasyBuff.CFG_GROUP_CONTEXT][context][key] ~= nil) then
+		return E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_WANTED][EasyBuff.CFG_GROUP_CONTEXT][context][key][spell];
 	end
+
+	return nil;
 end
 
 
@@ -445,14 +573,72 @@ end
 	Set Context Config Value
 ]]--
 function EasyBuff:SetContextConfigValue(context, spell, key, value)
-	EasyBuff:Debug(format("SetConfig:Context %s-%s-%s=%s", tostring(context), tostring(key), tostring(spell), tostring(value)), 1);
-	if (E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context] == nil) then
-		E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context] = {};
+	if (E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_WANTED][EasyBuff.CFG_GROUP_CONTEXT][context][key] == nil) then
+		E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_WANTED][EasyBuff.CFG_GROUP_CONTEXT][context][key] = {};
 	end
-	if (E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context][key] == nil) then
-		E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context][key] = {};
+
+	E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_WANTED][EasyBuff.CFG_GROUP_CONTEXT][context][key][spell] = value;
+end
+
+
+--[[
+	Get Unwanted Auras
+]]--
+function EasyBuff:GetUnwantedAuras()
+	return E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_UNWANTED][EasyBuff.CFG_GROUP_AURAS];
+end
+
+
+--[[
+	Get Unwanted Aura Config Value
+]]--
+function EasyBuff:GetUnwantedAuraConfigValue(spellId)
+	return E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_UNWANTED][EasyBuff.CFG_GROUP_AURAS][spellId];
+end
+
+
+--[[
+	Set Unwanted Aura Config Value
+]]--
+function EasyBuff:SetUnwantedAuraConfigValue(spellId, value)
+	E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_UNWANTED][EasyBuff.CFG_GROUP_AURAS][spellId] = value;
+	EasyBuff:CreateUnwantedActionButton();
+end
+
+
+--[[
+	Add Unwanted Buff
+]]--
+function EasyBuff:AddUnwantedBuff(spellId)
+	-- Check if spell is valid
+	local spellInfo = {GetSpellInfo(spellId)};
+	if (spellInfo[1] ~= nil) then
+		E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_UNWANTED][EasyBuff.CFG_GROUP_AURAS][spellId] = true;
+		-- ReloadUI();
+		E.Options.args.EasyBuff.args.unwanted.args.auras.values = EasyBuff:GetUnwantedConfigAuras();
 	end
-	E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context][key][spell] = value;
+end
+
+
+--[[
+	Remove Unwanted Buff
+]]--
+function EasyBuff:RemoveUnwantedBuff(spellId)
+	-- Check if spell is valid
+	local spellInfo = {GetSpellInfo(spellId)};
+	if (spellInfo[1] ~= nil) then
+		if (E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_UNWANTED][EasyBuff.CFG_GROUP_AURAS][spellId] ~= nil) then
+			local newSpells = {};
+			for k,v in pairs(E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_UNWANTED][EasyBuff.CFG_GROUP_AURAS]) do
+				if (spellId ~= k) then
+					newSpells[k] = v;
+				end
+			end
+			E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_UNWANTED][EasyBuff.CFG_GROUP_AURAS] = newSpells;
+			-- ReloadUI();
+			E.Options.args.EasyBuff.args.unwanted.args.auras.values = EasyBuff:GetUnwantedConfigAuras();
+		end
+	end
 end
 
 
@@ -460,7 +646,7 @@ end
 	Get Config for Context
 ]]--
 function EasyBuff:GetContextConfigValues(context)
-	return E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME].context[context];
+	return E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_WANTED][EasyBuff.CFG_GROUP_CONTEXT][context];
 end
 
 
@@ -525,4 +711,22 @@ function EasyBuff:GetChatWindows()
 		end
 	end
 	return ChatWindows;
+end
+
+
+--[[
+	Generate multiselect config values for Unwanted Buffs
+]]--
+function EasyBuff:GetUnwantedConfigAuras()
+	local unwanted = EasyBuff:GetUnwantedAuras();
+	local unwantedDisplay = {};
+	
+	for auraId, auraEnabled in pairs(unwanted) do
+		local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(auraId);
+		if (name ~= nil) then
+			unwantedDisplay[tostring(auraId)] = format("%s %s", name, EasyBuff:Colorize("("..auraId..")", EasyBuff.CHAT_COLOR));
+		end
+	end
+
+	return unwantedDisplay;
 end

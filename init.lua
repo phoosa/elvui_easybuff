@@ -31,8 +31,9 @@ EasyBuff.PLAYER_NAME, EasyBuff.PLAYER_REALM = UnitName("player");
 EasyBuff.PLAYER_REALM = GetRealmName();
 EasyBuff.PLAYER_CLASS = UnitClass("player");
 
-EasyBuff.EXPIRATION_PERCENT = .1; -- notify when buff reaches percent of buff duration left
-EasyBuff.EXPIRATION_BUFFER  = 3;  -- seconds to add to percent to account for shorter buffs
+EasyBuff.EXPIRATION_PERCENT = .1;  -- notify when buff reaches percent of buff duration left
+EasyBuff.EXPIRATION_BUFFER  = 3;   -- seconds to add to percent to account for shorter buffs
+EasyBuff.EXPIRATION_MINIMUM = 180; -- minimum seconds remaining before notifying
 
 EasyBuff.RELATION_SELF  = "self";
 
@@ -41,6 +42,14 @@ EasyBuff.CONTEXT_PARTY  = "party";
 EasyBuff.CONTEXT_RAID   = "raid";
 EasyBuff.CONTEXT_BG     = "bg";
 
+EasyBuff.CFG_FEATURE_WANTED   = "wanted";
+EasyBuff.CFG_FEATURE_UNWANTED = "unwanted";
+
+EasyBuff.CFG_GROUP_GENERAL   = "general";
+EasyBuff.CFG_GROUP_CONTEXT   = "context";
+EasyBuff.CFG_GROUP_AURAS     = "auras";
+
+EasyBuff.CFG_ENABLE          = "enable";
 EasyBuff.CFG_CONTEXT  		 = "context";
 EasyBuff.CFG_CONTEXT_AUTO 	 = "auto";
 EasyBuff.CFG_ANNOUNCE     	 = "announce";
@@ -50,6 +59,7 @@ EasyBuff.CFG_ANN_HUD      	 = "hud";
 EasyBuff.CFG_ANN_CHAT     	 = "chat";
 EasyBuff.CFG_NOTIFY_EARLY    = "notifyEarly";
 EasyBuff.CFG_REMOVE_EXISTING = "removeExistingBuff";
+EasyBuff.CFG_AUTOREMOVE      = "autoRemove";
 
 EasyBuff.CLASS_COLORS = {
 	["Druid"]    = "|cffFF7D0A",
@@ -91,6 +101,9 @@ EasyBuff.Context = nil;
 -- Persist the last time easybuff cast was successful, used for throttling
 EasyBuff.LastCastTime = 0;
 
+-- Action Buttons used to cast spells in combat.
+EasyBuff.ActionButtons = {};
+
 -- ========================================== --
 --                                            --
 -- Load Additional Libraries                  --
@@ -110,12 +123,13 @@ if LCD then LCD:Register(EasyBuff.TITLE) end
 
 
 --[[
-	On Player Login
+	Initialize Player Data
 ]]--
-function EasyBuff:OnPlayerLogin()
+function EasyBuff:InitializePlayerData()
 	local faction, _ = UnitFactionGroup("player");
 	EasyBuff:InitializeForFaction(faction);
 	EasyBuff:InitAuras();
+	EasyBuff:InitUnwanted();
 end
 
 
@@ -132,7 +146,7 @@ end
 	This manages our EasyBuff UnitBuffQueue state, and triggers alerts.
 ]]--
 function EasyBuff:MonitorBuffs()
-	if (EasyBuff:GetGeneralConfigValue("enable")) then
+	if (EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ENABLE)) then
 		-- Check and Refresh Unbuffed Units
 		EasyBuff:RebuildBuffQueue();
 		-- Announce Unbuffed Units
@@ -190,12 +204,34 @@ function EasyBuff:ChatCommand(input)
 				EasyBuff:PrintToChat("No Units/Buffs in the queue", wid);
 			end
 		end,
+		["context"] = function()
+			EasyBuff:PrintToChat("Current Context: "..EasyBuff:GetContext(), wid);
+		end,
+		["buffs"] = function()
+			local monitoredSpells = EasyBuff:GetTrackedSpells();
+			
+			if (monitoredSpells == nil) then
+				EasyBuff:PrintToChat("There are currently NO spells being tracked... type: "..EasyBuff:Colorize("/rl", EasyBuff.CLASS_COLORS["Mage"]), wid);
+			else
+				for spellId, group in pairs(monitoredSpells) do
+					EasyBuff:PrintToChat(format("  %s (%s)", group.name, spellId), wid);
+				end
+			end
+		end,
 		["help"] = function()
-			EasyBuff:PrintToChat(format("Available Commands:\n%s %s - %s\n%s %s - %s",
+			EasyBuff:PrintToChat(format("Available Commands:\n%s %s - %s\n%s %s - %s\n%s %s - %s\n%s %s - %s",
 
 				EasyBuff:Colorize("/"..EasyBuff.COMMAND, EasyBuff.CLASS_COLORS["Mage"]),
 				EasyBuff:Colorize("debug", EasyBuff.CLASS_COLORS["Mage"]),
 				"Set Debug Level (0=off) (1=info) (2=events) (3=verbose)",
+
+				EasyBuff:Colorize("/"..EasyBuff.COMMAND, EasyBuff.CLASS_COLORS["Mage"]),
+				EasyBuff:Colorize("context", EasyBuff.CLASS_COLORS["Mage"]),
+				"Show the current EasyBuff Context",
+
+				EasyBuff:Colorize("/"..EasyBuff.COMMAND, EasyBuff.CLASS_COLORS["Mage"]),
+				EasyBuff:Colorize("buffs", EasyBuff.CLASS_COLORS["Mage"]),
+				"Show the buffs currently being monitored",
 
 				EasyBuff:Colorize("/"..EasyBuff.COMMAND, EasyBuff.CLASS_COLORS["Mage"]),
 				EasyBuff:Colorize("queue", EasyBuff.CLASS_COLORS["Mage"]),
@@ -289,7 +325,7 @@ function EasyBuff:Initialize()
 	-- Bind Console Commands.
 	self:RegisterChatCommand(EasyBuff.COMMAND, "ChatCommand");
 	-- Bind Event Handlers.
-	self:RegisterEvent("PLAYER_LOGIN", "OnPlayerLogin");
+	self:RegisterEvent("SPELLS_CHANGED", "InitializePlayerData");
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "UpdateContext");
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA", "UpdateContext");
 	self:RegisterEvent("GROUP_JOINED", "UpdateContext");
@@ -297,6 +333,7 @@ function EasyBuff:Initialize()
 	self:RegisterEvent("GROUP_LEFT", "UpdateContext");
 	self:RegisterEvent("GROUP_ROSTER_UPDATE", "UpdateContext");
 	self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", "OnSpellCastSucceeded");
+	self:RegisterEvent("UNIT_AURA", "OnUnitAura");
 
 	-- Bind Buffing Units to Mouse Wheel Down
 	SetOverrideBindingClick(ELVUI_EASYBUFF_ANNOUNCE_FRAME, false, "MOUSEWHEELDOWN", "ELVUI_EASYBUFF_PERFORM_BUTTON", "MOUSEWHEELDOWN");

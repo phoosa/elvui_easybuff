@@ -1,6 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
   <Script file='init.lua'/>
   <Script file='EasyBuff.lua'/>
+  <Script file='UnwantedBuff.lua'/>
   <Script file='Data\Buffs.lua'/>
   <Script file='Data\DefaultSettings.lua'/>
   <Script file='Config.lua'/>
@@ -42,7 +43,7 @@
     <Anchors>
       <Anchor point="BOTTOMRIGHT">
         <Offset>
-          <AbsDimension x="0" y="100" />
+          <AbsDimension x="1" y="1" />
         </Offset>
       </Anchor>
     </Anchors>
@@ -52,5 +53,33 @@
         self:SetScript("PostClick", EasyBuff.OnPostClick);
       </OnLoad>
     </Scripts>
+  </Button>
+  <Button name="ELVUI_EASYBUFF_TEST"
+          inherits="SecureActionButtonTemplate"
+          parent="UIParent"
+        
+  >
+    <Size>
+      <AbsDimension x="25" y="25"/>
+    </Size>
+    <Attributes>
+			<Attribute name="type" value="cancelaura"/>
+      <Attribute name="spell" value="Inner Fire"/>
+		</Attributes>
+    <Layers>
+      <Layer level="BACKGROUND">
+        <Texture>
+          <Size x="15" y="15"/>
+          <Color a="0" r="0" g="1" b="0.5"/>
+        </Texture>
+      </Layer>
+    </Layers>
+    <Anchors>
+      <Anchor point="CENTER">
+        <Offset>
+          <AbsDimension x="1" y="1" />
+        </Offset>
+      </Anchor>
+    </Anchors>
   </Button>
 </Ui>

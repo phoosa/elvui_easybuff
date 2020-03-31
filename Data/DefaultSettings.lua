@@ -6,27 +6,52 @@ local PLAYER_REALM = GetRealmName();
 P.EasyBuff = {
 	[PLAYER_REALM] = {
 		[PLAYER_NAME] = {
-			general = {
-				enable = true,
-				context = EasyBuff.CFG_CONTEXT_AUTO,
-				announce = EasyBuff.CFG_ANN_HUD,
-				announceWindow = nil,
-				announceContextChange = true,
-				notifyEarly = true,
-				removeExistingBuff = true
+			wanted = {
+				general = {
+					enable = true,
+					context = EasyBuff.CFG_CONTEXT_AUTO,
+					announceContextChange = true,
+					announce = EasyBuff.CFG_ANN_HUD,
+					announceWindow = nil,
+					notifyEarly = true,
+					removeExistingBuff = true
+				},
+				context = {
+					solo = {
+						-- This will be auto-populated with your characters buff abilities
+					},
+					party = {
+						general = {
+							selfOnlyCast = false
+						}
+						-- This will be auto-populated with your characters buff abilities
+					},
+					raid = {
+						general = {
+							selfOnlyCast = false
+						}
+						-- This will be auto-populated with your characters buff abilities
+					},
+					bg = {
+						general = {
+							selfOnlyCast = false
+						}
+						-- This will be auto-populated with your characters buff abilities
+					}
+				}
 			},
-			context = {
-				solo = {
-					-- This will be auto-populated with your characters buff abilities
+			unwanted = {
+				general = {
+					enable = false,
+					autoRemove = true,
+					announce = EasyBuff.CFG_ANN_HUD,
+					announceWindow = nil,
+					removeInCombat = false
 				},
-				party = {
-					-- This will be auto-populated with your characters buff abilities
-				},
-				raid = {
-					-- This will be auto-populated with your characters buff abilities
-				},
-				bg = {
-					-- This will be auto-populated with your characters buff abilities
+				auras = {
+					-- This list will be populated with additional aura's that you want to be notified about
+					["25895"] = false,
+					["1038"] = false
 				}
 			}
 		}

@@ -10,7 +10,7 @@ local Castable_AuraGroups = {};
 -- Spells that my class can cast, keyed by ID
 -- {ids={1,23,764}},multiIds={42,191}}
 -- 23 = {group="ABC",multi=false,name="Foo",rank=1}
-local Trackable_Auras = {};
+local Trackable_Auras = nil;
 
 
 --[[
@@ -856,27 +856,49 @@ local EasyBuff_Auras = {
 	Initialize the Castable and Trackable Auras for the current player
 ]]--
 function EasyBuff:InitAuras()
-	local spellName, spellRank, spellIcon, castTime, minRange, maxRange, spellId;
-	local auraGroup;
-	local canCast;
+	EasyBuff:Debug("EasyBuff:InitAuras", 1);
+	local bookTabs = GetNumSpellTabs();
+	local totalSpells = 0;
+
+	-- Get the Spells I can cast, and create the Trackable_Auras list.
+	for bookTabIndex=1, bookTabs do
+		local bookTabName, bookTabTexture, bookTabOffset, bookTabSpellCnt, _, _ = GetSpellTabInfo(bookTabIndex);
+		totalSpells = totalSpells + bookTabSpellCnt;
+	end
+
+	for spellIndex=1, totalSpells do
+		local spellName, spellSubName = GetSpellBookItemName(spellIndex, BOOKTYPE_SPELL);
+		local testName = spellName;
+		if (spellSubName ~= nil and spellSubName ~= "") then
+			testName = format("%s(%s)", spellName, spellSubName);
+		end
+		local spellName, _, spellIcon, castTime, minRange, maxRange, spellId = GetSpellInfo(testName);
+		
+		local aura = EasyBuff_Auras[tostring(spellId)];
+		if (aura) then
+			local auraGroup = EasyBuff_AuraGroups[aura.group];
+			if (auraGroup ~= nil) then
+				if (Trackable_Auras == nil) then
+					Trackable_Auras = {}
+				end
+				Trackable_Auras[tostring(spellId)] = {
+					group = aura.group,
+					multi = aura.multi,
+					name = spellName,
+					rank = aura.rank
+				};
+			end
+		end
+	end
+
+	-- Create the Castable_AuraGroups list from AuraGroups for my class
 	for k, v in pairs(EasyBuff_Auras) do
 		if (v ~= nil) then
 			-- Get the AuraGroup for this Spell.
 			auraGroup = EasyBuff_AuraGroups[v.group];
 			if (auraGroup ~= nil) then
 				-- Get the Spell Info
-				spellName, _, spellIcon, castTime, minRange, maxRange, spellId = GetSpellInfo(k);
-				-- Can I cast this spell?
-				local _usable, _nomana = IsUsableSpell(spellId);
-				canCast = (_usable == true or _nomana);
-				if (canCast) then
-					Trackable_Auras[tostring(spellId)] = {
-						group = v.group,
-						multi = v.multi,
-						name = spellName,
-						rank = v.rank
-					};
-				end
+				local spellName, _, spellIcon, castTime, minRange, maxRange, spellId = GetSpellInfo(k);
 				-- Can my class cast this spell?
 				if (EasyBuff.PLAYER_CLASS == L[auraGroup.class]) then
 					if (Castable_AuraGroups[v.group] == nil) then
@@ -964,4 +986,39 @@ function EasyBuff:GetAuraGroupBySpellId(spellId)
 		return aura.group, EasyBuff:GetAuraGroup(aura.group);
 	end
 	return nil, nil;
+end
+
+
+--[[
+	Get Unit Buff
+	Wrapper for UnitBuff so I don't have to keep looking up the index values
+]]--
+function EasyBuff:UnitBuff(unit, index, filter)
+	local name, icon, count, debuffType, duration, expirationTime, source, isStealable, 
+  		nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod
+		= UnitBuff(unit, index, filter);
+	if (name == nil and spellId == nil) then
+		return nil;
+	end
+
+	local curTime = GetTime();
+
+	return {
+		name = name,
+		icon = icon,
+		count = count,
+		debuffType = debuffType,
+		duration = duration,
+		expirationTime = expirationTime,
+		remainingTime = (expirationTime - curTime),
+		source = source,
+		isStealable = isStealable,
+		nameplateShowPersonal = nameplateShowPersonal,
+		spellId = spellId,
+		canApplyAura = canApplyAura,
+		isBossDebuff = isBossDebuff,
+		castByPlayer = castByPlayer,
+		nameplateShowAll = nameplateShowAll,
+		timeMod = timeMod
+	};
 end
