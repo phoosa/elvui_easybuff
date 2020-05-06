@@ -663,7 +663,7 @@ local EasyBuff_Auras = {
 	-- Paladin: Blessing of Kings
 	["20217"] = {
 		rank  = 1,
-		group = "BOSLV"
+		group = "BOK"
 	},
 	-- Paladin: Greater Blessing of Kings
 	["25898"] = {
