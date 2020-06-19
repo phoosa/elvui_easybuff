@@ -53,7 +53,25 @@ P.EasyBuff = {
 					["25895"] = false,
 					["1038"] = false
 				}
-			}
+			},
+			tracking = {
+				context = {
+					solo = {
+						-- This will be auto-populated with your characters buff abilities
+					},
+					party = {
+						-- This will be auto-populated with your characters buff abilities
+					},
+					raid = {
+						-- This will be auto-populated with your characters buff abilities
+					},
+					bg = {
+						-- This will be auto-populated with your characters buff abilities
+					}
+				}
+			},
+			consumes = {},
+			weapons = {}
 		}
 	}
 };

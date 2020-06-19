@@ -44,6 +44,9 @@ EasyBuff.CONTEXT_BG     = "bg";
 
 EasyBuff.CFG_FEATURE_WANTED   = "wanted";
 EasyBuff.CFG_FEATURE_UNWANTED = "unwanted";
+EasyBuff.CFG_FEATURE_TRACKING = "tracking";
+EasyBuff.CFG_FEATURE_CONSUMES = "consumes";
+EasyBuff.CFG_FEATURE_WEAPONS  = "weapons";
 
 EasyBuff.CFG_GROUP_GENERAL   = "general";
 EasyBuff.CFG_GROUP_CONTEXT   = "context";
@@ -84,6 +87,10 @@ EasyBuff.CLASSES = {
 	["Warrior"]  = EasyBuff.CLASS_COLORS["Warrior"].."Warrior|r"
 };
 
+EasyBuff.PROFESSIONS = {
+	["Herbalism"] = "Herbalism",
+	["Mining"]    = "Mining"
+};
 
 -- ========================================== --
 --                                            --
@@ -103,6 +110,9 @@ EasyBuff.LastCastTime = 0;
 
 -- Action Buttons used to cast spells in combat.
 EasyBuff.ActionButtons = {};
+
+-- Persist which Professions the current character has.
+EasyBuff.PlayerProfessions = {};
 
 -- ========================================== --
 --                                            --
@@ -128,6 +138,7 @@ if LCD then LCD:Register(EasyBuff.TITLE) end
 function EasyBuff:InitializePlayerData()
 	local faction, _ = UnitFactionGroup("player");
 	EasyBuff:InitializeForFaction(faction);
+	EasyBuff:UpdateProfessions();
 	EasyBuff:InitAuras();
 	EasyBuff:InitUnwanted();
 end
@@ -195,7 +206,7 @@ function EasyBuff:ChatCommand(input)
 				for unitName,auraGroupKeys in pairs(EasyBuff.UnitBuffQueue) do
 					local unitBuffs = "";
 					for i=1, table.getn(auraGroupKeys), 1 do
-						unitBuffs = format("%s  %d-%s", unitBuffs, i, auraGroupKeys[i]);
+						unitBuffs = format("%s  %d-[%s:%s]", unitBuffs, i, auraGroupKeys[i].type, auraGroupKeys[i].value);
 					end
 					combined = format(combined.."\n%s: %s", unitName, unitBuffs);
 				end

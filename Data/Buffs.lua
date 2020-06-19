@@ -11,6 +11,9 @@ local Castable_AuraGroups = {};
 -- {ids={1,23,764}},multiIds={42,191}}
 -- 23 = {group="ABC",multi=false,name="Foo",rank=1}
 local Trackable_Auras = nil;
+-- Tracking Spells (not auras)
+local Tracking_By_Texture = {};
+
 
 
 --[[
@@ -218,10 +221,91 @@ local EasyBuff_AuraGroups = {
 		name	 = "Unending Breath",
 		selfOnly = false,
 		multi    = nil
-	}
+	},
 	-- Warrior
+	-- Racial
 };
 
+
+--[[
+	Tracking Types
+	Used to define/access Tracking Type info
+	Keyed by Tracking Spell ID
+]]--
+local EasyBuff_TrackingTypes = {
+	-- Hunter
+	["1494"] = {
+		class 	 = "Hunter",
+		prof     = nil,
+		name     = "Track Beasts",
+		spellId  = 1494,
+		texture  = 132328
+	},
+	["19878"] = {
+		class 	 = "Hunter",
+		prof     = nil,
+		name     = "Track Demons",
+		spellId  = 19878,
+		texture  = 136217
+	},
+	["19879"] = {
+		class 	 = "Hunter",
+		prof     = nil,
+		name     = "Track Dragonkin",
+		spellId  = 19879,
+		texture  = 134153
+	},
+	["19880"] = {
+		class 	 = "Hunter",
+		prof     = nil,
+		name     = "Track Elementals",
+		spellId  = 19880,
+		texture  = 135861
+	},
+	["19882"] = {
+		class 	 = "Hunter",
+		prof     = nil,
+		name     = "Track Giants",
+		spellId  = 19882,
+		texture  = 132275
+	},
+	["19885"] = {
+		class 	 = "Hunter",
+		prof     = nil,
+		name     = "Track Hidden",
+		spellId  = 19885,
+		texture  = 132320
+	},
+	["19883"] = {
+		class 	 = "Hunter",
+		prof     = nil,
+		name     = "Track Humanoids",
+		spellId  = 19883,
+		texture  = 135942
+	},
+	["19884"] = {
+		class 	 = "Hunter",
+		prof     = nil,
+		name     = "Track Undead",
+		spellId  = 19884,
+		texture  = 136142
+	},
+	-- Professions
+	["2383"] = {
+		class 	 = nil,
+		prof     = EasyBuff.PROFESSIONS["Herbalism"],
+		name     = "Find Herbs",
+		spellId  = 2383,
+		texture  = 133939
+	},
+	["2580"] = {
+		class 	 = nil,
+		prof     = EasyBuff.PROFESSIONS["Mining"],
+		name     = "Find Minerals",
+		spellId  = 2580,
+		texture  = 136025
+	}
+}
 
 --[[
 	Auras
@@ -874,6 +958,7 @@ function EasyBuff:InitAuras()
 		end
 		local spellName, _, spellIcon, castTime, minRange, maxRange, spellId = GetSpellInfo(testName);
 		
+		-- Is this spell defined in our list of monitored Auras?
 		local aura = EasyBuff_Auras[tostring(spellId)];
 		if (aura) then
 			local auraGroup = EasyBuff_AuraGroups[aura.group];
@@ -888,6 +973,13 @@ function EasyBuff:InitAuras()
 					rank = aura.rank
 				};
 			end
+		else
+			-- Is this spell defined in our list of Tracking Types?
+			local trackingType = EasyBuff_TrackingTypes[tostring(spellId)];
+			if (trackingType) then
+				-- Add this Tracking Type to the list of Tracking items by Texture.
+				Tracking_By_Texture[trackingType.texture] = trackingType;
+			end
 		end
 	end
 
@@ -899,8 +991,9 @@ function EasyBuff:InitAuras()
 			if (auraGroup ~= nil) then
 				-- Get the Spell Info
 				local spellName, _, spellIcon, castTime, minRange, maxRange, spellId = GetSpellInfo(k);
-				-- Can my class cast this spell?
-				if (EasyBuff.PLAYER_CLASS == L[auraGroup.class]) then
+				-- Can I cast this spell?
+				if ((auraGroup.class ~= nil and L[auraGroup.class] == EasyBuff.PLAYER_CLASS)
+					or (auraGroup.prof ~= nil and EasyBuff.PlayerProfessions[auraGroup.prof])) then
 					if (Castable_AuraGroups[v.group] == nil) then
 						Castable_AuraGroups[v.group] = {ids={},multiIds={},hasMulti=false};
 					end
@@ -919,12 +1012,16 @@ end
 
 
 --[[
-	Get Aura Groups for Class
+	Get Available Aura Groups for Class & Professions
 ]]--
-function EasyBuff:GetClassAuraGroups(className)
-	local auras = {};
+function EasyBuff:GetAvailableAuraGroups(className)
+	local auras = nil;
+
 	for k, v in pairs(EasyBuff_AuraGroups) do
-		if (v.class == className) then
+		if (auras == nil) then
+			auras = {};
+		end
+		if ((v.class == className) or (v.class == nil and EasyBuff.PlayerProfessions[v.prof] == true)) then
 			auras[k] = v;
 		end
 	end
@@ -934,11 +1031,30 @@ end
 
 
 --[[
+	Get Available Tracking Abilities
+	Keyed by Texture
+]]--
+function EasyBuff:GetAvailableTrackingAbilities()
+	return Tracking_By_Texture;
+end
+
+
+--[[
+	Get Spell ID for Tracking Ability
+]]--
+function EasyBuff:GetSpellIdForTracking(textureId)
+	if (Tracking_By_Texture[textureId] ~= nil) then
+		return Tracking_By_Texture[textureId].spellId;
+	end
+	return nil;
+end
+
+
+--[[
 	Get Tracked Spells
 ]]--
 function EasyBuff:GetTrackedSpells()
 	return Trackable_Auras;
-	-- return EasyBuff_Auras;
 end
 
 
@@ -946,7 +1062,11 @@ end
 	Get Tracked Spell by ID
 ]]--
 function EasyBuff:GetTrackedSpell(id)
-	return Trackable_Auras[tostring(id)];
+	local k = tostring(id);
+	if (Trackable_Auras ~= nil and Trackable_Auras[k]) then
+		return Trackable_Auras[k];
+	end
+	return nil;
 end
 
 

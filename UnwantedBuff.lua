@@ -136,7 +136,9 @@ function EasyBuff:CreateUnwantedActionButton()
 	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED][spellId].texture:SetAllPoints(EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED][spellId]);
 	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED][spellId].texture:SetColorTexture(1, 0, 0, 1);
 
-
+	if (InCombatLockdown()) then
+		return;
+	end
 
 	local macrotext = "";
 	if (EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ENABLE)) then
