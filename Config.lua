@@ -3,39 +3,13 @@ local E, L, V, P, G = unpack(ElvUI);
 local EasyBuff = E:GetModule("EasyBuff");
 
 
-
 --[[
 	Config Options
 	Initialize Configuration Options using AceConfig.
 	@see http://www.wowace.com/addons/ace3/pages/ace-config-3-0-options-tables/
 ]]--
 function EasyBuff:ConfigOptions()
-	local soloAuras = {};
-	local partyAuras = {
-		_h1 = {
-			name = L["Select who should be monitored for each Buff.  If none are selected, the Buff will not be monitored.\n"],
-			type = "description",
-			order = 1
-		}
-	};
-	local raidAuras = {
-		_h1 = {
-			name = L["Select who should be monitored for each Buff.  If none are selected, the Buff will not be monitored.\n"],
-			type = "description",
-			order = 1
-		}
-	}
-	local bgAuras = {
-		_h1 = {
-			name = L["Select who should be monitored for each Buff.  If none are selected, the Buff will not be monitored.\n"],
-			type = "description",
-			order = 1
-		}
-	};
-	local selfOnlyBuffs = {};
-	local partyMulti = {};
-	local raidMulti = {};
-	local bgMulti = {};
+	-- Build Config Options needed by Sections.
 	local buffOptions = EasyBuff.CLASSES;
 	buffOptions[EasyBuff.RELATION_SELF] = "|cff03fc07<"..L["Myself"]..">|r";
 	local disabledBuffOptions = {};
@@ -43,239 +17,24 @@ function EasyBuff:ConfigOptions()
 		disabledBuffOptions[k] = k;
 	end
 	disabledBuffOptions = {[EasyBuff.RELATION_SELF] = "<"..L["Myself"]..">"};
+	local soloAuraOptions, partyAuraOptions, raidAuraOptions, bgAuraOptions,
+		selfOnlyOptions, partyMultiOptions, raidMultiOptions, bgMultiOptions = BuildSpellOptions(buffOptions, disabledBuffOptions);
+	local trackOptions = BuildTrackingOptions();
+	local weaponOptions = nil;
+	local consumeOptions = nil;
 
-	-- Load Player Supported Buffs.
-	local myAuras = EasyBuff:GetClassAuraGroups(EasyBuff.PLAYER_CLASS);
-	for k, v in pairs(myAuras) do
-		local bo = buffOptions;
-		local position = 10;
-		local _, _, spellIcon, _, _, _, spellId = GetSpellInfo(v.name);
-		local appendName = "";
-		local appendMulti = "";
-
-		-- Does this buff have a multi option?
-		if (v.multi ~= nil) then
-			local _, _, multiIcon, _, _, _, multiId = GetSpellInfo(v.multi);
-			if (multiId == nil) then
-				appendMulti = format(" %s(%s)|r", EasyBuff.ERROR_COLOR, L["not learned"]);
-			end
-			-- Add the "Multi" config option
-			partyMulti[k] = {
-				name = v.multi..appendMulti,
-				desc = format(L["Cast this instead of %s"], v.name),
-				type = "toggle",
-				disabled = (multiId == nil),
-				width = "double",
-				get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_PARTY, k, "multi"); end,
-				set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_PARTY, k, "multi", value); end
-			};
-			raidMulti[k] = {
-				name = v.multi..appendMulti,
-				desc = format(L["Cast this instead of %s"], v.name),
-				type = "toggle",
-				disabled = (multiId == nil),
-				width = "double",
-				get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_RAID, k, "multi"); end,
-				set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_RAID, k, "multi", value); end
-			};
-			bgMulti[k] = {
-				name = v.multi..appendMulti,
-				desc = format(L["Cast this instead of %s"], v.name),
-				type = "toggle",
-				disabled = (multiId == nil),
-				width = "double",
-				get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_BG, k, "multi"); end,
-				set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_BG, k, "multi", value); end
-			};
-		end
-
-		-- Can we cast this buff?
-		if (spellId == nil) then
-			appendName = format(" %s(%s)|r", EasyBuff.ERROR_COLOR, L["not learned"]);
-			if (not v.selfOnly) then
-				bo = disabledBuffOptions;
-			end
-		end
-
-		-- Add Buff Config Item to each group.
-		soloAuras[k] = v.name..appendName;
-		if (v.selfOnly) then
-			selfOnlyBuffs[k] = v.name..appendName;
-		else
-			partyAuras[k] = {
-				name = v.name..appendName,
-				type = "multiselect",
-				desc = L["Select the classes that you want to monitor for this buff.\n"],
-				values = bo,
-				disabled = (spellId == nil),
-				order = position,
-				get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_PARTY, k, i); end,
-				set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_PARTY, k, i, value); end
-			};
-			raidAuras[k]  = {
-				name = v.name..appendName,
-				type = "multiselect",
-				desc = L["Select the classes that you want to monitor for this buff.\n"],
-				values = bo,
-				disabled = (spellId == nil),
-				order = position,
-				get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_RAID, k, i); end,
-				set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_RAID, k, i, value); end
-			};
-			bgAuras[k]    = {
-				name = v.name..appendName,
-				type = "multiselect",
-				desc = L["Select the classes that you want to monitor for this buff.\n"],
-				values = bo,
-				disabled = (spellId == nil),
-				order = position,
-				get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_BG, k, i); end,
-				set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_BG, k, i, value); end
-			};
-		end
-	end
-
-	-- Prepare the Party Buff Config Options
-	local partyBuffCfg = {
-		general = {
-			type = "group",
-			name = L["General Context Settings"],
-			order = 1,
-			inline = true,
-			args = {
-				selfOnlyCast = {
-					name = L["Cast on self only"],
-					desc = L["Disables mousewheel buff casting on players other than yourself. You will still be notified of other players needed buffs, but you will have to manually buff them."],
-					type = "toggle",
-					order = 1,
-					width = "double",
-					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_PARTY, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL); end,
-					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_PARTY, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL, value); end
-				}
-			}
-		},
-		partyBuffs = {
-			type = "group",
-			name = L["Buffs to Monitor on my Party"],
-			desc = L["Select the buffs that you want to monitor, and who you would like to monitor for each buff."],
-			order = 11,
-			inline = true,
-			args =  partyAuras
-		}
-	};
-	local raidBuffCfg = {
-		general = {
-			type = "group",
-			name = L["General Context Settings"],
-			order = 1,
-			inline = true,
-			args = {
-				selfOnlyCast = {
-					name = L["Cast on self only"],
-					desc = L["Disables mousewheel buff casting on players other than yourself. You will still be notified of other players needed buffs, but you will have to manually buff them."],
-					type = "toggle",
-					order = 1,
-					width = "double",
-					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_RAID, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL); end,
-					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_RAID, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL, value); end
-				}
-			}
-		},
-		raidBuffs = {
-			type = "group",
-			name = L["Buffs to Monitor on my Raid"],
-			desc = L["Select the buffs that you want to monitor, and who you would like to monitor for each buff."],
-			order = 11,
-			inline = true,
-			args =  raidAuras
-		}
-	};
-	local bgBuffCfg = {
-		general = {
-			type = "group",
-			name = L["General Context Settings"],
-			order = 1,
-			inline = true,
-			args = {
-				selfOnlyCast = {
-					name = L["Cast on self only"],
-					desc = L["Disables mousewheel buff casting on players other than yourself. You will still be notified of other players needed buffs, but you will have to manually buff them."],
-					type = "toggle",
-					order = 1,
-					width = "double",
-					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_BG, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL); end,
-					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_BG, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL, value); end
-				}
-			}
-		},
-		bgBuffs = {
-			type = "group",
-			name = L["Buffs to Monitor on my Team"],
-			desc = L["Select the buffs that you want to monitor, and who you would like to monitor for each buff."],
-			order = 11,
-			inline = true,
-			args =  bgAuras
-		}
-	};
-	if (selfOnlyBuffs) then
-		partyBuffCfg["selfBuffs"] = {
-			name = L["Self-Only Buffs to Monitor"],
-			desc = L["Select the buffs that you want to keep on yourself when playing.\n"],
-			type = "multiselect",
-			values = selfOnlyBuffs,
-			order = 10,
-			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_PARTY, i, EasyBuff.RELATION_SELF); end,
-			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_PARTY, i, EasyBuff.RELATION_SELF, value); end
-		};
-		raidBuffCfg["selfBuffs"] = {
-			name = L["Self-Only Buffs to Monitor"],
-			desc = L["Select the buffs that you want to keep on yourself when playing.\n"],
-			type = "multiselect",
-			values = selfOnlyBuffs,
-			order = 10,
-			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_RAID, i, EasyBuff.RELATION_SELF); end,
-			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_RAID, i, EasyBuff.RELATION_SELF, value); end
-		};
-		bgBuffCfg["selfBuffs"] = {
-			name = L["Self-Only Buffs to Monitor"],
-			desc = L["Select the buffs that you want to keep on yourself when playing.\n"],
-			type = "multiselect",
-			values = selfOnlyBuffs,
-			order = 10,
-			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_BG, i, EasyBuff.RELATION_SELF); end,
-			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_BG, i, EasyBuff.RELATION_SELF, value); end
-		};
-	end
-	if (partyMulti) then
-		partyBuffCfg["partyGroup"] = {
-			type = "group",
-			name = L["Greater Buffs"],
-			desc = L["To cast the greater/multi version of a buff instead of the individual version, select it here. You must still have the lesser/individual version selected in order for the buff to be monitored."],
-			order = 12,
-			inline = true,
-			args = partyMulti
-		};
-	end
-	if (raidMulti) then
-		raidBuffCfg["partyGroup"] = {
-			type = "group",
-			name = L["Greater Buffs"],
-			desc = L["To cast the greater/multi version of a buff instead of the individual version, select it here. You must still have the lesser/individual version selected in order for the buff to be monitored."],
-			order = 12,
-			inline = true,
-			args = raidMulti
-		};
-	end
-	if (bgMulti) then
-		bgBuffCfg["partyGroup"] = {
-			type = "group",
-			name = L["Greater Buffs"],
-			desc = L["To cast the greater/multi version of a buff instead of the individual version, select it here. You must still have the lesser/individual version selected in order for the buff to be monitored."],
-			order = 12,
-			inline = true,
-			args = bgMulti
-		};
-	end
+	-- Generate Config Sections.
+	local soloBuffCfg, partyBuffCfg, raidBuffCfg, bgBuffCfg = GenerateSpellBuffConfigSections(
+		soloAuraOptions,
+		partyAuraOptions,
+		raidAuraOptions,
+		bgAuraOptions,
+		selfOnlyOptions,
+		partyMultiOptions,
+		raidMultiOptions,
+		bgMultiOptions
+	);
+	local soloTrackingCfg, partyTrackingCfg, raidTrackingCfg, bgTrackingCfg = GenerateTrackingConfigSections(trackOptions);
 
 	-- Set Configuration Options.
 	E.Options.args.EasyBuff = {
@@ -292,7 +51,7 @@ function EasyBuff:ConfigOptions()
 			wanted = {
 				order = 2,
 				type = "group",
-				childGroups = "tree",
+				childGroups = "tab",
 				name = L["Wanted Buffs"],
 				args = {
 					general = {
@@ -387,46 +146,167 @@ function EasyBuff:ConfigOptions()
 						}
 					},
 					solo = {
-						order = 100,
+						order = 2,
 						type = "group",
+						childGroups = "tab",
 						name = L["Solo Context"],
 						args = {
-							buffs = {
+							spells = {
+								order = 1,
 								type = "group",
-								name = L["Buffs"],
-								order = 2,
-								inline = true,
+								name = L["Spell Buffs"],
+								disabled = (soloAuraOptions == nil),
 								args = {
 									selfBuffs = {
 										name = L["Buffs to monitor on myself"],
 										desc = L["Select the buffs that you want to monitor on yourself."],
 										type = "multiselect",
-										values = soloAuras,
+										values = soloAuraOptions or {},
+										hidden = (soloAuraOptions == nil),
 										order = 4,
 										get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_SOLO, i, EasyBuff.RELATION_SELF); end,
 										set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_SOLO, i, EasyBuff.RELATION_SELF, value); end
-									}	
+									}
 								}
+							},
+							consumes = {
+								order = 2,
+								type = "group",
+								name = L["Food & Potion Buffs"],
+								disabled = (consumeOptions == nil),
+								hidden = (consumeOptions == nil),
+								args = {}
+							},
+							weapons = {
+								order = 3,
+								type = "group",
+								name = L["Weapon Enhancements"],
+								disabled = (weaponOptions == nil),
+								hidden = (weaponOptions == nil),
+								args = {}
+							},
+							tracking = {
+								order = 4,
+								type = "group",
+								name = L["Tracking Abilities"],
+								disabled = (trackOptions == nil),
+								args = soloTrackingCfg
 							}
 						}
 					},
 					party = {
-						order = 101,
+						order = 3,
 						type = "group",
+						childGroups = "tab",
 						name = L["Party Context"],
-						args = partyBuffCfg
+						args = {
+							spells = {
+								order = 1,
+								type = "group",
+								name = L["Spell Buffs"],
+								disabled = (partyAuraOptions == nil),
+								args = partyBuffCfg or {}
+							},
+							consumes = {
+								order = 2,
+								type = "group",
+								name = L["Food & Potion Buffs"],
+								disabled = (consumeOptions == nil),
+								hidden = (consumeOptions == nil),
+								args = {}
+							},
+							weapons = {
+								order = 3,
+								type = "group",
+								name = L["Weapon Enhancements"],
+								disabled = (weaponOptions == nil),
+								hidden = (weaponOptions == nil),
+								args = {}
+							},
+							tracking = {
+								order = 4,
+								type = "group",
+								name = L["Tracking Abilities"],
+								disabled = (trackOptions == nil),
+								args = partyTrackingCfg or {}
+							}
+						}
 					},
 					raid = {
-						order = 102,
+						order = 4,
 						type = "group",
+						childGroups = "tab",
 						name = L["Raid Context"],
-						args = raidBuffCfg
+						args = {
+							spells = {
+								order = 1,
+								type = "group",
+								name = L["Spell Buffs"],
+								disabled = (raidAuraOptions == nil),
+								args = raidBuffCfg or {}
+							},
+							consumes = {
+								order = 2,
+								type = "group",
+								name = L["Food & Potion Buffs"],
+								disabled = (consumeOptions == nil),
+								hidden = (consumeOptions == nil),
+								args = {}
+							},
+							weapons = {
+								order = 3,
+								type = "group",
+								name = L["Weapon Enhancements"],
+								disabled = (weaponOptions == nil),
+								hidden = (weaponOptions == nil),
+								args = {}
+							},
+							tracking = {
+								order = 4,
+								type = "group",
+								name = L["Tracking Abilities"],
+								disabled = (trackOptions == nil),
+								args = raidTrackingCfg or {}
+							}
+						}
 					},
 					bg = {
-						order = 103,
+						order = 5,
 						type = "group",
+						childGroups = "tab",
 						name = L["Battleground Context"],
-						args = bgBuffCfg
+						args = {
+							spells = {
+								order = 1,
+								type = "group",
+								name = L["Spell Buffs"],
+								disabled = (bgAuraOptions == nil),
+								args = bgBuffCfg or {}
+							},
+							consumes = {
+								order = 2,
+								type = "group",
+								name = L["Food & Potion Buffs"],
+								disabled = (consumeOptions == nil),
+								hidden = (consumeOptions == nil),
+								args = {}
+							},
+							weapons = {
+								order = 3,
+								type = "group",
+								name = L["Weapon Enhancements"],
+								disabled = (weaponOptions == nil),
+								hidden = (weaponOptions == nil),
+								args = {}
+							},
+							tracking = {
+								order = 4,
+								type = "group",
+								name = L["Tracking Abilities"],
+								disabled = (trackOptions == nil),
+								args = bgTrackingCfg or {}
+							}
+						}
 					}
 				}
 			},
@@ -536,6 +416,359 @@ end
 
 -- ========================================== --
 --                                            --
+-- Config Section Generators                   --
+--                                            --
+-- ========================================== --
+
+
+--[[
+	Generate Spell Buff Configuration
+]]--
+function GenerateSpellBuffConfigSections(soloAuraOptions,partyAuraOptions,raidAuraOptions,bgAuraOptions,selfOnlyOptions,partyMultiOptions,raidMultiOptions,bgMultiOptions)
+	if (partyAuraOptions ~= nil) then
+		partyAuraOptions["_h1"] = {
+			name = L["Select who should be monitored for each Buff.  If none are selected, the Buff will not be monitored.\n"],
+			type = "description",
+			order = 1
+		};
+	end
+	if (raidAuraOptions ~= nil) then
+		raidAuraOptions["_h1"] = {
+			name = L["Select who should be monitored for each Buff.  If none are selected, the Buff will not be monitored.\n"],
+			type = "description",
+			order = 1
+		};
+	end
+	if (bgAuraOptions ~= nil) then
+		bgAuraOptions["_h1"] = {
+			name = L["Select who should be monitored for each Buff.  If none are selected, the Buff will not be monitored.\n"],
+			type = "description",
+			order = 1
+		};
+	end
+
+	-- Prepare the Buff Config Sections.
+	local partyBuffCfg = {
+		general = {
+			type = "group",
+			name = L["General Context Settings"],
+			order = 1,
+			inline = true,
+			args = {
+				selfOnlyCast = {
+					name = L["Cast on self only"],
+					desc = L["Disables mousewheel buff casting on players other than yourself. You will still be notified of other players needed buffs, but you will have to manually buff them."],
+					type = "toggle",
+					order = 1,
+					width = "double",
+					disabled = (selfOnlyOptions == nil),
+					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_PARTY, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL); end,
+					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_PARTY, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL, value); end
+				}
+			}
+		},
+		partyBuffs = {
+			type = "group",
+			name = L["Buffs to Monitor on my Party"],
+			desc = L["Select the buffs that you want to monitor, and who you would like to monitor for each buff."],
+			order = 11,
+			inline = true,
+			args =  partyAuraOptions or {}
+		}
+	};
+	local raidBuffCfg = {
+		general = {
+			type = "group",
+			name = L["General Context Settings"],
+			order = 1,
+			inline = true,
+			args = {
+				selfOnlyCast = {
+					name = L["Cast on self only"],
+					desc = L["Disables mousewheel buff casting on players other than yourself. You will still be notified of other players needed buffs, but you will have to manually buff them."],
+					type = "toggle",
+					order = 1,
+					width = "double",
+					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_RAID, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL); end,
+					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_RAID, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL, value); end
+				}
+			}
+		},
+		raidBuffs = {
+			type = "group",
+			name = L["Buffs to Monitor on my Raid"],
+			desc = L["Select the buffs that you want to monitor, and who you would like to monitor for each buff."],
+			order = 11,
+			inline = true,
+			args =  raidAuraOptions or {}
+		}
+	};
+	local bgBuffCfg = {
+		general = {
+			type = "group",
+			name = L["General Context Settings"],
+			order = 1,
+			inline = true,
+			args = {
+				selfOnlyCast = {
+					name = L["Cast on self only"],
+					desc = L["Disables mousewheel buff casting on players other than yourself. You will still be notified of other players needed buffs, but you will have to manually buff them."],
+					type = "toggle",
+					order = 1,
+					width = "double",
+					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_BG, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL); end,
+					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_BG, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL, value); end
+				}
+			}
+		},
+		bgBuffs = {
+			type = "group",
+			name = L["Buffs to Monitor on my Team"],
+			desc = L["Select the buffs that you want to monitor, and who you would like to monitor for each buff."],
+			order = 11,
+			inline = true,
+			args =  bgAuraOptions or {}
+		}
+	};
+	if (selfOnlyOptions ~= nil) then
+		partyBuffCfg["selfBuffs"] = {
+			name = L["Self-Only Buffs to Monitor"],
+			desc = L["Select the buffs that you want to keep on yourself when playing.\n"],
+			type = "multiselect",
+			values = selfOnlyOptions,
+			order = 10,
+			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_PARTY, i, EasyBuff.RELATION_SELF); end,
+			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_PARTY, i, EasyBuff.RELATION_SELF, value); end
+		};
+		raidBuffCfg["selfBuffs"] = {
+			name = L["Self-Only Buffs to Monitor"],
+			desc = L["Select the buffs that you want to keep on yourself when playing.\n"],
+			type = "multiselect",
+			values = selfOnlyOptions,
+			order = 10,
+			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_RAID, i, EasyBuff.RELATION_SELF); end,
+			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_RAID, i, EasyBuff.RELATION_SELF, value); end
+		};
+		bgBuffCfg["selfBuffs"] = {
+			name = L["Self-Only Buffs to Monitor"],
+			desc = L["Select the buffs that you want to keep on yourself when playing.\n"],
+			type = "multiselect",
+			values = selfOnlyOptions,
+			order = 10,
+			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_BG, i, EasyBuff.RELATION_SELF); end,
+			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_BG, i, EasyBuff.RELATION_SELF, value); end
+		};
+	end
+	if (partyMultiOptions ~= nil) then
+		partyBuffCfg["partyGroup"] = {
+			type = "group",
+			name = L["Greater Buffs"],
+			desc = L["To cast the greater/multi version of a buff instead of the individual version, select it here. You must still have the lesser/individual version selected in order for the buff to be monitored."],
+			order = 12,
+			inline = true,
+			args = partyMultiOptions
+		};
+	end
+	if (raidMultiOptions ~= nil) then
+		raidBuffCfg["partyGroup"] = {
+			type = "group",
+			name = L["Greater Buffs"],
+			desc = L["To cast the greater/multi version of a buff instead of the individual version, select it here. You must still have the lesser/individual version selected in order for the buff to be monitored."],
+			order = 12,
+			inline = true,
+			args = raidMultiOptions
+		};
+	end
+	if (bgMultiOptions ~= nil) then
+		bgBuffCfg["partyGroup"] = {
+			type = "group",
+			name = L["Greater Buffs"],
+			desc = L["To cast the greater/multi version of a buff instead of the individual version, select it here. You must still have the lesser/individual version selected in order for the buff to be monitored."],
+			order = 12,
+			inline = true,
+			args = bgMultiOptions
+		};
+	end
+
+	return soloBuffCfg, partyBuffCfg, raidBuffCfg, bgBuffCfg;
+end
+
+
+--[[
+	Generate Tracking Configuration
+]]--
+function GenerateTrackingConfigSections(trackOptions)
+	if (trackOptions ~= nil) then
+		local retVal = {};
+		local cfgSets = {
+			EasyBuff.CONTEXT_SOLO,
+			EasyBuff.CONTEXT_PARTY,
+			EasyBuff.CONTEXT_RAID,
+			EasyBuff.CONTEXT_BG
+		};
+		for k, c in ipairs(cfgSets) do
+			retVal[c] = {
+				trackingType = {
+					name = L["Tracking Type"],
+					type = "select",
+					desc = L["Select the tracking type that you want to monitor.\n"],
+					style = "radio",
+					values = trackOptions,
+					get = function(info, i) return EasyBuff:GetContextTrackingValue(c); end,
+					set = function(info, i, value) EasyBuff:SetContextTrackingValue(c, i, value); end
+				}
+			};
+		end
+		return retVal[EasyBuff.CONTEXT_SOLO], retVal[EasyBuff.CONTEXT_PARTY], retVal[EasyBuff.CONTEXT_RAID], retVal[EasyBuff.CONTEXT_BG];
+	end
+
+	return {}, {}, {}, {};
+end
+
+
+-- ========================================== --
+--                                            --
+-- Config Option Generators                   --
+--                                            --
+-- ========================================== --
+
+
+function BuildSpellOptions(buffOptions, disabledBuffOptions)
+	local soloAuras, partyAuras, raidAuras, bgAuras = nil;
+	local selfOnlyBuffs, partyMulti, raidMulti, bgMulti = nil;
+
+	-- Load Player Supported Buffs.
+	local myAuras = EasyBuff:GetAvailableAuraGroups(EasyBuff.PLAYER_CLASS);
+	for k, v in pairs(myAuras) do
+		local bo = buffOptions;
+		local position = 10;
+		local _, _, spellIcon, _, _, _, spellId = GetSpellInfo(v.name);
+		local appendName = "";
+		local appendMulti = "";
+
+		-- Can we cast this buff?
+		if (spellId == nil) then
+			appendName = format(" %s(%s)|r", EasyBuff.ERROR_COLOR, L["not learned"]);
+			if (not v.selfOnly) then
+				bo = disabledBuffOptions;
+			end
+		end
+
+		-- Add Buff Config Item to solo auras group.
+		if (soloAuras == nil) then
+			soloAuras = {};
+		end
+		soloAuras[k] = v.name..appendName;
+
+		-- Add Buff Config Item to other groups.
+		if (v.selfOnly) then
+			if (selfOnlyBuffs == nil) then
+				selfOnlyBuffs = {};
+			end
+			selfOnlyBuffs[k] = v.name..appendName;
+		else
+			if (partyAuras == nil) then
+				partyAuras = {};
+				raidAuras = {};
+				bgAuras = {};
+			end
+			partyAuras[k] = {
+				name = v.name..appendName,
+				type = "multiselect",
+				desc = L["Select the classes that you want to monitor for this buff.\n"],
+				values = bo,
+				disabled = (spellId == nil),
+				order = position,
+				get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_PARTY, k, i); end,
+				set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_PARTY, k, i, value); end
+			};
+			raidAuras[k]  = {
+				name = v.name..appendName,
+				type = "multiselect",
+				desc = L["Select the classes that you want to monitor for this buff.\n"],
+				values = bo,
+				disabled = (spellId == nil),
+				order = position,
+				get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_RAID, k, i); end,
+				set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_RAID, k, i, value); end
+			};
+			bgAuras[k]    = {
+				name = v.name..appendName,
+				type = "multiselect",
+				desc = L["Select the classes that you want to monitor for this buff.\n"],
+				values = bo,
+				disabled = (spellId == nil),
+				order = position,
+				get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_BG, k, i); end,
+				set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_BG, k, i, value); end
+			};
+
+			-- Does this buff have a multi option?
+			if (v.multi ~= nil) then
+				local _, _, multiIcon, _, _, _, multiId = GetSpellInfo(v.multi);
+				if (multiId == nil) then
+					appendMulti = format(" %s(%s)|r", EasyBuff.ERROR_COLOR, L["not learned"]);
+				end
+				if (partyMulti == nil) then
+					partyMulti = {};
+					raidMulti = {};
+					bgMulti = {};
+				end
+				-- Add the "Multi" config option
+				partyMulti[k] = {
+					name = v.multi..appendMulti,
+					desc = format(L["Cast this instead of %s"], v.name),
+					type = "toggle",
+					disabled = (multiId == nil),
+					width = "double",
+					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_PARTY, k, "multi"); end,
+					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_PARTY, k, "multi", value); end
+				};
+				raidMulti[k] = {
+					name = v.multi..appendMulti,
+					desc = format(L["Cast this instead of %s"], v.name),
+					type = "toggle",
+					disabled = (multiId == nil),
+					width = "double",
+					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_RAID, k, "multi"); end,
+					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_RAID, k, "multi", value); end
+				};
+				bgMulti[k] = {
+					name = v.multi..appendMulti,
+					desc = format(L["Cast this instead of %s"], v.name),
+					type = "toggle",
+					disabled = (multiId == nil),
+					width = "double",
+					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_BG, k, "multi"); end,
+					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_BG, k, "multi", value); end
+				};
+			end
+		end
+	end
+
+	return soloAuras, partyAuras, raidAuras, bgAuras, selfOnlyBuffs, partyMulti, raidMulti, bgMulti;
+end
+
+
+--[[
+	Build a Table of Selectable Tracking Options
+]]--
+function BuildTrackingOptions()
+	local trackingAbilities = EasyBuff:GetAvailableTrackingAbilities();
+	local trackOptions = nil;
+	for k, v in pairs(trackingAbilities) do
+		if (trackOptions == nil) then
+			trackOptions = {};
+		end
+		trackOptions[k] = v.name;
+	end
+
+	return trackOptions;
+end
+
+
+-- ========================================== --
+--                                            --
 -- Configuration Getters/Setters              --
 --                                            --
 -- ========================================== --
@@ -578,6 +811,30 @@ function EasyBuff:SetContextConfigValue(context, spell, key, value)
 	end
 
 	E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_WANTED][EasyBuff.CFG_GROUP_CONTEXT][context][key][spell] = value;
+end
+
+
+--[[
+	Get Context Config Value
+]]--
+function EasyBuff:GetContextTrackingValue(context)
+	if (E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_TRACKING][EasyBuff.CFG_GROUP_CONTEXT][context] ~= nil) then
+		return E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_TRACKING][EasyBuff.CFG_GROUP_CONTEXT][context];
+	end
+
+	return nil;
+end
+
+
+--[[
+	Set Context Tracking Value
+]]--
+function EasyBuff:SetContextTrackingValue(context, key, value)
+	if (value ~= true) then
+		E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_TRACKING][EasyBuff.CFG_GROUP_CONTEXT][context] = nil;
+	else
+		E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_FEATURE_TRACKING][EasyBuff.CFG_GROUP_CONTEXT][context] = key;
+	end
 end
 
 
@@ -652,13 +909,13 @@ end
 
 -- ========================================== --
 --                                            --
--- Event Handlers                             --
+-- Event Driven                               --
 --                                            --
 -- ========================================== --
 
 
 --[[
-	On Player Enter World
+	Initialize Config for Faction
 ]]--
 function EasyBuff:InitializeForFaction(faction)
 	if ("Alliance" == faction) then
@@ -668,6 +925,21 @@ function EasyBuff:InitializeForFaction(faction)
 	end
 
 	EasyBuff:UpdateContext();
+end
+
+
+--[[
+	Update/Set Player Professions
+]]--
+function EasyBuff:UpdateProfessions()
+	-- Get my Professions
+	local numSkills = GetNumSkillLines();
+	for i = 1, numSkills do
+		local skillName, header = GetSkillLineInfo(i);
+		if (EasyBuff.PROFESSIONS[L[skillName]] ~= nil) then
+			EasyBuff.PlayerProfessions[L[skillName]] = true;
+		end
+	end
 end
 
 
