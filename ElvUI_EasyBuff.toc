@@ -6,7 +6,6 @@
 ## RequiredDeps: ElvUI
 ## DefaultState: Enabled
 
-
 Locales\load_locales.xml
 # lib\LibStub\LibStub.lua
 # lib\LibClassicDurations\LibClassicDurations.xml
