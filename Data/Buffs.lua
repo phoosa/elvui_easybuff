@@ -239,6 +239,30 @@ local EasyBuff_AuraGroups = {
 	},
 	-- Rogue
 	-- Shaman
+	LightningShield = {
+		class 	 = "Shaman",
+		name     = "Lightning Shield",
+		selfOnly = true,
+		multi 	 = nil
+	},
+	WaterShield = {
+		class 	 = "Shaman",
+		name     = "Water Shield",
+		selfOnly = true,
+		multi 	 = nil
+	},
+	EarthShield = {
+		class 	 = "Shaman",
+		name     = "Earth Shield",
+		selfOnly = true,
+		multi 	 = nil
+	},
+	WaterBreathing = {
+		class 	 = "Shaman",
+		name     = "Water Breathing",
+		selfOnly = false,
+		multi 	 = nil
+	},
 	-- Warlock
 	DemonArmor = {
 		class 	 = "Warlock",
@@ -1173,6 +1197,70 @@ local EasyBuff_Auras = {
 	["25431"] = {
 		rank  = 7,
 		group = "InnerFire"
+	},
+	-- Shaman: Lightning Shield
+	["324"] = {
+		rank = 1,
+		group = "LightningShield"
+	},
+	["325"] = {
+		rank = 2,
+		group = "LightningShield"
+	},
+	["905"] = {
+		rank = 3,
+		group = "LightningShield"
+	},
+	["945"] = {
+		rank = 4,
+		group = "LightningShield"
+	},
+	["8134"] = {
+		rank = 5,
+		group = "LightningShield"
+	},
+	["10431"] = {
+		rank = 6,
+		group = "LightningShield"
+	},
+	["10432"] = {
+		rank = 7,
+		group = "LightningShield"
+	},
+	["25469"] = {
+		rank = 8,
+		group = "LightningShield"
+	},
+	["25472"] = {
+		rank = 9,
+		group = "LightningShield"
+	},
+	-- Shaman: Earth Shield
+	["974"] = {
+		rank = 1,
+		group = "EarthShield"
+	},
+	["32593"] = {
+		rank = 2,
+		group = "EarthShield"
+	},
+	["32594"] = {
+		rank = 3,
+		group = "EarthShield"
+	},
+	-- Shaman: Water Shield
+	["24398"] = {
+		rank = 1,
+		group = "WaterShield"
+	},
+	["33736"] = {
+		rank = 2,
+		group = "WaterShield"
+	},
+	-- Shaman: Water Breathing
+	["131"] = {
+		rank = 1,
+		group = "WaterBreathing"
 	},
 	-- Warlock: Demon Armor
 	["706"] = {
