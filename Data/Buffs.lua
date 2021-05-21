@@ -176,6 +176,48 @@ local EasyBuff_AuraGroups = {
 		selfOnly = false,
 		multi 	 = "Greater Blessing of Light"
 	},
+	RFury = {
+		class 	 = "Paladin",
+		name     = "Righteous Fury",
+		selfOnly = true,
+		multi 	 = nil
+	},
+	DevoAura = {
+		class 	 = "Paladin",
+		name     = "Devotion Aura",
+		selfOnly = true,
+		multi 	 = nil
+	},
+	ConsAura = {
+		class 	 = "Paladin",
+		name     = "Concentration Aura",
+		selfOnly = true,
+		multi 	 = nil
+	},
+	RetAura = {
+		class 	 = "Paladin",
+		name     = "Retribution Aura",
+		selfOnly = true,
+		multi 	 = nil
+	},
+	FireAura = {
+		class 	 = "Paladin",
+		name     = "Fire Resistance Aura",
+		selfOnly = true,
+		multi 	 = nil
+	},
+	FrostAura = {
+		class 	 = "Paladin",
+		name     = "Frost Resistance Aura",
+		selfOnly = true,
+		multi 	 = nil
+	},
+	ShadowAura = {
+		class 	 = "Paladin",
+		name     = "Shadow Resistance Aura",
+		selfOnly = true,
+		multi 	 = nil
+	},
 	-- Priest
 	FORT = {
 		class 	 = "Priest",
@@ -341,6 +383,10 @@ local EasyBuff_Auras = {
 		rank  = 7,
 		group = "MOTW"
 	},
+	["26990"] = {
+		rank  = 8,
+		group = "MOTW"
+	},
 	-- Druid: Gift of the Wild
 	["21849"] = {
 		rank  = 1,
@@ -349,6 +395,11 @@ local EasyBuff_Auras = {
 	},
 	["21850"] = {
 		rank  = 2,
+		group = "MOTW",
+		multi = true
+	},
+	["26991"] = {
+		rank  = 3,
 		group = "MOTW",
 		multi = true
 	},
@@ -377,6 +428,10 @@ local EasyBuff_Auras = {
 		rank  = 6,
 		group = "Thorns"
 	},
+	["26992"] = {
+		rank  = 7,
+		group = "Thorns"
+	},
 	-- Druid: Omen of Clarity
 	["16864"] = {
 		rank = 1,
@@ -393,6 +448,10 @@ local EasyBuff_Auras = {
 	},
 	["20906"] = {
 		rank  = 3,
+		group = "TSA"
+	},
+	["27066"] = {
+		rank  = 4,
 		group = "TSA"
 	},
 	-- Hunter: Aspect of the Hawk
@@ -422,6 +481,10 @@ local EasyBuff_Auras = {
 	},
 	["25296"] = {
 		rank  = 7,
+		group = "AOTH"
+	},
+	["27044"] = {
+		rank  = 8,
 		group = "AOTH"
 	},
 	-- Hunter: Aspect of the Monkey
@@ -459,6 +522,10 @@ local EasyBuff_Auras = {
 		rank  = 2,
 		group = "AOTW"
 	},
+	["27045"] = {
+		rank  = 3,
+		group = "AOTW"
+	},
 	-- Hunter: Aspect of the Cheetah
 	["5118"] = {
 		rank  = 1,
@@ -490,9 +557,18 @@ local EasyBuff_Auras = {
 		rank  = 5,
 		group = "AI"
 	},
+	["27126"] = {
+		rank  = 6,
+		group = "AI"
+	},
 	-- Mage: Arcane Brilliance
 	["23028"] = {
 		rank  = 1,
+		group = "AI",
+		multi = true
+	},
+	["27127"] = {
+		rank  = 2,
 		group = "AI",
 		multi = true
 	},
@@ -511,6 +587,10 @@ local EasyBuff_Auras = {
 	},
 	["10220"] = {
 		rank  = 4,
+		group = "IceArmor"
+	},
+	["27124"] = {
+		rank  = 5,
 		group = "IceArmor"
 	},
 	-- Mage: Frost Armor
@@ -533,9 +613,13 @@ local EasyBuff_Auras = {
 	},
 	["22782"] = {
 		rank  = 2,
-		group = "DampMageArmorenMagic"
+		group = "MageArmor"
 	},
 	["22783"] = {
+		rank  = 3,
+		group = "MageArmor"
+	},
+	["27125"] = {
 		rank  = 3,
 		group = "MageArmor"
 	},
@@ -556,6 +640,14 @@ local EasyBuff_Auras = {
 		rank  = 4,
 		group = "IceBarrier"
 	},
+	["27134"] = {
+		rank  = 5,
+		group = "IceBarrier"
+	},
+	["33405"] = {
+		rank  = 6,
+		group = "IceBarrier"
+	},
 	-- Mage: Frost Ward
 	["6143"] = {
 		rank  = 1,
@@ -571,6 +663,14 @@ local EasyBuff_Auras = {
 	},
 	["10177"] = {
 		rank  = 4,
+		group = "FrostWard"
+	},
+	["28609"] = {
+		rank  = 5,
+		group = "FrostWard"
+	},
+	["23796"] = {
+		rank  = 6,
 		group = "FrostWard"
 	},
 	-- Mage: Fire Ward
@@ -592,6 +692,10 @@ local EasyBuff_Auras = {
 	},
 	["10225"] = {
 		rank  = 5,
+		group = "FireWard"
+	},
+	["27128"] = {
+		rank  = 6,
 		group = "FireWard"
 	},
 	-- Mage: Mana Shield
@@ -619,6 +723,10 @@ local EasyBuff_Auras = {
 		rank  = 6,
 		group = "ManaShield"
 	},
+	["27131"] = {
+		rank  = 7,
+		group = "ManaShield"
+	},
 	-- Mage: Dampen Magic
 	["604"] = {
 		rank  = 1,
@@ -640,6 +748,10 @@ local EasyBuff_Auras = {
 		rank  = 5,
 		group = "DampenMagic"
 	},
+	["33944"] = {
+		rank  = 6,
+		group = "DampenMagic"
+	},
 	-- Mage: Amplify Magic
 	["1008"] = {
 		rank  = 1,
@@ -655,6 +767,14 @@ local EasyBuff_Auras = {
 	},
 	["10170"] = {
 		rank  = 4,
+		group = "AmplifyMagic"
+	},
+	["27130"] = {
+		rank  = 5,
+		group = "AmplifyMagic"
+	},
+	["33946"] = {
+		rank  = 6,
 		group = "AmplifyMagic"
 	},
 	-- Paladin: Blessing of Might
@@ -686,6 +806,10 @@ local EasyBuff_Auras = {
 		rank  = 7,
 		group = "BOM"
 	},
+	["27140"] = {
+		rank  = 8,
+		group = "BOM"
+	},
 	-- Paladin: Greater Blessing of Might
 	["25782"] = {
 		rank  = 1,
@@ -694,6 +818,11 @@ local EasyBuff_Auras = {
 	},
 	["25916"] = {
 		rank  = 2,
+		group = "BOM",
+		multi = true
+	},
+	["27141"] = {
+		rank  = 3,
 		group = "BOM",
 		multi = true
 	},
@@ -722,6 +851,10 @@ local EasyBuff_Auras = {
 		rank  = 6,
 		group = "BOW"
 	},
+	["27142"] = {
+		rank  = 7,
+		group = "BOW"
+	},
 	-- Paladin: Greater Blessing of Wisdom
 	["25894"] = {
 		rank  = 1,
@@ -730,6 +863,11 @@ local EasyBuff_Auras = {
 	},
 	["25918"] = {
 		rank  = 2,
+		group = "BOW",
+		multi = true
+	},
+	["27143"] = {
+		rank  = 3,
 		group = "BOW",
 		multi = true
 	},
@@ -772,9 +910,18 @@ local EasyBuff_Auras = {
 		rank  = 4,
 		group = "BOSNC"
 	},
+	["27168"] = {
+		rank  = 5,
+		group = "BOSNC"
+	},
 	-- Paladin: Greater Blessing of Sanctuary
 	["25899"] = {
 		rank  = 1,
+		group = "BOSNC",
+		multi = true
+	},
+	["27169"] = {
+		rank  = 2,
 		group = "BOSNC",
 		multi = true
 	},
@@ -791,11 +938,139 @@ local EasyBuff_Auras = {
 		rank  = 3,
 		group = "BOL"
 	},
+	["27144"] = {
+		rank  = 4,
+		group = "BOL"
+	},
 	-- Paladin: Greater Blessing of Light
 	["25890"] = {
 		rank  = 1,
 		group = "BOL",
 		multi = true
+	},
+	["27145"] = {
+		rank  = 2,
+		group = "BOL",
+		multi = true
+	},
+	-- Paladin: Righteous Fury
+	["25780"] = {
+		rank  = 1,
+		group = "RFury"
+	},
+	-- Paladin: Devotion Aura
+	["465"] = {
+		rank  = 1,
+		group = "DevoAura"
+	},
+	["10290"] = {
+		rank  = 2,
+		group = "DevoAura"
+	},
+	["643"] = {
+		rank  = 3,
+		group = "DevoAura"
+	},
+	["10291"] = {
+		rank  = 4,
+		group = "DevoAura"
+	},
+	["1032"] = {
+		rank  = 5,
+		group = "DevoAura"
+	},
+	["10292"] = {
+		rank  = 6,
+		group = "DevoAura"
+	},
+	["10293"] = {
+		rank  = 7,
+		group = "DevoAura"
+	},
+	["27149"] = {
+		rank  = 8,
+		group = "DevoAura"
+	},
+	-- Paladin: Concentration Aura
+	["19746"] = {
+		rank  = 1,
+		group = "ConsAura"
+	},
+	-- Paladin: Retribution Aura
+	["7294"] = {
+		rank  = 1,
+		group = "RetAura"
+	},
+	["10298"] = {
+		rank  = 2,
+		group = "RetAura"
+	},
+	["10299"] = {
+		rank  = 3,
+		group = "RetAura"
+	},
+	["10300"] = {
+		rank  = 4,
+		group = "RetAura"
+	},
+	["10301"] = {
+		rank  = 5,
+		group = "RetAura"
+	},
+	["27150"] = {
+		rank  = 6,
+		group = "RetAura"
+	},
+	-- Paladin: Fire Resistance Aura
+	["19891"] = {
+		rank  = 1,
+		group = "FireAura"
+	},
+	["19899"] = {
+		rank  = 2,
+		group = "FireAura"
+	},
+	["19900"] = {
+		rank  = 3,
+		group = "FireAura"
+	},
+	["27153"] = {
+		rank  = 4,
+		group = "FireAura"
+	},
+	-- Paladin: Frost Resistance Aura
+	["19888"] = {
+		rank  = 1,
+		group = "FrostAura"
+	},
+	["19897"] = {
+		rank  = 2,
+		group = "FrostAura"
+	},
+	["19898"] = {
+		rank  = 3,
+		group = "FrostAura"
+	},
+	["27152"] = {
+		rank  = 4,
+		group = "FrostAura"
+	},
+	-- Paladin: Shadow Resistance Aura
+	["19876"] = {
+		rank  = 1,
+		group = "ShadowAura"
+	},
+	["19895"] = {
+		rank  = 2,
+		group = "ShadowAura"
+	},
+	["19896"] = {
+		rank  = 3,
+		group = "ShadowAura"
+	},
+	["27151"] = {
+		rank  = 4,
+		group = "ShadowAura"
 	},
 	-- Priest: Power Word: Fortitude
 	["1243"] = {
@@ -822,6 +1097,10 @@ local EasyBuff_Auras = {
 		rank  = 6,
 		group = "FORT"
 	},
+	["25389"] = {
+		rank  = 7,
+		group = "FORT"
+	},
 	-- Priest: Prayer of Fortitude
 	["21562"] = {
 		rank  = 1,
@@ -830,6 +1109,11 @@ local EasyBuff_Auras = {
 	},
 	["21564"] = {
 		rank  = 2,
+		group = "FORT",
+		multi = true
+	},
+	["25392"] = {
+		rank  = 3,
 		group = "FORT",
 		multi = true
 	},
@@ -846,9 +1130,18 @@ local EasyBuff_Auras = {
 		rank  = 3,
 		group = "SP"
 	},
+	["25433"] = {
+		rank  = 4,
+		group = "SP"
+	},
 	-- Priest: Prayer of Shadow Protection
 	["27683"] = {
 		rank  = 1,
+		group = "SP",
+		multi = true
+	},
+	["39374"] = {
+		rank  = 2,
 		group = "SP",
 		multi = true
 	},
@@ -877,6 +1170,10 @@ local EasyBuff_Auras = {
 		rank  = 6,
 		group = "InnerFire"
 	},
+	["25431"] = {
+		rank  = 7,
+		group = "InnerFire"
+	},
 	-- Warlock: Demon Armor
 	["706"] = {
 		rank  = 1,
@@ -896,6 +1193,10 @@ local EasyBuff_Auras = {
 	},
 	["11735"] = {
 		rank  = 5,
+		group = "DemonArmor"
+	},
+	["27260"] = {
+		rank  = 6,
 		group = "DemonArmor"
 	},
 	-- Warlock: Shadow Ward
@@ -928,6 +1229,7 @@ local EasyBuff_Auras = {
 		rank  = 3,
 		group = "DetectInvis"
 	},
+	-- Warlock: Unending Breath
 	["5697"] = {
 		rank  = 1,
 		group = "UnendingBreath"
