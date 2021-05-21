@@ -463,7 +463,7 @@ function EasyBuff:RebuildBuffQueue()
 											value = auraGroupKey,
 											type = EasyBuff.CFG_FEATURE_WANTED
 										});
-									elseif (buff.count == 1) then
+									elseif (buff.maxCount > 2 and (3 * buff.count) <= buff.maxCount) then
 										-- only 1 stack left
 										EasyBuff:Debug(format("BuffQueue:Add [%s] to [%s] Almost out of Stacks", tostring(auraGroupKey), unit), 3);
 										table.insert(missingAuraGroupKeys, {

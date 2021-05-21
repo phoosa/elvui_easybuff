@@ -26,18 +26,21 @@ local EasyBuff_AuraGroups = {
 		class 	 = "Druid",
 		name     = "Mark of the Wild",
 		selfOnly = false,
+		stacks   = false,
 		multi 	 = "Gift of the Wild"
 	},
 	Thorns = {
 		class 	 = "Druid",
 		name     = "Thorns",
 		selfOnly = false,
+		stacks   = false,
 		multi 	 = nil
 	},
 	OOC = {
 		class 	 = "Druid",
 		name     = "Omen of Clarity",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	-- Hunter
@@ -45,12 +48,14 @@ local EasyBuff_AuraGroups = {
 		class 	 = "Hunter",
 		name     = "Trueshot Aura",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	AOTH = {
 		class 	 = "Hunter",
 		name     = "Aspect of the Hawk",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	AOTM = {
@@ -58,24 +63,28 @@ local EasyBuff_AuraGroups = {
 		multi 	 = nil,
 		name     = "Aspect of the Monkey",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	AOTW = {
 		class 	 = "Hunter",
 		name     = "Aspect of the Wild",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	AOTC = {
 		class 	 = "Hunter",
 		name     = "Aspect of the Cheetah",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	AOTP = {
 		class 	 = "Hunter",
 		name     = "Aspect of the Pack",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	-- Mage
@@ -83,60 +92,70 @@ local EasyBuff_AuraGroups = {
 		class 	 = "Mage",
 		name     = "Arcane Intellect",
 		selfOnly = false,
+		stacks   = false,
 		multi 	 = "Arcane Brilliance"
 	},
 	IceArmor = {
 		class 	 = "Mage",
 		name     = "Ice Armor",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	FrostArmor = {
 		class 	 = "Mage",
 		name     = "Frost Armor",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	MageArmor = {
 		class 	 = "Mage",
 		name     = "Mage Armor",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	IceBarrier = {
 		class 	 = "Mage",
 		name     = "Ice Barrier",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	FrostWard = {
 		class 	 = "Mage",
 		name     = "Frost Ward",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	FireWard = {
 		class 	 = "Mage",
 		name     = "Fire Ward",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	ManaShield = {
 		class 	 = "Mage",
 		name     = "Mana Shield",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	DampenMagic = {
 		class 	 = "Mage",
 		name     = "Dampen Magic",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	AmplifyMagic = {
 		class 	 = "Mage",
 		name     = "Amplify Magic",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	-- Paladin
@@ -144,78 +163,91 @@ local EasyBuff_AuraGroups = {
 		class 	 = "Paladin",
 		name     = "Blessing of Might",
 		selfOnly = false,
+		stacks   = false,
 		multi 	 = "Greater Blessing of Might"
 	},
 	BOW = {
 		class 	 = "Paladin",
 		name     = "Blessing of Wisdom",
 		selfOnly = false,
+		stacks   = false,
 		multi 	 = "Greater Blessing of Wisdom",
 	},
 	BOSLV = {
 		class 	 = "Paladin",
 		name     = "Blessing of Salvation",
 		selfOnly = false,
+		stacks   = false,
 		multi 	 = "Greater Blessing of Salvation"
 	},
 	BOK = {
 		class 	 = "Paladin",
 		name     = "Blessing of Kings",
 		selfOnly = false,
+		stacks   = false,
 		multi 	 = "Greater Blessing of Kings"
 	},
 	BOSNC = {
 		class 	 = "Paladin",
 		name     = "Blessing of Sanctuary",
 		selfOnly = false,
+		stacks   = false,
 		multi 	 = "Greater Blessing of Sanctuary"
 	},
 	BOL = {
 		class 	 = "Paladin",
 		name     = "Blessing of Light",
 		selfOnly = false,
+		stacks   = false,
 		multi 	 = "Greater Blessing of Light"
 	},
 	RFury = {
 		class 	 = "Paladin",
 		name     = "Righteous Fury",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	DevoAura = {
 		class 	 = "Paladin",
 		name     = "Devotion Aura",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	ConsAura = {
 		class 	 = "Paladin",
 		name     = "Concentration Aura",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	RetAura = {
 		class 	 = "Paladin",
 		name     = "Retribution Aura",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	FireAura = {
 		class 	 = "Paladin",
 		name     = "Fire Resistance Aura",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	FrostAura = {
 		class 	 = "Paladin",
 		name     = "Frost Resistance Aura",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	ShadowAura = {
 		class 	 = "Paladin",
 		name     = "Shadow Resistance Aura",
 		selfOnly = true,
+		stacks   = false,
 		multi 	 = nil
 	},
 	-- Priest
@@ -223,18 +255,35 @@ local EasyBuff_AuraGroups = {
 		class 	 = "Priest",
 		name     = "Power Word: Fortitude",
 		selfOnly = false,
+		stacks   = false,
 		multi 	 = "Prayer of Fortitude"
 	},
 	SP = {
 		class 	 = "Priest",
 		name     = "Shadow Protection",
 		selfOnly = false,
-		multi    = "Greater Shadow Protection"
+		stacks   = false,
+		multi    = "Prayer of Shadow Protection"
 	},
 	InnerFire = {
 		class 	 = "Priest",
 		name     = "Inner Fire",
 		selfOnly = true,
+		stacks   = 20,
+		multi 	 = nil
+	},
+	Shadowform = {
+		class 	 = "Priest",
+		name     = "Shadowform",
+		selfOnly = true,
+		stacks   = false,
+		multi 	 = nil
+	},
+	TouchWeakness = {
+		class 	 = "Priest",
+		name     = "Touch of Weakness",
+		selfOnly = true,
+		stacks   = 1,
 		multi 	 = nil
 	},
 	-- Rogue
@@ -243,24 +292,28 @@ local EasyBuff_AuraGroups = {
 		class 	 = "Shaman",
 		name     = "Lightning Shield",
 		selfOnly = true,
+		stacks   = 3,
 		multi 	 = nil
 	},
 	WaterShield = {
 		class 	 = "Shaman",
 		name     = "Water Shield",
 		selfOnly = true,
+		stacks   = 3,
 		multi 	 = nil
 	},
 	EarthShield = {
 		class 	 = "Shaman",
 		name     = "Earth Shield",
 		selfOnly = true,
+		stacks   = 6,
 		multi 	 = nil
 	},
 	WaterBreathing = {
 		class 	 = "Shaman",
 		name     = "Water Breathing",
 		selfOnly = false,
+		stacks   = false,
 		multi 	 = nil
 	},
 	-- Warlock
@@ -268,24 +321,28 @@ local EasyBuff_AuraGroups = {
 		class 	 = "Warlock",
 		name	 = "Demon Armor",
 		selfOnly = true,
+		stacks   = false,
 		multi	 = nil
 	},
 	ShadowWard = {
 		class 	 = "Warlock",
 		name	 = "Shadow Ward",
 		selfOnly = true,
+		stacks   = false,
 		multi	 = nil
 	},
 	DetectInvis = {
 		class	 = "Warlock",
 		name	 = "Detect Invisibility",
 		selfOnly = false,
+		stacks   = false,
 		multi    = nil
 	},
 	UnendingBreath = {
 		class 	 = "Warlock",
 		name	 = "Unending Breath",
 		selfOnly = false,
+		stacks   = false,
 		multi    = nil
 	},
 	-- Warrior
@@ -1198,6 +1255,40 @@ local EasyBuff_Auras = {
 		rank  = 7,
 		group = "InnerFire"
 	},
+	-- Priest: Touch of Weakness
+	["2652"] = {
+		rank  = 1,
+		group = "TouchWeakness"
+	},
+	["19261"] = {
+		rank  = 2,
+		group = "TouchWeakness"
+	},
+	["19262"] = {
+		rank  = 3,
+		group = "TouchWeakness"
+	},
+	["19264"] = {
+		rank  = 4,
+		group = "TouchWeakness"
+	},
+	["19265"] = {
+		rank  = 5,
+		group = "TouchWeakness"
+	},
+	["19266"] = {
+		rank  = 6,
+		group = "TouchWeakness"
+	},
+	["25461"] = {
+		rank  = 7,
+		group = "TouchWeakness"
+	},
+	-- Priest: Shadowform
+	["15473"] = {
+		rank  = 1,
+		group = "Shadowform"
+	},
 	-- Shaman: Lightning Shield
 	["324"] = {
 		rank = 1,
@@ -1393,7 +1484,11 @@ function EasyBuff:InitAuras()
 					else
 						Castable_AuraGroups[v.group].ids[v.rank] = spellId;
 					end
-					Castable_AuraGroups[v.group].selfOnly = auraGroup.selfOnly
+					Castable_AuraGroups[v.group].selfOnly = auraGroup.selfOnly;
+					Castable_AuraGroups[v.group].stacks = 1;
+					if (auraGroup.stacks and auraGroup.stacks > 1) then
+						Castable_AuraGroups[v.group].stacks = auraGroup.stacks;
+					end
 				end
 			end
 		end
@@ -1507,9 +1602,14 @@ function EasyBuff:UnitBuff(unit, index, filter)
 	local name, icon, count, debuffType, duration, expirationTime, source, isStealable, 
   		nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod
 		= UnitBuff(unit, index, filter);
+
 	if (name == nil and spellId == nil) then
 		return nil;
 	end
+
+	local a_, auraGroup = EasyBuff:GetAuraGroupBySpellId(spellId);
+	local maxCount = 1;
+	if (auraGroup ~= nil and auraGroup.stacks) then maxCount = auraGroup.stacks end;
 
 	local curTime = GetTime();
 
@@ -1517,6 +1617,7 @@ function EasyBuff:UnitBuff(unit, index, filter)
 		name = name,
 		icon = icon,
 		count = count,
+		maxCount = maxCount,
 		debuffType = debuffType,
 		duration = duration,
 		expirationTime = expirationTime,
