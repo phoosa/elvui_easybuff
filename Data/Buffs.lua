@@ -258,6 +258,13 @@ local EasyBuff_AuraGroups = {
 		stacks   = false,
 		multi 	 = "Prayer of Fortitude"
 	},
+	SPIRIT = {
+		class    = "Priest",
+		name     = "Divine Spirit",
+		selfOnly = false,
+		stacks   = false,
+		multi    = "Prayer of Spirit"
+	},
 	SP = {
 		class 	 = "Priest",
 		name     = "Shadow Protection",
@@ -1196,6 +1203,38 @@ local EasyBuff_Auras = {
 	["25392"] = {
 		rank  = 3,
 		group = "FORT",
+		multi = true
+	},
+	-- Priest: Divine Spirit
+	["14752"] = {
+		rank  = 1,
+		group = "SPIRIT"
+	},
+	["14818"] = {
+		rank  = 2,
+		group = "SPIRIT"
+	},
+	["14819"] = {
+		rank  = 3,
+		group = "SPIRIT"
+	},
+	["27841"] = {
+		rank  = 4,
+		group = "SPIRIT"
+	},
+	["25312"] = {
+		rank  = 5,
+		group = "SPIRIT"
+	},
+	-- Priest: Prayer of Spirit
+	["27681"] = {
+		rank  = 1,
+		group = "SPIRIT",
+		multi = true
+	},
+	["32999"] = {
+		rank  = 2,
+		group = "SPIRIT",
 		multi = true
 	},
 	-- Priest: Shadow Protection
