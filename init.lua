@@ -29,7 +29,7 @@ EasyBuff.RANGE_COLOR 	= "|cff999999";
 
 EasyBuff.PLAYER_NAME, EasyBuff.PLAYER_REALM = UnitName("player");
 EasyBuff.PLAYER_REALM = GetRealmName();
-EasyBuff.PLAYER_CLASS = UnitClass("player");
+EasyBuff.PLAYER_CLASS, EasyBuff.PLAYER_CLASS_ENGLISH = UnitClass("player");
 
 EasyBuff.EXPIRATION_PERCENT = .1;  -- notify when buff reaches percent of buff duration left
 EasyBuff.EXPIRATION_BUFFER  = 3;   -- seconds to add to percent to account for shorter buffs
@@ -65,31 +65,34 @@ EasyBuff.CFG_REMOVE_EXISTING = "removeExistingBuff";
 EasyBuff.CFG_AUTOREMOVE      = "autoRemove";
 
 EasyBuff.CLASS_COLORS = {
-	["Druid"]    = "|cffFF7D0A",
-	["Hunter"]   = "|cffABD473",
-	["Mage"]     = "|cff69CCF0",
-	["Paladin"]  = "|cffF58CBA",
-	["Priest"]   = "|cffFFFFFF",
-	["Rogue"]    = "|cffFFF569",
-	["Shaman"]   = "|cff0070DE",
-	["Warlock"]  = "|cff9482C9",
-	["Warrior"]  = "|cffC79C6E"
+	["DRUID"]    = "|cffFF7D0A",
+	["HUNTER"]   = "|cffABD473",
+	["MAGE"]     = "|cff69CCF0",
+	["PALADIN"]  = "|cffF58CBA",
+	["PRIEST"]   = "|cffFFFFFF",
+	["ROGUE"]    = "|cffFFF569",
+	["SHAMAN"]   = "|cff0070DE",
+	["WARLOCK"]  = "|cff9482C9",
+	["WARRIOR"]  = "|cffC79C6E"
 };
 EasyBuff.CLASSES = {
-	["Druid"]    = EasyBuff.CLASS_COLORS["Druid"].."Druid|r",
-	["Hunter"]   = EasyBuff.CLASS_COLORS["Hunter"].."Hunter|r",
-	["Mage"]     = EasyBuff.CLASS_COLORS["Mage"].."Mage|r",
-	["Paladin"]  = EasyBuff.CLASS_COLORS["Paladin"].."Paladin|r",
-	["Priest"]   = EasyBuff.CLASS_COLORS["Priest"].."Priest|r",
-	["Rogue"]    = EasyBuff.CLASS_COLORS["Rogue"].."Rogue|r",
-	["Shaman"]   = EasyBuff.CLASS_COLORS["Shaman"].."Shaman|r",
-	["Warlock"]  = EasyBuff.CLASS_COLORS["Warlock"].."Warlock|r",
-	["Warrior"]  = EasyBuff.CLASS_COLORS["Warrior"].."Warrior|r"
+	["DRUID"]    = EasyBuff.CLASS_COLORS["DRUID"].."Druid".."|r",
+	["HUNTER"]   = EasyBuff.CLASS_COLORS["HUNTER"].."Hunter".."|r",
+	["MAGE"]     = EasyBuff.CLASS_COLORS["MAGE"].."Mage".."|r",
+	["PALADIN"]  = EasyBuff.CLASS_COLORS["PALADIN"].."Paladin".."|r",
+	["PRIEST"]   = EasyBuff.CLASS_COLORS["PRIEST"].."Priest".."|r",
+	["ROGUE"]    = EasyBuff.CLASS_COLORS["ROGUE"].."Rogue".."|r",
+	["SHAMAN"]   = EasyBuff.CLASS_COLORS["SHAMAN"].."Shaman".."|r",
+	["WARLOCK"]  = EasyBuff.CLASS_COLORS["WARLOCK"].."Warlock".."|r",
+	["WARRIOR"]  = EasyBuff.CLASS_COLORS["WARRIOR"].."Warrior".."|r"
 };
 
+-- TODO: Refactor to use: https://wowwiki-archive.fandom.com/wiki/API_GetProfessionInfo
+-- until then, this only works in english
+
 EasyBuff.PROFESSIONS = {
-	["Herbalism"] = "Herbalism",
-	["Mining"]    = "Mining"
+	["Herbalism"] = "Herbalism", -- 182
+	["Mining"]    = "Mining"     -- 186
 };
 
 -- ========================================== --
@@ -182,10 +185,14 @@ function EasyBuff:ChatCommand(input)
 	local opt = nil;
 	local args = {};
 	local commands = {
+		["test"] = function(args)
+			EasyBuff.DEBUG_STATUS = 3;
+			EP:RegisterPlugin(addonName, EasyBuff.ConfigOptions);
+		end,
 		["debug"] = function(args)
 			local level = tonumber(args[1]);
 			local status = "";
-			local color = EasyBuff.CLASS_COLORS["Shaman"];
+			local color = EasyBuff.CLASS_COLORS["SHAMAN"];
 
 			if (level == nil) then
 				level = 0;
@@ -222,30 +229,30 @@ function EasyBuff:ChatCommand(input)
 			local monitoredSpells = EasyBuff:GetTrackedSpells();
 			
 			if (monitoredSpells == nil) then
-				EasyBuff:PrintToChat("There are currently NO spells being tracked... type: "..EasyBuff:Colorize("/rl", EasyBuff.CLASS_COLORS["Mage"]), wid);
+				EasyBuff:PrintToChat("There are currently NO spells being tracked... type: "..EasyBuff:Colorize("/rl", EasyBuff.CLASS_COLORS["MAGE"]), wid);
 			else
 				for spellId, group in pairs(monitoredSpells) do
-					EasyBuff:PrintToChat(format("  %s (%s)", group.name, spellId), wid);
+					EasyBuff:PrintToChat(format("  [%s] %s (%s)", group.group, group.name, spellId), wid);
 				end
 			end
 		end,
 		["help"] = function()
 			EasyBuff:PrintToChat(format("Available Commands:\n%s %s - %s\n%s %s - %s\n%s %s - %s\n%s %s - %s",
 
-				EasyBuff:Colorize("/"..EasyBuff.COMMAND, EasyBuff.CLASS_COLORS["Mage"]),
-				EasyBuff:Colorize("debug", EasyBuff.CLASS_COLORS["Mage"]),
+				EasyBuff:Colorize("/"..EasyBuff.COMMAND, EasyBuff.CLASS_COLORS["MAGE"]),
+				EasyBuff:Colorize("debug", EasyBuff.CLASS_COLORS["MAGE"]),
 				"Set Debug Level (0=off) (1=info) (2=events) (3=verbose)",
 
-				EasyBuff:Colorize("/"..EasyBuff.COMMAND, EasyBuff.CLASS_COLORS["Mage"]),
-				EasyBuff:Colorize("context", EasyBuff.CLASS_COLORS["Mage"]),
+				EasyBuff:Colorize("/"..EasyBuff.COMMAND, EasyBuff.CLASS_COLORS["MAGE"]),
+				EasyBuff:Colorize("context", EasyBuff.CLASS_COLORS["MAGE"]),
 				"Show the current EasyBuff Context",
 
-				EasyBuff:Colorize("/"..EasyBuff.COMMAND, EasyBuff.CLASS_COLORS["Mage"]),
-				EasyBuff:Colorize("buffs", EasyBuff.CLASS_COLORS["Mage"]),
+				EasyBuff:Colorize("/"..EasyBuff.COMMAND, EasyBuff.CLASS_COLORS["MAGE"]),
+				EasyBuff:Colorize("buffs", EasyBuff.CLASS_COLORS["MAGE"]),
 				"Show the buffs currently being monitored",
 
-				EasyBuff:Colorize("/"..EasyBuff.COMMAND, EasyBuff.CLASS_COLORS["Mage"]),
-				EasyBuff:Colorize("queue", EasyBuff.CLASS_COLORS["Mage"]),
+				EasyBuff:Colorize("/"..EasyBuff.COMMAND, EasyBuff.CLASS_COLORS["MAGE"]),
+				EasyBuff:Colorize("queue", EasyBuff.CLASS_COLORS["MAGE"]),
 				"Show the current Buff Queue"
 			), wid);
 		end

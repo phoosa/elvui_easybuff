@@ -1,5 +1,5 @@
--- English localization file for enUS and enGB.
-local L = ElvUI[1].Libs.ACL:NewLocale("ElvUI_TauntAlert", "enUS", true, true);
+-- English localization file for spanish.
+local L = ElvUI[1].Libs.ACL:NewLocale("ElvUI_TauntAlert", "esMX", true, true);
 
 
 L["General"] = true;
@@ -43,15 +43,15 @@ L["Auto-Remove before self-buff"] = true;
 L["Automatically remove buff before applying new buff. Lesser buffs cannot overwrite greater, enabling this feature will ensure refreshing a buff doesn't error. This is only necessary with 'Early Monitoring' enabled."] = true;
 
 -- Classes
-L["Druid"] = true;
-L["Hunter"] = true;
-L["Mage"] = true;
-L["Paladin"] = true;
-L["Priest"] = true;
-L["Rogue"] = true;
-L["Shaman"] = true;
-L["Warlock"] = true;
-L["Warrior"] = true;
+L["Druid"] = "Druida";
+L["Hunter"] = "Cazador";
+L["Mage"] = "Mago";
+L["Paladin"] = "Paladín";
+L["Priest"] = "Sacerdote";
+L["Rogue"] = "Pícaro";
+L["Shaman"] = "Chamán";
+L["Warlock"] = "Brujo";
+L["Warrior"] = "Guerrero";
 
 -- Professions
 L["Herbalism"] = true;

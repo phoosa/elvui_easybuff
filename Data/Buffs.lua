@@ -23,327 +23,417 @@ local Tracking_By_Texture = {};
 local EasyBuff_AuraGroups = {
 	-- Druid
 	MOTW = {
-		class 	 = "Druid",
+		class 	 = "DRUID",
 		name     = "Mark of the Wild",
+		defaultId= 1126,
 		selfOnly = false,
 		stacks   = false,
-		multi 	 = "Gift of the Wild"
+		multi 	 = "Gift of the Wild",
+		multiId  = 21849
 	},
 	Thorns = {
-		class 	 = "Druid",
+		class 	 = "DRUID",
 		name     = "Thorns",
+		defaultId= 467,
 		selfOnly = false,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	OOC = {
-		class 	 = "Druid",
+		class 	 = "DRUID",
 		name     = "Omen of Clarity",
+		defaultId= 16864,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	-- Hunter
 	TSA = {
-		class 	 = "Hunter",
+		class 	 = "HUNTER",
 		name     = "Trueshot Aura",
+		defaultId= 19506,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	AOTH = {
-		class 	 = "Hunter",
+		class 	 = "HUNTER",
 		name     = "Aspect of the Hawk",
+		defaultId= 13165,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	AOTM = {
-		class 	 = "Hunter",
+		class 	 = "HUNTER",
 		multi 	 = nil,
 		name     = "Aspect of the Monkey",
+		defaultId= 13163,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	AOTW = {
-		class 	 = "Hunter",
+		class 	 = "HUNTER",
 		name     = "Aspect of the Wild",
+		defaultId= 20043,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	AOTC = {
-		class 	 = "Hunter",
+		class 	 = "HUNTER",
 		name     = "Aspect of the Cheetah",
+		defaultId= 5118,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	AOTP = {
-		class 	 = "Hunter",
+		class 	 = "HUNTER",
 		name     = "Aspect of the Pack",
+		defaultId= 13159,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	-- Mage
 	AI = {
-		class 	 = "Mage",
+		class 	 = "MAGE",
 		name     = "Arcane Intellect",
+		defaultId= 1459,
 		selfOnly = false,
 		stacks   = false,
-		multi 	 = "Arcane Brilliance"
+		multi 	 = "Arcane Brilliance",
+		multiId  = 23028
 	},
 	IceArmor = {
-		class 	 = "Mage",
+		class 	 = "MAGE",
 		name     = "Ice Armor",
+		defaultId= 7302,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	FrostArmor = {
-		class 	 = "Mage",
+		class 	 = "MAGE",
 		name     = "Frost Armor",
+		defaultId= 168,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	MageArmor = {
-		class 	 = "Mage",
+		class 	 = "MAGE",
 		name     = "Mage Armor",
+		defaultId= 6117,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	IceBarrier = {
-		class 	 = "Mage",
+		class 	 = "MAGE",
 		name     = "Ice Barrier",
+		defaultId= 11426,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	FrostWard = {
-		class 	 = "Mage",
+		class 	 = "MAGE",
 		name     = "Frost Ward",
+		defaultId= 6143,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	FireWard = {
-		class 	 = "Mage",
+		class 	 = "MAGE",
 		name     = "Fire Ward",
+		defaultId= 543,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	ManaShield = {
-		class 	 = "Mage",
+		class 	 = "MAGE",
 		name     = "Mana Shield",
+		defaultId= 1463,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	DampenMagic = {
-		class 	 = "Mage",
+		class 	 = "MAGE",
 		name     = "Dampen Magic",
+		defaultId= 604,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	AmplifyMagic = {
-		class 	 = "Mage",
+		class 	 = "MAGE",
 		name     = "Amplify Magic",
+		defaultId= 1008,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	-- Paladin
 	BOM = {
-		class 	 = "Paladin",
+		class 	 = "PALADIN",
 		name     = "Blessing of Might",
+		defaultId= 19740,
 		selfOnly = false,
 		stacks   = false,
-		multi 	 = "Greater Blessing of Might"
+		multi 	 = "Greater Blessing of Might",
+		multiId  = 25782
 	},
 	BOW = {
-		class 	 = "Paladin",
+		class 	 = "PALADIN",
 		name     = "Blessing of Wisdom",
+		defaultId= 19742,
 		selfOnly = false,
 		stacks   = false,
 		multi 	 = "Greater Blessing of Wisdom",
+		multiId  = 25894
 	},
 	BOSLV = {
-		class 	 = "Paladin",
+		class 	 = "PALADIN",
 		name     = "Blessing of Salvation",
+		defaultId= 1038,
 		selfOnly = false,
 		stacks   = false,
-		multi 	 = "Greater Blessing of Salvation"
+		multi 	 = "Greater Blessing of Salvation",
+		multiId  = 25895
 	},
 	BOK = {
-		class 	 = "Paladin",
+		class 	 = "PALADIN",
 		name     = "Blessing of Kings",
+		defaultId= 20217,
 		selfOnly = false,
 		stacks   = false,
-		multi 	 = "Greater Blessing of Kings"
+		multi 	 = "Greater Blessing of Kings",
+		multiId  = 25898
 	},
 	BOSNC = {
-		class 	 = "Paladin",
+		class 	 = "PALADIN",
 		name     = "Blessing of Sanctuary",
+		defaultId= 20911,
 		selfOnly = false,
 		stacks   = false,
-		multi 	 = "Greater Blessing of Sanctuary"
+		multi 	 = "Greater Blessing of Sanctuary",
+		multiId  = 25899
 	},
 	BOL = {
-		class 	 = "Paladin",
+		class 	 = "PALADIN",
 		name     = "Blessing of Light",
+		defaultId= 19977,
 		selfOnly = false,
 		stacks   = false,
-		multi 	 = "Greater Blessing of Light"
+		multi 	 = "Greater Blessing of Light",
+		multiId  = 25890
 	},
 	RFury = {
-		class 	 = "Paladin",
+		class 	 = "PALADIN",
 		name     = "Righteous Fury",
+		defaultId= 25780,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	DevoAura = {
-		class 	 = "Paladin",
+		class 	 = "PALADIN",
 		name     = "Devotion Aura",
+		defaultId= 465,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	ConsAura = {
-		class 	 = "Paladin",
+		class 	 = "PALADIN",
 		name     = "Concentration Aura",
+		defaultId= 19746,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	RetAura = {
-		class 	 = "Paladin",
+		class 	 = "PALADIN",
 		name     = "Retribution Aura",
+		defaultId= 7294,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	FireAura = {
-		class 	 = "Paladin",
+		class 	 = "PALADIN",
 		name     = "Fire Resistance Aura",
+		defaultId= 19891,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	FrostAura = {
-		class 	 = "Paladin",
+		class 	 = "PALADIN",
 		name     = "Frost Resistance Aura",
+		defaultId= 19888,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	ShadowAura = {
-		class 	 = "Paladin",
+		class 	 = "PALADIN",
 		name     = "Shadow Resistance Aura",
+		defaultId= 19876,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	-- Priest
 	FORT = {
-		class 	 = "Priest",
+		class 	 = "PRIEST",
 		name     = "Power Word: Fortitude",
+		defaultId= 1243,
 		selfOnly = false,
 		stacks   = false,
-		multi 	 = "Prayer of Fortitude"
+		multi 	 = "Prayer of Fortitude",
+		multiId  = 21562
 	},
 	SP = {
-		class 	 = "Priest",
+		class 	 = "PRIEST",
 		name     = "Shadow Protection",
+		defaultId= 976,
 		selfOnly = false,
 		stacks   = false,
-		multi    = "Prayer of Shadow Protection"
+		multi    = "Prayer of Shadow Protection",
+		multiId  = 27683
 	},
 	InnerFire = {
-		class 	 = "Priest",
+		class 	 = "PRIEST",
 		name     = "Inner Fire",
+		defaultId= 588,
 		selfOnly = true,
 		stacks   = 20,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	Shadowform = {
-		class 	 = "Priest",
+		class 	 = "PRIEST",
 		name     = "Shadowform",
+		defaultId= 15473,
 		selfOnly = true,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	TouchWeakness = {
-		class 	 = "Priest",
+		class 	 = "PRIEST",
 		name     = "Touch of Weakness",
+		defaultId= 2652,
 		selfOnly = true,
 		stacks   = 1,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	-- Rogue
 	-- Shaman
 	LightningShield = {
-		class 	 = "Shaman",
+		class 	 = "SHAMAN",
 		name     = "Lightning Shield",
+		defaultId= 324,
 		selfOnly = true,
 		stacks   = 3,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	WaterShield = {
-		class 	 = "Shaman",
+		class 	 = "SHAMAN",
 		name     = "Water Shield",
+		defaultId= 24398,
 		selfOnly = true,
 		stacks   = 3,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	EarthShield = {
-		class 	 = "Shaman",
+		class 	 = "SHAMAN",
 		name     = "Earth Shield",
+		defaultId= 974,
 		selfOnly = true,
 		stacks   = 6,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	WaterBreathing = {
-		class 	 = "Shaman",
+		class 	 = "SHAMAN",
 		name     = "Water Breathing",
+		defaultId= 131,
 		selfOnly = false,
 		stacks   = false,
-		multi 	 = nil
+		multi 	 = nil,
+		multiId  = nil
 	},
 	-- Warlock
 	DemonArmor = {
-		class 	 = "Warlock",
+		class 	 = "WARLOCK",
 		name	 = "Demon Armor",
+		defaultId= 706,
 		selfOnly = true,
 		stacks   = false,
-		multi	 = nil
+		multi	 = nil,
+		multiId  = nil
 	},
 	ShadowWard = {
-		class 	 = "Warlock",
+		class 	 = "WARLOCK",
 		name	 = "Shadow Ward",
+		defaultId= 6229,
 		selfOnly = true,
 		stacks   = false,
-		multi	 = nil
+		multi	 = nil,
+		multiId  = nil
 	},
 	DetectInvis = {
-		class	 = "Warlock",
+		class	 = "WARLOCK",
 		name	 = "Detect Invisibility",
+		defaultId= 132,
 		selfOnly = false,
 		stacks   = false,
-		multi    = nil
+		multi    = nil,
+		multiId  = nil
 	},
 	UnendingBreath = {
-		class 	 = "Warlock",
+		class 	 = "WARLOCK",
 		name	 = "Unending Breath",
+		defaultId= 5697,
 		selfOnly = false,
 		stacks   = false,
-		multi    = nil
+		multi    = nil,
+		multiId  = nil
 	},
 	-- Warrior
 	-- Racial
@@ -358,56 +448,56 @@ local EasyBuff_AuraGroups = {
 local EasyBuff_TrackingTypes = {
 	-- Hunter
 	["1494"] = {
-		class 	 = "Hunter",
+		class 	 = "HUNTER",
 		prof     = nil,
 		name     = "Track Beasts",
 		spellId  = 1494,
 		texture  = 132328
 	},
 	["19878"] = {
-		class 	 = "Hunter",
+		class 	 = "HUNTER",
 		prof     = nil,
 		name     = "Track Demons",
 		spellId  = 19878,
 		texture  = 136217
 	},
 	["19879"] = {
-		class 	 = "Hunter",
+		class 	 = "HUNTER",
 		prof     = nil,
 		name     = "Track Dragonkin",
 		spellId  = 19879,
 		texture  = 134153
 	},
 	["19880"] = {
-		class 	 = "Hunter",
+		class 	 = "HUNTER",
 		prof     = nil,
 		name     = "Track Elementals",
 		spellId  = 19880,
 		texture  = 135861
 	},
 	["19882"] = {
-		class 	 = "Hunter",
+		class 	 = "HUNTER",
 		prof     = nil,
 		name     = "Track Giants",
 		spellId  = 19882,
 		texture  = 132275
 	},
 	["19885"] = {
-		class 	 = "Hunter",
+		class 	 = "HUNTER",
 		prof     = nil,
 		name     = "Track Hidden",
 		spellId  = 19885,
 		texture  = 132320
 	},
 	["19883"] = {
-		class 	 = "Hunter",
+		class 	 = "HUNTER",
 		prof     = nil,
 		name     = "Track Humanoids",
 		spellId  = 19883,
 		texture  = 135942
 	},
 	["19884"] = {
-		class 	 = "Hunter",
+		class 	 = "HUNTER",
 		prof     = nil,
 		name     = "Track Undead",
 		spellId  = 19884,
@@ -1432,18 +1522,14 @@ function EasyBuff:InitAuras()
 	end
 
 	for spellIndex=1, totalSpells do
-		local spellName, spellSubName = GetSpellBookItemName(spellIndex, BOOKTYPE_SPELL);
-		local testName = spellName;
-		if (spellSubName ~= nil and spellSubName ~= "") then
-			testName = format("%s(%s)", spellName, spellSubName);
-		end
-		local spellName, _, spellIcon, castTime, minRange, maxRange, spellId = GetSpellInfo(testName);
+		local _, spellId = GetSpellBookItemInfo(spellIndex, BOOKTYPE_SPELL);
 		
 		-- Is this spell defined in our list of monitored Auras?
 		local aura = EasyBuff_Auras[tostring(spellId)];
 		if (aura) then
 			local auraGroup = EasyBuff_AuraGroups[aura.group];
 			if (auraGroup ~= nil) then
+				local spellName, _, spellIcon, castTime, minRange, maxRange, _ = GetSpellInfo(spellId);
 				if (Trackable_Auras == nil) then
 					Trackable_Auras = {}
 				end
@@ -1453,6 +1539,8 @@ function EasyBuff:InitAuras()
 					name = spellName,
 					rank = aura.rank
 				};
+				-- Update the spell name in the Aura Group (locale cheating)
+				EasyBuff_AuraGroups[aura.group].name = spellName;
 			end
 		else
 			-- Is this spell defined in our list of Tracking Types?
@@ -1473,7 +1561,7 @@ function EasyBuff:InitAuras()
 				-- Get the Spell Info
 				local spellName, _, spellIcon, castTime, minRange, maxRange, spellId = GetSpellInfo(k);
 				-- Can I cast this spell?
-				if ((auraGroup.class ~= nil and L[auraGroup.class] == EasyBuff.PLAYER_CLASS)
+				if ((auraGroup.class ~= nil and auraGroup.class == EasyBuff.PLAYER_CLASS_ENGLISH)
 					or (auraGroup.prof ~= nil and EasyBuff.PlayerProfessions[auraGroup.prof])) then
 					if (Castable_AuraGroups[v.group] == nil) then
 						Castable_AuraGroups[v.group] = {ids={},multiIds={},hasMulti=false};

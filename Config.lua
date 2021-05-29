@@ -46,7 +46,7 @@ function EasyBuff:ConfigOptions()
 			header1 = {
 				order = 1,
 				type = "header",
-				name = format(L["%s (v%s) by %sPhoosa|r"], EasyBuff.TITLE, EasyBuff.VERSION, EasyBuff.CLASS_COLORS["Druid"]),
+				name = format(L["%s (v%s) by %sPhoosa|r"], EasyBuff.TITLE, EasyBuff.VERSION, EasyBuff.CLASS_COLORS["DRUID"]),
 			},
 			wanted = {
 				order = 2,
@@ -638,7 +638,7 @@ function BuildSpellOptions(buffOptions, disabledBuffOptions)
 	local selfOnlyBuffs, partyMulti, raidMulti, bgMulti = nil;
 
 	-- Load Player Supported Buffs.
-	local myAuras = EasyBuff:GetAvailableAuraGroups(EasyBuff.PLAYER_CLASS);
+	local myAuras = EasyBuff:GetAvailableAuraGroups(EasyBuff.PLAYER_CLASS_ENGLISH);
 	for k, v in pairs(myAuras) do
 		local bo = buffOptions;
 		local position = 10;
@@ -704,8 +704,8 @@ function BuildSpellOptions(buffOptions, disabledBuffOptions)
 			};
 
 			-- Does this buff have a multi option?
-			if (v.multi ~= nil) then
-				local _, _, multiIcon, _, _, _, multiId = GetSpellInfo(v.multi);
+			if (v.multiId ~= nil) then
+				local _, _, multiIcon, _, _, _, multiId = GetSpellInfo(v.multiId);
 				if (multiId == nil) then
 					appendMulti = format(" %s(%s)|r", EasyBuff.ERROR_COLOR, L["not learned"]);
 				end
@@ -719,7 +719,7 @@ function BuildSpellOptions(buffOptions, disabledBuffOptions)
 					name = v.multi..appendMulti,
 					desc = format(L["Cast this instead of %s"], v.name),
 					type = "toggle",
-					disabled = (multiId == nil),
+					disabled = (v.multiId == nil),
 					width = "double",
 					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_PARTY, k, "multi"); end,
 					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_PARTY, k, "multi", value); end
@@ -728,7 +728,7 @@ function BuildSpellOptions(buffOptions, disabledBuffOptions)
 					name = v.multi..appendMulti,
 					desc = format(L["Cast this instead of %s"], v.name),
 					type = "toggle",
-					disabled = (multiId == nil),
+					disabled = (v.multiId == nil),
 					width = "double",
 					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_RAID, k, "multi"); end,
 					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_RAID, k, "multi", value); end
@@ -737,7 +737,7 @@ function BuildSpellOptions(buffOptions, disabledBuffOptions)
 					name = v.multi..appendMulti,
 					desc = format(L["Cast this instead of %s"], v.name),
 					type = "toggle",
-					disabled = (multiId == nil),
+					disabled = (v.multiId == nil),
 					width = "double",
 					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_BG, k, "multi"); end,
 					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_BG, k, "multi", value); end
@@ -918,11 +918,12 @@ end
 	Initialize Config for Faction
 ]]--
 function EasyBuff:InitializeForFaction(faction)
-	if ("Alliance" == faction) then
-		EasyBuff.CLASSES["Shaman"] = nil;
-	else
-		EasyBuff.CLASSES["Paladin"] = nil;
-	end
+	-- NOTICE: No longer applicable in TBC
+	-- if ("Alliance" == faction) then
+	-- 	EasyBuff.CLASSES["SHAMAN"] = nil;
+	-- else
+	-- 	EasyBuff.CLASSES["PALADIN"] = nil;
+	-- end
 
 	EasyBuff:UpdateContext();
 end
@@ -935,9 +936,11 @@ function EasyBuff:UpdateProfessions()
 	-- Get my Professions
 	local numSkills = GetNumSkillLines();
 	for i = 1, numSkills do
+		-- TODO: This will only work in english.
+		-- refactor to use: https://wowwiki-archive.fandom.com/wiki/API_GetProfessionInfo
 		local skillName, header = GetSkillLineInfo(i);
-		if (EasyBuff.PROFESSIONS[L[skillName]] ~= nil) then
-			EasyBuff.PlayerProfessions[L[skillName]] = true;
+		if (EasyBuff.PROFESSIONS[skillName] ~= nil) then
+			EasyBuff.PlayerProfessions[skillName] = true;
 		end
 	end
 end
@@ -963,6 +966,10 @@ end
 ]]--
 function EasyBuff:GetAuraGroupConfigKey(auraGroupKey)
 	local ag = EasyBuff:GetAuraGroup(auraGroupKey);
+	if (ag == nil) then
+		EasyBuff:Debug(format("!! Failed to find Aura Group for Key: %s", tostring(auraGroupKey)), 1);
+		return nil;
+	end
 	local cfgKey = "multi";
 	if (ag.selfOnly) then
 		cfgKey = "self";
