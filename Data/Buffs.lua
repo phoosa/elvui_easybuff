@@ -278,6 +278,15 @@ local EasyBuff_AuraGroups = {
 		multi 	 = nil,
 		multiId  = nil
 	},
+	SancAura = {
+		class 	 = "PALADIN",
+		name     = "Sanctity Aura",
+		defaultId= 20218,
+		selfOnly = true,
+		stacks   = false,
+		multi 	 = nil,
+		multiId  = nil
+	},
 	RetAura = {
 		class 	 = "PALADIN",
 		name     = "Retribution Aura",
@@ -1175,6 +1184,11 @@ local EasyBuff_Auras = {
 	["19746"] = {
 		rank  = 1,
 		group = "ConsAura"
+	},
+	-- Paladin: Sanctity Aura
+	["20218"] = {
+		rank  = 1,
+		group = "SancAura"
 	},
 	-- Paladin: Retribution Aura
 	["7294"] = {
