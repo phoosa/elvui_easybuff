@@ -1409,6 +1409,17 @@ local EasyBuff_Auras = {
 		rank  = 5,
 		group = "DivineSpirit"
 	},
+	-- Priest: Prayer of Spirit
+	["27681"] = {
+		rank  = 1,
+		group = "DivineSpirit",
+		multi = true
+	},
+	["32999"] = {
+		rank  = 2,
+		group = "DivineSpirit",
+		multi = true
+	},
 	-- Shaman: Lightning Shield
 	["324"] = {
 		rank = 1,
