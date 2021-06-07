@@ -408,6 +408,15 @@ local EasyBuff_AuraGroups = {
 		multiId  = nil
 	},
 	-- Warlock
+	FelArmor = {
+		class    = "WARLOCK",
+		name     = "Fel Armor",
+		defaultId= 28176,
+		selfOnly = true,
+		stacks   = false,
+		multi    = nil,
+		multiId  = nil
+	},
 	DemonArmor = {
 		class 	 = "WARLOCK",
 		name	 = "Demon Armor",
@@ -1472,6 +1481,15 @@ local EasyBuff_Auras = {
 	["131"] = {
 		rank = 1,
 		group = "WaterBreathing"
+	},
+	-- Warlock: Fel Armor
+	["28176"] = {
+	    rank  = 1,
+		group = "FelArmor"
+	},
+	["28189"] = {
+	    rank  = 2,
+		group = "FelArmor"
 	},
 	-- Warlock: Demon Armor
 	["706"] = {
