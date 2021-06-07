@@ -36,7 +36,7 @@ function EasyBuff:SetContext(context)
 		-- Reset tracked units needing buffs
 		EasyBuff.UnitBuffQueue = nil;
 		if (EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ANNOUNCE_CC)) then
-			EasyBuff:AnnounceBuff(EasyBuff.CLASS_COLORS["Warrior"]..format(L["Context changed to: %s"], EasyBuff:ContextKeyToLanguage(context)).."|r");
+			EasyBuff:AnnounceBuff(EasyBuff.CLASS_COLORS["WARRIOR"]..format(L["Context changed to: %s"], EasyBuff:ContextKeyToLanguage(context)).."|r");
 		end
 	end
 end
@@ -356,7 +356,8 @@ function EasyBuff:AnnounceUnbuffedUnits()
 				if (spellId ~= nil) then
 					local spellInfo = {GetSpellInfo(spellId)};
 					if (spellInfo ~= nil) then
-						EasyBuff:AnnounceBuff(format(L["%s needs %s"].."|r", EasyBuff:Colorize(unitName, EasyBuff.CLASS_COLORS[UnitClass(unitName)])..textColor, tostring(spellInfo[1])));
+						_, enClass = UnitClass(unitName);
+						EasyBuff:AnnounceBuff(format(L["%s needs %s"].."|r", EasyBuff:Colorize(unitName, EasyBuff.CLASS_COLORS[enClass])..textColor, tostring(spellInfo[1])));
 					end
 				end
 			end
@@ -505,11 +506,11 @@ function EasyBuff:RebuildBuffQueue()
 	-- Check Party or Raid members.
 	if (IsInGroup(LE_PARTY_CATEGORY_HOME) or IsInRaid(LE_PARTY_CATEGORY_HOME)) then
 		for groupIndex=1,GetNumGroupMembers() do
-			unitName, groupRank, partyIndex, unitLevel, unitClass, classFileName, unitZone, isOnline, isDead, unitRole, unitIsML = GetRaidRosterInfo(groupIndex);
+			unitName, groupRank, partyIndex, unitLevel, _, classFileName, unitZone, isOnline, isDead, unitRole, unitIsML = GetRaidRosterInfo(groupIndex);
 			-- Ignore Offline Group Members and self
 			if (isOnline) and (not isDead) and (unitName ~= EasyBuff.PLAYER_NAME) then
 				-- Check Unit Buffs
-				missingBuffs = checkNeedsBuff(unitClass, unitName);
+				missingBuffs = checkNeedsBuff(classFileName, unitName);
 				if (missingBuffs ~= nil and table.getn(missingBuffs)) then
 					UnitsToBuff[unitName] = missingBuffs;
 				end

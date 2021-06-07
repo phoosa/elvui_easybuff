@@ -57,10 +57,10 @@
   <Button name="ELVUI_EASYBUFF_TEST"
           inherits="SecureActionButtonTemplate"
           parent="UIParent"
-        
+          movable="false"
   >
     <Size>
-      <AbsDimension x="25" y="25"/>
+      <AbsDimension x="1" y="1"/>
     </Size>
     <Attributes>
 			<Attribute name="type" value="cancelaura"/>
@@ -75,7 +75,7 @@
       </Layer>
     </Layers>
     <Anchors>
-      <Anchor point="CENTER">
+      <Anchor point="BOTTOMRIGHT">
         <Offset>
           <AbsDimension x="1" y="1" />
         </Offset>
