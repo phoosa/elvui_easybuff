@@ -80,7 +80,7 @@ end
 function EasyBuff:OnPostClick(button, down)
 	-- Zoom out, because we have taken over this command...
 	-- @TODO: Make sure we know that's the command we have overridden.
-	CameraZoomOut(1);
+	-- CameraZoomOut(1);
 end
 
 
