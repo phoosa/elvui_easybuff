@@ -142,6 +142,15 @@ local EasyBuff_AuraGroups = {
 		multi 	 = nil,
 		multiId  = nil
 	},
+	MoltenArmor = {
+		class 	 = "MAGE",
+		name     = "Molten Armor",
+		defaultId= 30482,
+		selfOnly = true,
+		stacks   = false,
+		multi 	 = nil,
+		multiId  = nil
+	},
 	IceBarrier = {
 		class 	 = "MAGE",
 		name     = "Ice Barrier",
@@ -314,6 +323,15 @@ local EasyBuff_AuraGroups = {
 		multi 	 = nil,
 		multiId  = nil
 	},
+	SanctityAura = {
+		class 	 = "PALADIN",
+		name     = "Sanctity Aura",
+		defaultId= 20218,
+		selfOnly = true,
+		stacks   = false,
+		multi 	 = nil,
+		multiId  = nil
+	},
 	-- Priest
 	FORT = {
 		class 	 = "PRIEST",
@@ -412,6 +430,15 @@ local EasyBuff_AuraGroups = {
 		class 	 = "WARLOCK",
 		name	 = "Demon Armor",
 		defaultId= 706,
+		selfOnly = true,
+		stacks   = false,
+		multi	 = nil,
+		multiId  = nil
+	},
+	FelArmor = {
+		class 	 = "WARLOCK",
+		name	 = "Fel Armor",
+		defaultId= 28176,
 		selfOnly = true,
 		stacks   = false,
 		multi	 = nil,
@@ -526,6 +553,13 @@ local EasyBuff_TrackingTypes = {
 		name     = "Find Minerals",
 		spellId  = 2580,
 		texture  = 136025
+	},
+	["43308"] = {
+		class 	 = nil,
+		prof     = EasyBuff.PROFESSIONS["Fishing"],
+		name     = "Find Fish",
+		spellId  = 43308,
+		texture  = 133888
 	}
 }
 
@@ -802,6 +836,11 @@ local EasyBuff_Auras = {
 	["27125"] = {
 		rank  = 3,
 		group = "MageArmor"
+	},
+	-- Mage: Molten Armor
+	["30482"] = {
+		rank  = 1,
+		group = "MoltenArmor"
 	},
 	-- Mage: Ice Barrier
 	["11426"] = {
@@ -1252,6 +1291,11 @@ local EasyBuff_Auras = {
 		rank  = 4,
 		group = "ShadowAura"
 	},
+	-- Paladin: Sanctity Aura
+	["20218"] = {
+		rank  = 1,
+		group = "SanctityAura"
+	},
 	-- Priest: Power Word: Fortitude
 	["1243"] = {
 		rank  = 1,
@@ -1498,6 +1542,15 @@ local EasyBuff_Auras = {
 		rank  = 6,
 		group = "DemonArmor"
 	},
+	-- Warlock:  Fel Armor
+	["28176"] = {
+		rank  = 1,
+		group = "FelArmor"
+	},
+	["28189"] = {
+		rank  = 2,
+		group = "FelArmor"
+	},
 	-- Warlock: Shadow Ward
 	["6229"] = {
 		rank  = 1,
@@ -1583,6 +1636,7 @@ function EasyBuff:InitAuras()
 	end
 
 	-- Create the Castable_AuraGroups list from AuraGroups for my class
+	-- And add any missing ranks of any spell found in the spell book to the Trackable Auras table
 	for k, v in pairs(EasyBuff_Auras) do
 		if (v ~= nil) then
 			-- Get the AuraGroup for this Spell.
@@ -1606,6 +1660,15 @@ function EasyBuff:InitAuras()
 					Castable_AuraGroups[v.group].stacks = 1;
 					if (auraGroup.stacks and auraGroup.stacks > 1) then
 						Castable_AuraGroups[v.group].stacks = auraGroup.stacks;
+					end
+					-- Ensure unlearned max-rank spells are tracked
+					if (nil~= Trackable_Auras and nil == Trackable_Auras[tostring(spellId)]) then
+						Trackable_Auras[tostring(spellId)] = {
+							group = v.group,
+							multi = v.multi,
+							name = spellName,
+							rank = v.rank
+						};
 					end
 				end
 			end

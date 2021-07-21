@@ -41,6 +41,10 @@ L["Early Monitoring"] = true;
 L["Announce and refresh buffs before they expire."] = true;
 L["Auto-Remove before self-buff"] = true;
 L["Automatically remove buff before applying new buff. Lesser buffs cannot overwrite greater, enabling this feature will ensure refreshing a buff doesn't error. This is only necessary with 'Early Monitoring' enabled."] = true;
+L["Instance Only"] = true;
+L["Disable Announcements and buffing when not in an instance."] = true;
+L["Disable when Resting"] = true;
+L["Disable Announcements and buffing when character is in a 'resting' area."] = true;
 
 -- Classes
 L["Druid"] = true;

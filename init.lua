@@ -21,7 +21,7 @@ EasyBuff.TITLE 			= "Easy Buff";
 EasyBuff.VERSION 		= GetAddOnMetadata("ElvUI_EasyBuff", "Version");
 EasyBuff.COMMAND        = "elveb";
 EasyBuff.DEBUG_STATUS   = 0;
-EasyBuff.CAST_DELAY     = 2; -- seconds
+EasyBuff.CAST_DELAY     = 1.2; -- seconds
 
 EasyBuff.ERROR_COLOR 	= "|cfffa2f47";
 EasyBuff.CHAT_COLOR 	= "|cffFF4BFC";
@@ -92,7 +92,8 @@ EasyBuff.CLASSES = {
 
 EasyBuff.PROFESSIONS = {
 	["Herbalism"] = "Herbalism", -- 182
-	["Mining"]    = "Mining"     -- 186
+	["Mining"]    = "Mining",    -- 186
+	["Fishing"]   = "Fishing"    -- 356
 };
 
 -- ========================================== --
@@ -185,10 +186,6 @@ function EasyBuff:ChatCommand(input)
 	local opt = nil;
 	local args = {};
 	local commands = {
-		["test"] = function(args)
-			EasyBuff.DEBUG_STATUS = 3;
-			EP:RegisterPlugin(addonName, EasyBuff.ConfigOptions);
-		end,
 		["debug"] = function(args)
 			local level = tonumber(args[1]);
 			local status = "";
@@ -352,12 +349,13 @@ function EasyBuff:Initialize()
 	self:RegisterEvent("GROUP_ROSTER_UPDATE", "UpdateContext");
 	self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", "OnSpellCastSucceeded");
 	self:RegisterEvent("UNIT_AURA", "OnUnitAura");
+	self:RegisterEvent("PLAYER_REGEN_ENABLED", "OnCombatEnd");
 
 	-- Bind Buffing Units to Mouse Wheel Down
 	SetOverrideBindingClick(ELVUI_EASYBUFF_ANNOUNCE_FRAME, false, "MOUSEWHEELDOWN", "ELVUI_EASYBUFF_PERFORM_BUTTON", "MOUSEWHEELDOWN");
 	
 	-- Start Monitoring Buffs
-	EasyBuff:ScheduleRepeatingTimer(EasyBuff.MonitorBuffs, 5);
+	EasyBuff:ScheduleRepeatingTimer(EasyBuff.MonitorBuffs, 3);
 end
 
 

@@ -19,22 +19,28 @@ P.EasyBuff = {
 				context = {
 					solo = {
 						-- This will be auto-populated with your characters buff abilities
+						general = {
+							notResting = false
+						}
 					},
 					party = {
 						general = {
-							selfOnlyCast = false
+							selfOnlyCast = false,
+							instanceOnly = false
 						}
 						-- This will be auto-populated with your characters buff abilities
 					},
 					raid = {
 						general = {
-							selfOnlyCast = false
+							selfOnlyCast = false,
+							instanceOnly = false
 						}
 						-- This will be auto-populated with your characters buff abilities
 					},
 					bg = {
 						general = {
-							selfOnlyCast = false
+							selfOnlyCast = false,
+							instanceOnly = false
 						}
 						-- This will be auto-populated with your characters buff abilities
 					}

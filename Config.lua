@@ -156,18 +156,7 @@ function EasyBuff:ConfigOptions()
 								type = "group",
 								name = L["Spell Buffs"],
 								disabled = (soloAuraOptions == nil),
-								args = {
-									selfBuffs = {
-										name = L["Buffs to monitor on myself"],
-										desc = L["Select the buffs that you want to monitor on yourself."],
-										type = "multiselect",
-										values = soloAuraOptions or {},
-										hidden = (soloAuraOptions == nil),
-										order = 4,
-										get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_SOLO, i, EasyBuff.RELATION_SELF); end,
-										set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_SOLO, i, EasyBuff.RELATION_SELF, value); end
-									}
-								}
+								args = soloBuffCfg or {}
 							},
 							consumes = {
 								order = 2,
@@ -416,7 +405,7 @@ end
 
 -- ========================================== --
 --                                            --
--- Config Section Generators                   --
+-- Config Section Generators                  --
 --                                            --
 -- ========================================== --
 
@@ -448,6 +437,35 @@ function GenerateSpellBuffConfigSections(soloAuraOptions,partyAuraOptions,raidAu
 	end
 
 	-- Prepare the Buff Config Sections.
+	local soloBuffCfg = {
+		general = {
+			type = "group",
+			name = L["General Context Settings"],
+			order = 1,
+			inline = true,
+			args = {
+				instanceOnly = {
+					name = L["Disable when Resting"],
+					desc = L["Disable Announcements and buffing when character is in a 'resting' area."],
+					type = "toggle",
+					order = 1,
+					width = 1,
+					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_SOLO, "notResting", EasyBuff.CFG_GROUP_GENERAL); end,
+					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_SOLO, "notResting", EasyBuff.CFG_GROUP_GENERAL, value); end
+				}
+			}
+		},
+		selfBuffs = {
+			name = L["Buffs to monitor on myself"],
+			desc = L["Select the buffs that you want to monitor on yourself."],
+			type = "multiselect",
+			values = soloAuraOptions or {},
+			hidden = (soloAuraOptions == nil),
+			order = 2,
+			get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_SOLO, i, EasyBuff.RELATION_SELF); end,
+			set = function(info, i, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_SOLO, i, EasyBuff.RELATION_SELF, value); end
+		}
+	};
 	local partyBuffCfg = {
 		general = {
 			type = "group",
@@ -460,10 +478,19 @@ function GenerateSpellBuffConfigSections(soloAuraOptions,partyAuraOptions,raidAu
 					desc = L["Disables mousewheel buff casting on players other than yourself. You will still be notified of other players needed buffs, but you will have to manually buff them."],
 					type = "toggle",
 					order = 1,
-					width = "double",
+					width = 1,
 					disabled = (selfOnlyOptions == nil),
 					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_PARTY, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL); end,
 					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_PARTY, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL, value); end
+				},
+				instanceOnly = {
+					name = L["Instance Only"],
+					desc = L["Disable Announcements and buffing when not in an instance."],
+					type = "toggle",
+					order = 2,
+					width = 1,
+					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_PARTY, "instanceOnly", EasyBuff.CFG_GROUP_GENERAL); end,
+					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_PARTY, "instanceOnly", EasyBuff.CFG_GROUP_GENERAL, value); end
 				}
 			}
 		},
@@ -488,9 +515,18 @@ function GenerateSpellBuffConfigSections(soloAuraOptions,partyAuraOptions,raidAu
 					desc = L["Disables mousewheel buff casting on players other than yourself. You will still be notified of other players needed buffs, but you will have to manually buff them."],
 					type = "toggle",
 					order = 1,
-					width = "double",
+					width = 1,
 					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_RAID, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL); end,
 					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_RAID, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL, value); end
+				},
+				instanceOnly = {
+					name = L["Instance Only"],
+					desc = L["Disable Announcements and buffing when not in an instance."],
+					type = "toggle",
+					order = 2,
+					width = 1,
+					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_RAID, "instanceOnly", EasyBuff.CFG_GROUP_GENERAL); end,
+					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_RAID, "instanceOnly", EasyBuff.CFG_GROUP_GENERAL, value); end
 				}
 			}
 		},
@@ -515,9 +551,18 @@ function GenerateSpellBuffConfigSections(soloAuraOptions,partyAuraOptions,raidAu
 					desc = L["Disables mousewheel buff casting on players other than yourself. You will still be notified of other players needed buffs, but you will have to manually buff them."],
 					type = "toggle",
 					order = 1,
-					width = "double",
+					width = 1,
 					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_BG, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL); end,
 					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_BG, "selfOnlyCast", EasyBuff.CFG_GROUP_GENERAL, value); end
+				},
+				instanceOnly = {
+					name = L["Instance Only"],
+					desc = L["Disable Announcements and buffing when not in an instance."],
+					type = "toggle",
+					order = 2,
+					width = 1,
+					get = function(info, i) return EasyBuff:GetContextConfigValue(EasyBuff.CONTEXT_BG, "instanceOnly", EasyBuff.CFG_GROUP_GENERAL); end,
+					set = function(info, value) EasyBuff:SetContextConfigValue(EasyBuff.CONTEXT_BG, "instanceOnly", EasyBuff.CFG_GROUP_GENERAL, value); end
 				}
 			}
 		},

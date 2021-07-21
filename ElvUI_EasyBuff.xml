@@ -54,32 +54,4 @@
       </OnLoad>
     </Scripts>
   </Button>
-  <Button name="ELVUI_EASYBUFF_TEST"
-          inherits="SecureActionButtonTemplate"
-          parent="UIParent"
-          movable="false"
-  >
-    <Size>
-      <AbsDimension x="1" y="1"/>
-    </Size>
-    <Attributes>
-			<Attribute name="type" value="cancelaura"/>
-      <Attribute name="spell" value="Inner Fire"/>
-		</Attributes>
-    <Layers>
-      <Layer level="BACKGROUND">
-        <Texture>
-          <Size x="15" y="15"/>
-          <Color a="0" r="0" g="1" b="0.5"/>
-        </Texture>
-      </Layer>
-    </Layers>
-    <Anchors>
-      <Anchor point="BOTTOMRIGHT">
-        <Offset>
-          <AbsDimension x="1" y="1" />
-        </Offset>
-      </Anchor>
-    </Anchors>
-  </Button>
 </Ui>
