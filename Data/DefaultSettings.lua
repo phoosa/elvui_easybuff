@@ -14,7 +14,8 @@ P.EasyBuff = {
 					announce = EasyBuff.CFG_ANN_HUD,
 					announceWindow = nil,
 					notifyEarly = true,
-					removeExistingBuff = true
+					removeExistingBuff = true,
+					keybinding = "MOUSEWHEELDOWN"
 				},
 				context = {
 					solo = {
@@ -52,7 +53,8 @@ P.EasyBuff = {
 					autoRemove = true,
 					announce = EasyBuff.CFG_ANN_HUD,
 					announceWindow = nil,
-					removeInCombat = false
+					removeInCombat = false,
+					keybinding = "CTRL-MOUSEWHEELDOWN"
 				},
 				auras = {
 					-- This list will be populated with additional aura's that you want to be notified about

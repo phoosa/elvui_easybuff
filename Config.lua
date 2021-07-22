@@ -59,17 +59,11 @@ function EasyBuff:ConfigOptions()
 						order = 1,
 						type = "group",
 						args = {
-							header = {
-								order = 1,
-								type = "description",
-								name = format(L["Buff Casting bound to: %s"], EasyBuff:Colorize("Mousewheel Down", EasyBuff.CHAT_COLOR)),
-								width = "full"
-							},
 							enable = {
 								name = L["Enable"],
 								desc = L["Enables / disables wanted buff monitoring"],
-								order = 2,
-								-- width = "full",
+								order = 1,
+								width = 1,
 								type = "toggle",
 								get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ENABLE); end,
 								set = function(info, value) EasyBuff:SetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ENABLE, value); end
@@ -77,8 +71,8 @@ function EasyBuff:ConfigOptions()
 							notifyEarly = {
 								name = L["Early Monitoring"],
 								desc = L["Announce and refresh buffs before they expire."],
-								order = 3,
-								-- width = "full",
+								order = 2,
+								width = 1,
 								type = "toggle",
 								get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_NOTIFY_EARLY); end,
 								set = function(info, value) EasyBuff:SetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_NOTIFY_EARLY, value); end
@@ -86,11 +80,23 @@ function EasyBuff:ConfigOptions()
 							removeExistingBuff = {
 								name = L["Auto-Remove before self-buff"],
 								desc = L["Automatically remove buff before applying new buff. Lesser buffs cannot overwrite greater, enabling this feature will ensure refreshing a buff doesn't error. This is only necessary with 'Early Monitoring' enabled."],
-								order = 4,
-								width = "full",
+								order = 3,
+								width = 2,
 								type = "toggle",
 								get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_REMOVE_EXISTING); end,
 								set = function(info, value) EasyBuff:SetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_REMOVE_EXISTING, value); end
+							},
+							keybind = {
+								name = EasyBuff:Colorize(L["Buff Casting bound to key:"], EasyBuff.CHAT_COLOR),
+								desc = L["Change which key to use to apply buffs."],
+								order = 4,
+								width = "full",
+								type = "keybinding",
+								get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_KEYBINDING); end,
+								set = function(info, value) 
+									EasyBuff:SetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_KEYBINDING, value);
+									EasyBuff:SetKeybindings(value, EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_KEYBINDING));
+								end
 							},
 							context = {
 								name = L["Active Context"],
@@ -304,17 +310,11 @@ function EasyBuff:ConfigOptions()
 				type = "group",
 				name = L["Unwanted Buffs"],
 				args = {
-					header = {
-						order = 1,
-						type = "description",
-						name = format(L["Buff Removal bound to: %s"], EasyBuff:Colorize("Control + Mousewheel Down", EasyBuff.CHAT_COLOR)),
-						width = "full"
-					},
 					enable = {
 						name = L["Enable"],
 						desc = L["Enables / disables removing unwanted buffs"],
-						order = 2,
-						width = "full",
+						order = 1,
+						width = 1,
 						type = "toggle",
 						get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_ENABLE); end,
 						set = function(info, value)
@@ -325,13 +325,25 @@ function EasyBuff:ConfigOptions()
 					autoRemove = {
 						name = L["Auto-Remove"],
 						desc = L["Autmatically remove unwanted buffs when OUT OF COMBAT"],
-						order = 3,
-						width = "full",
+						order = 2,
+						width = 1,
 						type = "toggle",
 						get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_AUTOREMOVE); end,
 						set = function(info, value)
 							EasyBuff:SetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_AUTOREMOVE, value);
 							EasyBuff:CreateUnwantedActionButton();
+						end
+					},
+					keybind = {
+						name = EasyBuff:Colorize(L["Buff Removal bound to key:"], EasyBuff.CHAT_COLOR),
+						desc = L["Change which key to use to remove buffs."],
+						order = 3,
+						width = "full",
+						type = "keybinding",
+						get = function(info, i) return EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_KEYBINDING); end,
+						set = function(info, value)
+							EasyBuff:SetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_KEYBINDING, value);
+							EasyBuff:SetKeybindings(EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_KEYBINDING), value);
 						end
 					},
 					announce = {
@@ -444,7 +456,7 @@ function GenerateSpellBuffConfigSections(soloAuraOptions,partyAuraOptions,raidAu
 			order = 1,
 			inline = true,
 			args = {
-				instanceOnly = {
+				notResting = {
 					name = L["Disable when Resting"],
 					desc = L["Disable Announcements and buffing when character is in a 'resting' area."],
 					type = "toggle",

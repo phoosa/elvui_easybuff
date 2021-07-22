@@ -42,6 +42,8 @@ EasyBuff.CONTEXT_PARTY  = "party";
 EasyBuff.CONTEXT_RAID   = "raid";
 EasyBuff.CONTEXT_BG     = "bg";
 
+EasyBuff.CFG_KEYBINDING = "keybinding";
+
 EasyBuff.CFG_FEATURE_WANTED   = "wanted";
 EasyBuff.CFG_FEATURE_UNWANTED = "unwanted";
 EasyBuff.CFG_FEATURE_TRACKING = "tracking";
@@ -145,6 +147,9 @@ function EasyBuff:InitializePlayerData()
 	EasyBuff:UpdateProfessions();
 	EasyBuff:InitAuras();
 	EasyBuff:InitUnwanted();
+	EasyBuff:SetKeybindings(
+		EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_WANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_KEYBINDING),
+		EasyBuff:GetConfigValue(EasyBuff.CFG_FEATURE_UNWANTED, EasyBuff.CFG_GROUP_GENERAL, EasyBuff.CFG_KEYBINDING));
 end
 
 
@@ -350,12 +355,23 @@ function EasyBuff:Initialize()
 	self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", "OnSpellCastSucceeded");
 	self:RegisterEvent("UNIT_AURA", "OnUnitAura");
 	self:RegisterEvent("PLAYER_REGEN_ENABLED", "OnCombatEnd");
-
-	-- Bind Buffing Units to Mouse Wheel Down
-	SetOverrideBindingClick(ELVUI_EASYBUFF_ANNOUNCE_FRAME, false, "MOUSEWHEELDOWN", "ELVUI_EASYBUFF_PERFORM_BUTTON", "MOUSEWHEELDOWN");
 	
 	-- Start Monitoring Buffs
 	EasyBuff:ScheduleRepeatingTimer(EasyBuff.MonitorBuffs, 3);
+end
+
+
+--[[
+	Set/Change Keybindings
+]]--
+function EasyBuff:SetKeybindings(wantedKey, unwantedKey)
+	ClearOverrideBindings(ELVUI_EASYBUFF_ANNOUNCE_FRAME);
+	if (nil ~= wantedKey) then
+		SetOverrideBindingClick(ELVUI_EASYBUFF_ANNOUNCE_FRAME, false, wantedKey, "ELVUI_EASYBUFF_PERFORM_BUTTON", wantedKey);
+	end
+	if (nil ~= unwantedKey) then
+		SetOverrideBindingClick(ELVUI_EASYBUFF_ANNOUNCE_FRAME, false, unwantedKey, "ELVUI_EASYBUFF_UNWANTED", unwantedKey);
+	end
 end
 
 

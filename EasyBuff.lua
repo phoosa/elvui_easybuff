@@ -79,15 +79,11 @@ end
 	Perform the original Mousewheel Down action
 ]]--
 function EasyBuff:OnPostClick(button, down)
-	EasyBuff:Debug(format("EasyBuff:OnPostClick %s to %s", tostring(button), tostring(down)), 1);
-	EasyBuff:Debug(format("EasyBuff:OnPostClick DEBUG [type=%s] [spell=%s] [target=%s]", tostring(ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("type")), tostring(ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("spell")), tostring(ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("target"))), 1);
-	-- reset the cast button to prevent duplicate casts
-	-- if (nil ~= ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("spell")) then
-	-- 	EasyBuff:UpdateCastButton(nil, nil, nil);
-	-- end
-	-- Zoom out, because we have taken over this command...
-	-- @TODO: Make sure we know that's the command we have overridden.
-	CameraZoomOut(1);
+	if ("MOUSEWHEELDOWN" == button) then
+		CameraZoomOut(1);
+	elseif ("MOUSEWHEELUP" == button) then
+		CameraZoomIn(1);
+	end
 end
 
 

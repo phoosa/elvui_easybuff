@@ -17,27 +17,12 @@ local EasyBuff = E:GetModule("EasyBuff");
 -- ========================================== --
 
 
--- function EasyBuff:OnUnwantedPreClick(button, down)
--- 	if (self ~= nil and self.GetAttribute ~= nil) then
--- 		local spellId = self:GetAttribute('spell');
--- 		if (spellId ~= nil) then
--- 			local bcIndex = 1;
--- 			local buffToCheck;
--- 			while (bcIndex == 1 or (buffToCheck ~= nil and buffToCheck[10] ~= nil)) do
--- 				buffToCheck = {UnitBuff("player", bcIndex)};
--- 				if (buffToCheck ~= nil and tostring(buffToCheck[10]) == tostring(spellId)) then
--- 					CancelUnitBuff("player", bcIndex);
--- 				end
--- 				bcIndex = bcIndex + 1;
--- 			end
--- 		end
--- 	end
--- end
-
-
 function EasyBuff:OnUnwantedPostClick(button, down)
-	--	EasyBuff:ChangeMouseWheelAction("ELVUI_EASYBUFF_PERFORM_BUTTON");
-	CameraZoomOut(1);
+	if ("MOUSEWHEELDOWN" == button) then
+		CameraZoomOut(1);
+	elseif ("MOUSEWHEELUP" == button) then
+		CameraZoomIn(1);
+	end
 end
 
 
@@ -52,12 +37,6 @@ end
 	Initialize Unwanted Buffs
 ]]--
 function EasyBuff:InitUnwanted()
-	-- for spellId, enabled in pairs(EasyBuff:GetUnwantedAuras()) do
-	-- 	print(format('Initialize Unwanted %s as %s', spellId, tostring(enabled)));
-	-- 	if (enabled) then
-	-- 		EasyBuff:CreateUnwantedActionButton(spellId);
-	-- 	end
-	-- end
 	EasyBuff:CreateUnwantedActionButton(spellId);
 end
 
@@ -80,7 +59,6 @@ function EasyBuff:OnUnitAura(event, unitId, c, d, e)
 						CancelUnitBuff("player", bcIndex);
 						EasyBuff:AnnounceUnwanted(format("%s"..L["REMOVING UNWANTED BUFF %s"].."|r", EasyBuff.ERROR_COLOR, buffToCheck[1]));
 					else
-						-- EasyBuff:ChangeMouseWheelAction("ELVUI_EASYBUFF_UNWANTED_"..buffToCheck[10]);
 						EasyBuff:AnnounceUnwanted(format("%s"..L["REMOVE UNWANTED BUFF %s"].."|r", EasyBuff.ERROR_COLOR, buffToCheck[1]));
 					end
 				end
@@ -98,44 +76,7 @@ end
 -- ========================================== --
 
 
-function EasyBuff:ChangeMouseWheelAction(buttonName)
-	-- print(EasyBuff.ERROR_COLOR..'Change MOUSEWHEEL Action: |r'..buttonName);
-	-- SetOverrideBindingClick(ELVUI_EASYBUFF_ANNOUNCE_FRAME, false, "MOUSEWHEELDOWN", buttonName, "MOUSEWHEELDOWN");
-end
-
-
 function EasyBuff:CreateUnwantedActionButton()
-	-- EasyBuff:Debug(format("Unwanted:CreateButton %s", spellId), 3);
-	-- print(format("Unwanted:CreateButton %s", spellId));
-	-- if (EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED] == nil) then
-	-- 	EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED] = {};
-	-- end
-	-- if (EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED][spellId] ~= nil) then
-	-- 	-- Don't recreate what we already have
-	-- 	print(format("Unwanted:CreateButton %s ALREADY EXISTS", spellId))
-	-- 	return
-	-- end
-
-	--
-	-- This works for 1 buff
-	--
-	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED][spellId] = 
-	-- 	CreateFrame("Button", "ELVUI_EASYBUFF_UNWANTED_"..spellId, UIParent, "SecureActionButtonTemplate");
-	-- local spellInfo = {GetSpellInfo(spellId)};
-	-- print("Cancel Aura "..spellInfo[1]);
-
-	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED][spellId]:SetAttribute("type", "cancelaura");
-	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED][spellId]:SetAttribute("spell", spellInfo[1]);
-	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED][spellId]:SetWidth(25);
-	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED][spellId]:SetHeight(25);
-	-- -- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED][spellId]:SetPoint("CENTER", math.random(-80, 80), math.random(-80, 80));
-	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED][spellId]:SetPoint("CENTER", "UIParent", "CENTER", math.random(-80, 80), math.random(-80, 80));
-	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED][spellId]:SetScript("PostClick", self.OnUnwantedPostClick);
-
-	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED][spellId].texture = EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED][spellId]:CreateTexture(nil, "BACKGROUND");
-	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED][spellId].texture:SetAllPoints(EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED][spellId]);
-	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED][spellId].texture:SetColorTexture(1, 0, 0, 1);
-
 	if (InCombatLockdown()) then
 		return;
 	end
@@ -164,21 +105,9 @@ function EasyBuff:CreateUnwantedActionButton()
 		EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED]:SetScript("PostClick", self.OnUnwantedPostClick);
 
 		EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED]:SetAttribute("type", "macro");
-
-		SetOverrideBindingClick(ELVUI_EASYBUFF_ANNOUNCE_FRAME, false, "CTRL-MOUSEWHEELDOWN", "ELVUI_EASYBUFF_UNWANTED", "CTRL-MOUSEWHEELDOWN");
 	end
 	
 	EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED]:SetAttribute("macrotext", macrotext);
-	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED]:SetWidth(25);
-	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED]:SetHeight(25);
-	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED]:SetPoint("CENTER", "UIParent", "CENTER", math.random(-80, 80), math.random(-80, 80));
-	
-
-	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED].texture = EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED]:CreateTexture(nil, "BACKGROUND");
-	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED].texture:SetAllPoints(EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED]);
-	-- EasyBuff.ActionButtons[EasyBuff.CFG_FEATURE_UNWANTED].texture:SetColorTexture(1, 0, 0, 1);
-
-	
 end
 
 
