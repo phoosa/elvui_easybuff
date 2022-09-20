@@ -44,6 +44,7 @@ L["Automatically remove buff before applying new buff. Lesser buffs cannot overw
 
 -- Classes
 L["Druid"] = "Druide";
+L["Death Knight"] = true;
 L["Hunter"] = "Jäger";
 L["Mage"] = "Magier";
 L["Paladin"] = "Paladin";

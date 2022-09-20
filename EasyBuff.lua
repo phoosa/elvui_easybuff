@@ -76,13 +76,25 @@ end
 
 --[[
 	On Global Mousewheel Down Post Action
-	Perform the original Mousewheel Down action
+	Perform the original Mousewheel Down action and reset the action button
 ]]--
 function EasyBuff:OnPostClick(button, down)
+	local unitTarget = ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("unit");
+	local spellName = ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("spell");
+	EasyBuff:UpdateCastButton(nil, nil, nil);
 	if ("MOUSEWHEELDOWN" == button) then
 		CameraZoomOut(1);
 	elseif ("MOUSEWHEELUP" == button) then
 		CameraZoomIn(1);
+	end
+	local spellInfo = {GetSpellInfo(spellName)};
+	if (spellInfo ~= nil and spellInfo[7] ~= nil) then
+		local spellId = spellInfo[7];
+		local auraGroupKey, auraGroup = EasyBuff:GetAuraGroupBySpellId(spellId);
+		EasyBuff:Debug(format("EasyBuff:OnPostClick unit=%s spell=%s key=%s", tostring(unitTarget), tostring(spellId), tostring(auraGroupKey)), 1);
+		if (auraGroup ~= nil and auraGroupKey ~= nil) then
+			EasyBuff:RemoveFromBuffQueue(unitTarget, auraGroupKey);
+		end
 	end
 end
 
@@ -330,12 +342,10 @@ end
 	Update Cast Button
 ]]--
 function EasyBuff:UpdateCastButton(type, spell, unit)
-	EasyBuff:Debug(format("EasyBuff:UpdateCastButton [%s|%s|%s]", tostring(type), tostring(spell), tostring(unit)), 1);
 	if (not InCombatLockdown()) then
 		ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("type", type);
 		ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("spell", spell);
 		ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("unit", unit);
-		EasyBuff:Debug(format("EasyBuff:UpdateCastButton TEST [%s|%s|%s]", tostring(ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("type")), tostring(ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("spell")), tostring(ELVUI_EASYBUFF_PERFORM_BUTTON:GetAttribute("unit"))), 1);
 		return true;
 	else
 		EasyBuff:Debug("CANNOT UPDATE CAST BUTTON WHILE IN COMBAT", 1);
@@ -371,6 +381,10 @@ end
 ]]--
 function EasyBuff:RemoveFromBuffQueue(unitTarget, auraGroupKey)
 	EasyBuff:Debug(format("BuffQueue:Remove [%s] from [%s]", tostring(auraGroupKey), unitTarget), 2);
+
+	if (EasyBuff.PLAYER_NAME == unitTarget) then
+		unitTarget = "player";
+	end
 
 	local found = false;
 	EasyBuff:Debug(format("BuffQueue:Remove check UNIT [%s]: Result: %s", tostring(unitTarget), tostring(EasyBuff.UnitBuffQueue[unitTarget] ~= nil)),3) ;

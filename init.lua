@@ -35,7 +35,8 @@ EasyBuff.EXPIRATION_PERCENT = .1;  -- notify when buff reaches percent of buff d
 EasyBuff.EXPIRATION_BUFFER  = 3;   -- seconds to add to percent to account for shorter buffs
 EasyBuff.EXPIRATION_MINIMUM = 180; -- minimum seconds remaining before notifying
 
-EasyBuff.RELATION_SELF  = "self";
+EasyBuff.RELATION_SELF      = "self";
+EasyBuff.RELATION_MAIN_TANK = "main_tank";
 
 EasyBuff.CONTEXT_SOLO   = "solo";
 EasyBuff.CONTEXT_PARTY  = "party";
@@ -67,26 +68,28 @@ EasyBuff.CFG_REMOVE_EXISTING = "removeExistingBuff";
 EasyBuff.CFG_AUTOREMOVE      = "autoRemove";
 
 EasyBuff.CLASS_COLORS = {
-	["DRUID"]    = "|cffFF7D0A",
-	["HUNTER"]   = "|cffABD473",
-	["MAGE"]     = "|cff69CCF0",
-	["PALADIN"]  = "|cffF58CBA",
-	["PRIEST"]   = "|cffFFFFFF",
-	["ROGUE"]    = "|cffFFF569",
-	["SHAMAN"]   = "|cff0070DE",
-	["WARLOCK"]  = "|cff9482C9",
-	["WARRIOR"]  = "|cffC79C6E"
+	["DRUID"]       = "|cffFF7D0A",
+	["DEATHKNIGHT"] = "|cffC41E3A",
+	["HUNTER"]      = "|cffABD473",
+	["MAGE"]        = "|cff69CCF0",
+	["PALADIN"]     = "|cffF58CBA",
+	["PRIEST"]      = "|cffFFFFFF",
+	["ROGUE"]       = "|cffFFF569",
+	["SHAMAN"]      = "|cff0070DE",
+	["WARLOCK"]     = "|cff9482C9",
+	["WARRIOR"]     = "|cffC79C6E"
 };
 EasyBuff.CLASSES = {
-	["DRUID"]    = EasyBuff.CLASS_COLORS["DRUID"].."Druid".."|r",
-	["HUNTER"]   = EasyBuff.CLASS_COLORS["HUNTER"].."Hunter".."|r",
-	["MAGE"]     = EasyBuff.CLASS_COLORS["MAGE"].."Mage".."|r",
-	["PALADIN"]  = EasyBuff.CLASS_COLORS["PALADIN"].."Paladin".."|r",
-	["PRIEST"]   = EasyBuff.CLASS_COLORS["PRIEST"].."Priest".."|r",
-	["ROGUE"]    = EasyBuff.CLASS_COLORS["ROGUE"].."Rogue".."|r",
-	["SHAMAN"]   = EasyBuff.CLASS_COLORS["SHAMAN"].."Shaman".."|r",
-	["WARLOCK"]  = EasyBuff.CLASS_COLORS["WARLOCK"].."Warlock".."|r",
-	["WARRIOR"]  = EasyBuff.CLASS_COLORS["WARRIOR"].."Warrior".."|r"
+	["DRUID"]       = EasyBuff.CLASS_COLORS["DRUID"].."Druid".."|r",
+	["DEATHKNIGHT"] = EasyBuff.CLASS_COLORS["DEATHKNIGHT"].."Death Knight".."|r",
+	["HUNTER"]      = EasyBuff.CLASS_COLORS["HUNTER"].."Hunter".."|r",
+	["MAGE"]        = EasyBuff.CLASS_COLORS["MAGE"].."Mage".."|r",
+	["PALADIN"]     = EasyBuff.CLASS_COLORS["PALADIN"].."Paladin".."|r",
+	["PRIEST"]      = EasyBuff.CLASS_COLORS["PRIEST"].."Priest".."|r",
+	["ROGUE"]       = EasyBuff.CLASS_COLORS["ROGUE"].."Rogue".."|r",
+	["SHAMAN"]      = EasyBuff.CLASS_COLORS["SHAMAN"].."Shaman".."|r",
+	["WARLOCK"]     = EasyBuff.CLASS_COLORS["WARLOCK"].."Warlock".."|r",
+	["WARRIOR"]     = EasyBuff.CLASS_COLORS["WARRIOR"].."Warrior".."|r"
 };
 
 -- TODO: Refactor to use: https://wowwiki-archive.fandom.com/wiki/API_GetProfessionInfo
@@ -293,7 +296,7 @@ end
 	Colorize Text
 ]]--
 function EasyBuff:Colorize(text, color)
-	return format("%s%s%s", color, tostring(text), "|r") ;
+	return format("%s%s%s", tostring(color), tostring(text), "|r") ;
 end
 
 

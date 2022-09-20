@@ -48,6 +48,7 @@ L["Disable Announcements and buffing when character is in a 'resting' area."] = 
 
 -- Classes
 L["Druid"] = true;
+L["Death Knight"] = true;
 L["Hunter"] = true;
 L["Mage"] = true;
 L["Paladin"] = true;

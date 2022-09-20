@@ -33,7 +33,7 @@
           inherits="SecureActionButtonTemplate"
           parent="UIParent"
           toplevel="true"
-          hidden="false"
+          hidden="true"
           frameStrata="LOW"
           movable="false"
   >
