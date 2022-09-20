@@ -375,8 +375,8 @@ local EasyBuff_AuraGroups = {
 		defaultId= 14752,
 		selfOnly = false,
 		stacks   = false,
-		multi 	 = nil,
-		multiId  = nil
+		multi 	 = "Prayer of Spirit",
+		multiId  = 27681
 	},
 	TouchWeakness = {
 		class 	 = "PRIEST",
@@ -1451,6 +1451,19 @@ local EasyBuff_Auras = {
 	},
 	["25312"] = {
 		rank  = 5,
+		group = "DivineSpirit"
+	},
+	-- Priest: Prayer of Spirit
+	["27681"] = {
+		rank  = 1,
+		group = "DivineSpirit"
+	},
+	["32999"] = {
+		rank  = 2,
+		group = "DivineSpirit"
+	},
+	["48074"] = {
+		rank  = 3,
 		group = "DivineSpirit"
 	},
 	-- Shaman: Lightning Shield
