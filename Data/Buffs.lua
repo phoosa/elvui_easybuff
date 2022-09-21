@@ -68,6 +68,15 @@ local EasyBuff_AuraGroups = {
 		multi 	 = nil,
 		multiId  = nil
 	},
+	AOTDH = {
+		class 	 = "HUNTER",
+		name     = "Aspect of the Dragonhawk",
+		defaultId= 61846,
+		selfOnly = true,
+		stacks   = false,
+		multi 	 = nil,
+		multiId  = nil
+	},
 	AOTM = {
 		class 	 = "HUNTER",
 		multi 	 = nil,
@@ -401,7 +410,7 @@ local EasyBuff_AuraGroups = {
 	WaterShield = {
 		class 	 = "SHAMAN",
 		name     = "Water Shield",
-		defaultId= 24398,
+		defaultId= 52127,
 		selfOnly = true,
 		stacks   = 3,
 		multi 	 = nil,
@@ -566,6 +575,7 @@ local EasyBuff_TrackingTypes = {
 --[[
 	Auras
 	Used to define an Aura by SpellID
+	TODO: Refactor this, there's no reason to not auto-generate from simpler arrays
 ]]--
 local EasyBuff_Auras = {
 	-- Druid: Mark of the Wild
@@ -601,6 +611,10 @@ local EasyBuff_Auras = {
 		rank  = 8,
 		group = "MOTW"
 	},
+	["48469"] = {
+		rank  = 9,
+		group = "MOTW"
+	},
 	-- Druid: Gift of the Wild
 	["21849"] = {
 		rank  = 1,
@@ -614,6 +628,11 @@ local EasyBuff_Auras = {
 	},
 	["26991"] = {
 		rank  = 3,
+		group = "MOTW",
+		multi = true
+	},
+	["48470"] = {
+		rank  = 4,
 		group = "MOTW",
 		multi = true
 	},
@@ -644,6 +663,10 @@ local EasyBuff_Auras = {
 	},
 	["26992"] = {
 		rank  = 7,
+		group = "Thorns"
+	},
+	["53307"] = {
+		rank  = 8,
 		group = "Thorns"
 	},
 	-- Druid: Omen of Clarity
@@ -700,6 +723,15 @@ local EasyBuff_Auras = {
 	["27044"] = {
 		rank  = 8,
 		group = "AOTH"
+	},
+	-- Hunter: Aspect of the Dragonhawk
+	["61846"] = {
+		rank  = 1,
+		group = "AOTDH"
+	},
+	["61847"] = {
+		rank  = 2,
+		group = "AOTDH"
 	},
 	-- Hunter: Aspect of the Monkey
 	["13163"] = {
@@ -775,6 +807,10 @@ local EasyBuff_Auras = {
 		rank  = 6,
 		group = "AI"
 	},
+	["42995"] = {
+		rank  = 7,
+		group = "AI"
+	},
 	-- Mage: Arcane Brilliance
 	["23028"] = {
 		rank  = 1,
@@ -783,6 +819,11 @@ local EasyBuff_Auras = {
 	},
 	["27127"] = {
 		rank  = 2,
+		group = "AI",
+		multi = true
+	},
+	["43002"] = {
+		rank  = 3,
 		group = "AI",
 		multi = true
 	},
@@ -805,6 +846,10 @@ local EasyBuff_Auras = {
 	},
 	["27124"] = {
 		rank  = 5,
+		group = "IceArmor"
+	},
+	["43008"] = {
+		rank  = 6,
 		group = "IceArmor"
 	},
 	-- Mage: Frost Armor
@@ -834,12 +879,28 @@ local EasyBuff_Auras = {
 		group = "MageArmor"
 	},
 	["27125"] = {
-		rank  = 3,
+		rank  = 4,
+		group = "MageArmor"
+	},
+	["43023"] = {
+		rank  = 5,
+		group = "MageArmor"
+	},
+	["43024"] = {
+		rank  = 6,
 		group = "MageArmor"
 	},
 	-- Mage: Molten Armor
 	["30482"] = {
 		rank  = 1,
+		group = "MoltenArmor"
+	},
+	["43045"] = {
+		rank  = 2,
+		group = "MoltenArmor"
+	},
+	["43046"] = {
+		rank  = 3,
 		group = "MoltenArmor"
 	},
 	-- Mage: Ice Barrier
@@ -867,6 +928,14 @@ local EasyBuff_Auras = {
 		rank  = 6,
 		group = "IceBarrier"
 	},
+	["43038"] = {
+		rank  = 7,
+		group = "IceBarrier"
+	},
+	["43039"] = {
+		rank  = 8,
+		group = "IceBarrier"
+	},
 	-- Mage: Frost Ward
 	["6143"] = {
 		rank  = 1,
@@ -892,6 +961,10 @@ local EasyBuff_Auras = {
 		rank  = 6,
 		group = "FrostWard"
 	},
+	["43012"] = {
+		rank  = 7,
+		group = "FrostWard"
+	},
 	-- Mage: Fire Ward
 	["543"] = {
 		rank  = 1,
@@ -915,6 +988,10 @@ local EasyBuff_Auras = {
 	},
 	["27128"] = {
 		rank  = 6,
+		group = "FireWard"
+	},
+	["43010"] = {
+		rank  = 7,
 		group = "FireWard"
 	},
 	-- Mage: Mana Shield
@@ -946,6 +1023,14 @@ local EasyBuff_Auras = {
 		rank  = 7,
 		group = "ManaShield"
 	},
+	["43019"] = {
+		rank  = 8,
+		group = "ManaShield"
+	},
+	["43020"] = {
+		rank  = 9,
+		group = "ManaShield"
+	},
 	-- Mage: Dampen Magic
 	["604"] = {
 		rank  = 1,
@@ -971,6 +1056,10 @@ local EasyBuff_Auras = {
 		rank  = 6,
 		group = "DampenMagic"
 	},
+	["43015"] = {
+		rank  = 7,
+		group = "DampenMagic"
+	},
 	-- Mage: Amplify Magic
 	["1008"] = {
 		rank  = 1,
@@ -994,6 +1083,10 @@ local EasyBuff_Auras = {
 	},
 	["33946"] = {
 		rank  = 6,
+		group = "AmplifyMagic"
+	},
+	["43017"] = {
+		rank  = 7,
 		group = "AmplifyMagic"
 	},
 	-- Paladin: Blessing of Might
@@ -1029,6 +1122,14 @@ local EasyBuff_Auras = {
 		rank  = 8,
 		group = "BOM"
 	},
+	["48931"] = {
+		rank  = 9,
+		group = "BOM"
+	},
+	["48932"] = {
+		rank  = 10,
+		group = "BOM"
+	},
 	-- Paladin: Greater Blessing of Might
 	["25782"] = {
 		rank  = 1,
@@ -1042,6 +1143,16 @@ local EasyBuff_Auras = {
 	},
 	["27141"] = {
 		rank  = 3,
+		group = "BOM",
+		multi = true
+	},
+	["48933"] = {
+		rank  = 4,
+		group = "BOM",
+		multi = true
+	},
+	["48934"] = {
+		rank  = 5,
 		group = "BOM",
 		multi = true
 	},
@@ -1074,6 +1185,14 @@ local EasyBuff_Auras = {
 		rank  = 7,
 		group = "BOW"
 	},
+	["48935"] = {
+		rank  = 8,
+		group = "BOW"
+	},
+	["48936"] = {
+		rank  = 9,
+		group = "BOW"
+	},
 	-- Paladin: Greater Blessing of Wisdom
 	["25894"] = {
 		rank  = 1,
@@ -1090,17 +1209,27 @@ local EasyBuff_Auras = {
 		group = "BOW",
 		multi = true
 	},
-	-- Paladin: Blessing of Salvation
-	["1038"] = {
-		rank  = 1,
-		group = "BOSLV"
-	},
-	-- Paladin: Greater Blessing of Salvation
-	["25895"] = {
-		rank  = 1,
-		group = "BOSLV",
+	["48937"] = {
+		rank  = 4,
+		group = "BOW",
 		multi = true
 	},
+	["48938"] = {
+		rank  = 5,
+		group = "BOW",
+		multi = true
+	},
+	-- Paladin: Blessing of Salvation
+	--["1038"] = {
+	--	rank  = 1,
+	--	group = "BOSLV"
+	--},
+	-- Paladin: Greater Blessing of Salvation
+	--["25895"] = {
+	--	rank  = 1,
+	--	group = "BOSLV",
+	--	multi = true
+	--},
 	-- Paladin: Blessing of Kings
 	["20217"] = {
 		rank  = 1,
@@ -1210,6 +1339,14 @@ local EasyBuff_Auras = {
 		rank  = 8,
 		group = "DevoAura"
 	},
+	["48941"] = {
+		rank  = 9,
+		group = "DevoAura"
+	},
+	["48942"] = {
+		rank  = 10,
+		group = "DevoAura"
+	},
 	-- Paladin: Concentration Aura
 	["19746"] = {
 		rank  = 1,
@@ -1240,6 +1377,10 @@ local EasyBuff_Auras = {
 		rank  = 6,
 		group = "RetAura"
 	},
+	["54043"] = {
+		rank  = 7,
+		group = "RetAura"
+	},
 	-- Paladin: Fire Resistance Aura
 	["19891"] = {
 		rank  = 1,
@@ -1255,6 +1396,10 @@ local EasyBuff_Auras = {
 	},
 	["27153"] = {
 		rank  = 4,
+		group = "FireAura"
+	},
+	["48947"] = {
+		rank  = 5,
 		group = "FireAura"
 	},
 	-- Paladin: Frost Resistance Aura
@@ -1274,6 +1419,10 @@ local EasyBuff_Auras = {
 		rank  = 4,
 		group = "FrostAura"
 	},
+	["48945"] = {
+		rank  = 5,
+		group = "FrostAura"
+	},
 	-- Paladin: Shadow Resistance Aura
 	["19876"] = {
 		rank  = 1,
@@ -1289,6 +1438,10 @@ local EasyBuff_Auras = {
 	},
 	["27151"] = {
 		rank  = 4,
+		group = "ShadowAura"
+	},
+	["48943"] = {
+		rank  = 5,
 		group = "ShadowAura"
 	},
 	-- Paladin: Sanctity Aura
@@ -1325,6 +1478,10 @@ local EasyBuff_Auras = {
 		rank  = 7,
 		group = "FORT"
 	},
+	["48161"] = {
+		rank  = 8,
+		group = "FORT"
+	},
 	-- Priest: Prayer of Fortitude
 	["21562"] = {
 		rank  = 1,
@@ -1338,6 +1495,11 @@ local EasyBuff_Auras = {
 	},
 	["25392"] = {
 		rank  = 3,
+		group = "FORT",
+		multi = true
+	},
+	["48162"] = {
+		rank  = 4,
 		group = "FORT",
 		multi = true
 	},
@@ -1369,6 +1531,11 @@ local EasyBuff_Auras = {
 		group = "SP",
 		multi = true
 	},
+	["48170"] = {
+		rank  = 2,
+		group = "SP",
+		multi = true
+	},
 	-- Priest: Inner Fire
 	["588"] = {
 		rank  = 1,
@@ -1396,6 +1563,14 @@ local EasyBuff_Auras = {
 	},
 	["25431"] = {
 		rank  = 7,
+		group = "InnerFire"
+	},
+	["48040"] = {
+		rank  = 8,
+		group = "InnerFire"
+	},
+	["48168"] = {
+		rank  = 9,
 		group = "InnerFire"
 	},
 	-- Priest: Touch of Weakness
@@ -1453,6 +1628,10 @@ local EasyBuff_Auras = {
 		rank  = 5,
 		group = "DivineSpirit"
 	},
+	["48073"] = {
+		rank  = 6,
+		group = "DivineSpirit"
+	},
 	-- Priest: Prayer of Spirit
 	["27681"] = {
 		rank  = 1,
@@ -1503,6 +1682,14 @@ local EasyBuff_Auras = {
 		rank = 9,
 		group = "LightningShield"
 	},
+	["49280"] = {
+		rank = 10,
+		group = "LightningShield"
+	},
+	["49281"] = {
+		rank = 11,
+		group = "LightningShield"
+	},
 	-- Shaman: Earth Shield
 	["974"] = {
 		rank = 1,
@@ -1517,12 +1704,40 @@ local EasyBuff_Auras = {
 		group = "EarthShield"
 	},
 	-- Shaman: Water Shield
-	["24398"] = {
+	["52127"] = {
 		rank = 1,
 		group = "WaterShield"
 	},
-	["33736"] = {
+	["52129"] = {
 		rank = 2,
+		group = "WaterShield"
+	},
+	["52131"] = {
+		rank = 3,
+		group = "WaterShield"
+	},
+	["52134"] = {
+		rank = 4,
+		group = "WaterShield"
+	},
+	["52136"] = {
+		rank = 5,
+		group = "WaterShield"
+	},
+	["52138"] = {
+		rank = 6,
+		group = "WaterShield"
+	},
+	["24398"] = {
+		rank = 7,
+		group = "WaterShield"
+	},
+	["33736"] = {
+		rank = 8,
+		group = "WaterShield"
+	},
+	["57960"] = {
+		rank = 9,
 		group = "WaterShield"
 	},
 	-- Shaman: Water Breathing
@@ -1555,6 +1770,14 @@ local EasyBuff_Auras = {
 		rank  = 6,
 		group = "DemonArmor"
 	},
+	["47793"] = {
+		rank  = 7,
+		group = "DemonArmor"
+	},
+	["47889"] = {
+		rank  = 8,
+		group = "DemonArmor"
+	},
 	-- Warlock:  Fel Armor
 	["28176"] = {
 		rank  = 1,
@@ -1562,6 +1785,14 @@ local EasyBuff_Auras = {
 	},
 	["28189"] = {
 		rank  = 2,
+		group = "FelArmor"
+	},
+	["47892"] = {
+		rank  = 3,
+		group = "FelArmor"
+	},
+	["47893"] = {
+		rank  = 4,
 		group = "FelArmor"
 	},
 	-- Warlock: Shadow Ward
@@ -1579,6 +1810,14 @@ local EasyBuff_Auras = {
 	},
 	["28610"] = {
 		rank  = 4,
+		group = "ShadowWard"
+	},
+	["47890"] = {
+		rank  = 5,
+		group = "ShadowWard"
+	},
+	["47891"] = {
+		rank  = 6,
 		group = "ShadowWard"
 	},
 	-- Warlock: Detect Invisibility
