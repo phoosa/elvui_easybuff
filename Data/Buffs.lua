@@ -233,15 +233,15 @@ local EasyBuff_AuraGroups = {
 		multi 	 = "Greater Blessing of Wisdom",
 		multiId  = 25894
 	},
-	BOSLV = {
-		class 	 = "PALADIN",
-		name     = "Blessing of Salvation",
-		defaultId= 1038,
-		selfOnly = false,
-		stacks   = false,
-		multi 	 = "Greater Blessing of Salvation",
-		multiId  = 25895
-	},
+	-- BOSLV = {
+	-- 	class 	 = "PALADIN",
+	-- 	name     = "Blessing of Salvation",
+	-- 	defaultId= 1038,
+	-- 	selfOnly = false,
+	-- 	stacks   = false,
+	-- 	multi 	 = "Greater Blessing of Salvation",
+	-- 	multiId  = 25895
+	-- },
 	BOK = {
 		class 	 = "PALADIN",
 		name     = "Blessing of Kings",
@@ -260,15 +260,15 @@ local EasyBuff_AuraGroups = {
 		multi 	 = "Greater Blessing of Sanctuary",
 		multiId  = 25899
 	},
-	BOL = {
-		class 	 = "PALADIN",
-		name     = "Blessing of Light",
-		defaultId= 19977,
-		selfOnly = false,
-		stacks   = false,
-		multi 	 = "Greater Blessing of Light",
-		multiId  = 25890
-	},
+	-- BOL = {
+	-- 	class 	 = "PALADIN",
+	-- 	name     = "Blessing of Light",
+	-- 	defaultId= 19977,
+	-- 	selfOnly = false,
+	-- 	stacks   = false,
+	-- 	multi 	 = "Greater Blessing of Light",
+	-- 	multiId  = 25890
+	-- },
 	RFury = {
 		class 	 = "PALADIN",
 		name     = "Righteous Fury",
@@ -491,6 +491,14 @@ local EasyBuff_AuraGroups = {
 	Keyed by Tracking Spell ID
 ]]--
 local EasyBuff_TrackingTypes = {
+    -- Paladin
+    ["5502"] = {
+        class 	 = "PALADIN",
+		prof     = nil,
+		name     = "Sense Undead",
+		spellId  = 5502,
+		texture  = 135974
+    },
 	-- Hunter
 	["1494"] = {
 		class 	 = "HUNTER",
@@ -1875,7 +1883,7 @@ function EasyBuff:InitAuras()
 					rank = aura.rank
 				};
 				-- Update the spell name in the Aura Group (locale cheating)
-				EasyBuff_AuraGroups[aura.group].name = spellName;
+				-- EasyBuff_AuraGroups[aura.group].name = spellName;
 			end
 		else
 			-- Is this spell defined in our list of Tracking Types?

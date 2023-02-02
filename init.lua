@@ -43,6 +43,10 @@ EasyBuff.CONTEXT_PARTY  = "party";
 EasyBuff.CONTEXT_RAID   = "raid";
 EasyBuff.CONTEXT_BG     = "bg";
 
+EasyBuff.ROLE_TANK      = "role_tank";
+EasyBuff.ROLE_DPS       = "role_dps";
+EasyBuff.ROLE_HEAL      = "role_heal";
+
 EasyBuff.CFG_KEYBINDING = "keybinding";
 
 EasyBuff.CFG_FEATURE_WANTED   = "wanted";

@@ -610,9 +610,9 @@ function EasyBuff:RebuildBuffQueue()
 
 	-- Check Tracking Ability.
 	if (trackingAbility ~= nil) then
-		local count = GetNumTrackingTypes();
+		local count = C_Minimap.GetNumTrackingTypes();
 		for i=1,count do 
-			local _, texture, active, _ = GetTrackingInfo(i);
+			local _, texture, active, _ = C_Minimap.GetTrackingInfo(i);
 			if (trackingAbility == texture and active ~= true) then
 				if (UnitsToBuff["player"] == nil) then
 					UnitsToBuff["player"] = {};

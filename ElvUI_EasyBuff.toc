@@ -1,6 +1,6 @@
-## Interface: 30400
+## Interface: 30401
 ## Author: Phoosa
-## Version: 1.7.1
+## Version: 1.8.1
 ## Title: |cff1784d1ElvUI Classic|r Easy Buff
 ## Notes: Never forget to rebuff yourself or your party again.  EasyBuff monitors buffs, provides notifications when a buff is missing or expiring soon, and allows you to quickly reapply them with a mousewheel scroll.
 ## RequiredDeps: ElvUI

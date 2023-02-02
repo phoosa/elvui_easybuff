@@ -28,14 +28,32 @@ P.EasyBuff = {
 						general = {
 							selfOnlyCast = false,
 							instanceOnly = false
-						}
+						},
+                        role_tank = {
+                            -- This will be auto-populated with your characters buff abilities
+                        },
+                        role_heal = {
+                            -- This will be auto-populated with your characters buff abilities
+                        },
+                        role_dps = {
+                            -- This will be auto-populated with your characters buff abilities
+                        }
 						-- This will be auto-populated with your characters buff abilities
 					},
 					raid = {
 						general = {
 							selfOnlyCast = false,
 							instanceOnly = false
-						}
+						},
+                        role_tank = {
+                            -- This will be auto-populated with your characters buff abilities
+                        },
+                        role_heal = {
+                            -- This will be auto-populated with your characters buff abilities
+                        },
+                        role_dps = {
+                            -- This will be auto-populated with your characters buff abilities
+                        }
 						-- This will be auto-populated with your characters buff abilities
 					},
 					bg = {
