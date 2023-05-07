@@ -1,14 +1,27 @@
 ## Interface: 30401
 ## Author: Phoosa
-## Version: 1.8.1
+## Version: 2.0.0
 ## Title: |cff1784d1ElvUI Classic|r Easy Buff
 ## Notes: Never forget to rebuff yourself or your party again.  EasyBuff monitors buffs, provides notifications when a buff is missing or expiring soon, and allows you to quickly reapply them with a mousewheel scroll.
 ## RequiredDeps: ElvUI
 ## DefaultState: Enabled
-
-Locales\load_locales.xml
-# lib\LibStub\LibStub.lua
-# lib\LibClassicDurations\LibClassicDurations.xml
+## X-Tukui-ProjectID: 12
+## X-Tukui-ProjectFolders: ElvUI_EasyBuff
 
 ElvUI_EasyBuff.xml
-
+Locales\load_locales.xml
+EasyBuff.lua
+Data\Spells.lua
+Data\DefaultSettings.lua
+Models\AvailableSpell.lua
+Models\MonitoredSpell.lua
+Models\TrackingAbility.lua
+Core\Announce.lua
+Core\Events.lua
+Core\Monitor.lua
+Core\Scan.lua
+Core\PerformCast.lua
+Config\Table.lua
+Config\Generators.lua
+Config\SavedData.lua
+Config\Helpers.lua

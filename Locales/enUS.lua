@@ -1,66 +1,74 @@
 -- English localization file for enUS and enGB.
-local L = ElvUI[1].Libs.ACL:NewLocale("ElvUI_TauntAlert", "enUS", true, true);
+local L = ElvUI[1].Libs.ACL:NewLocale("ElvUI_EasyBuff", "enUS", true, true);
 
+-- Messages
+L["%s needs %s"] = true;
+L["Activity context changed to %s"] = true;
+L["Talent Spec context changed to %s"] = true;
+L["Announcements"] = true;
 
+-- Config Table
 L["General"] = true;
 L["Enable"] = true;
 L["Enables / disables the addon"] = true;
-L["Auto-detect"] = true;
-L["Active Context"] = true;
-L["Announcements"] = true;
-L["Announce Context Change"] = true;
-L["Announce To"] = true;
-L["HUD"] = true;
-L["Chat Window"] = true;
-L["Miscellaneous"] = true;
-L["Buffs"] = true;
-L["Solo"] = true;
-L["Solo Context"] = true;
-L["Party"] = true;
-L["Party Context"] = true;
-L["General Party Settings"] = true;
-L["Raid"] = true;
-L["Raid Context"] = true;
-L["General Raid Settings"] = true;
-L["Battleground"] = true;
-L["Battleground Context"] = true;
-L["General Battleground Settings"] = true;
-L["Context changed to: %s"] = true;
-L["NO CONTEXT FOUND!"] = true;
-L["%s needs %s"] = true;
-L["Select who should be monitored for each Buff.  If none are selected, the Buff will not be monitored.\n"] = true;
-L["Select the buffs that you want to keep on yourself when playing solo.\n"] = true;
-L["Cast this instead of %s"] = true;
+L["Active Spec"] = true;
+L["All Talent Specs"] = true;
+L["Primary Spec"] = true;
+L["Secondary Spec"] = true;
+L["Activity Context"] = true;
 L["Select which context configuration to use. (recommended) Auto-detect will automatically switch the context depending on group size/type, or zone."] = true;
-L["How would you like to be notified of players missing Buffs?"] = true;
-L["Select the Chat Window to display Easy Buff announcements in."] = true;
-L["not learned"] = true;
-L["Myself"] = true;
-L["Cast on myself"] = true;
+L["All Activities"] = true;
+L["Talent Spec based Config"] = true;
+L["Define different buff configuration rules to use when your Secondary Talent Spec is active."] = true;
+L["Activity based Config"] = true;
+L["Define different buff configuration rules for different activities: solo, party, raid, bg."] = true;
+L["Monitoring"] = true;
 L["Early Monitoring"] = true;
-L["Announce and refresh buffs before they expire."] = true;
 L["Auto-Remove before self-buff"] = true;
 L["Automatically remove buff before applying new buff. Lesser buffs cannot overwrite greater, enabling this feature will ensure refreshing a buff doesn't error. This is only necessary with 'Early Monitoring' enabled."] = true;
-L["Instance Only"] = true;
-L["Disable Announcements and buffing when not in an instance."] = true;
+L["Announce To"] = true;
+L["How would you like to be notified of players missing Buffs?"] = true;
+L["HUD is a moveable frame, click 'Toggle Anchors' and move the frame labeled:"] = true;
+L["Chat Window"] = true;
+L["HUD"] = true;
+L["Select the Chat Window to display EasyBuff announcements in."] = true;
+L["Announce Activity Context Change"] = true;
+L["Enable / disable Activity Context Change announcements."] = true;
+L["Keybinds"] = true;
+L["Buff Casting bound to key:"] = true;
+L["Change which key to use to apply buffs."] = true;
+L["Buff Removal bound to key:"] = true;
+L["Change which key to use to remove unwanted buffs."] = true;
+L["Solo"] = true;
+L["Party"] = true;
+L["Raid"] = true;
+L["Battleground"] = true;
+L["Solo Activity"] = true;
+L["Party Activity"] = true;
+L["Raid Activity"] = true;
+L["Battleground Activity"] = true;
+L["Wanted Buffs"] = true;
+L["Unwanted Buffs"] = true;
+L["Add Unwanted Buff"] = true;
+L["Insert Spell name or id"] = true;
+L["Click to remove"] = true;
+L["Any Role"] = true;
+L["Tank"] = true;
+L["Heal"] = true;
+L["DPS"] = true;
+L["Myself"] = true;
+L["Configure which buffs you would like to monitor on yourself."] = true;
+L["Configure which buffs you would like to monitor for this class."] = true;
+L["Armor/Aura/Shield"] = true;
+L["Linked buffs that a player may only have one of."] = true;
+L["Available Buffs"] = true;
 L["Disable when Resting"] = true;
-L["Disable Announcements and buffing when character is in a 'resting' area."] = true;
-
--- Classes
-L["Druid"] = true;
-L["Death Knight"] = true;
-L["Hunter"] = true;
-L["Mage"] = true;
-L["Paladin"] = true;
-L["Priest"] = true;
-L["Rogue"] = true;
-L["Shaman"] = true;
-L["Warlock"] = true;
-L["Warrior"] = true;
-
--- Professions
-L["Herbalism"] = true;
-L["Mining"] = true;
-
--- Spells
-
+L["Disable Monitoring when character is in a 'resting' area."] = true;
+L["Instance Only"] = true;
+L["Disable Monitoring when not in an instance."] = true;
+L["Cast on self only"] = true;
+L["Disables buff casting on players other than yourself. You will still be notified of other players needed buffs but you will have to manually buff them."] = true;
+L["Copy Configuration From:"] = true;
+L["Select another Activity Context to copy it's configuration into this Activity Context."] = true;
+L["Tracking Ability"] = true;
+L["Select only one."] = true;

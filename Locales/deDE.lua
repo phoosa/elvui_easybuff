@@ -1,62 +1,74 @@
--- German localization file for german.
-local L = ElvUI[1].Libs.ACL:NewLocale("ElvUI_TauntAlert", "deDE", true, true);
+-- English localization file for enUS and enGB.
+local L = ElvUI[1].Libs.ACL:NewLocale("ElvUI_EasyBuff", "deDE");
 
-
-L["General"] = "Allgemeines";
-L["Enable"] = "Aktivieren";
-L["Enables / disables the addon"] = "aktiviert / deaktiviert das Addon";
-L["Auto-detect"] = "Automatische Erkennung";
-L["Active Context"] = "Aktiver Kontext";
+-- Messages
+L["%s needs %s"] = "% braucht %";
+L["Activity context changed to %s"] = "Aktivitätskontext geändert zu %s";
+L["Talent Spec context changed to %s"] = "Talentspezifikationskontext geändert zu %s";
 L["Announcements"] = "Ankündigungen";
-L["Announce Context Change"] = "Kontextänderung ankündigen";
-L["Announce To"] = "Ankündigen an";
-L["HUD"] = true;
-L["Chat Window"] = "Chat-Fenster";
-L["Miscellaneous"] = "Sonstiges";
-L["Buffs"] = "Verbesserungen";
-L["Solo"] = true;
-L["Solo Context"] = "Solo Kontext";
-L["Party"] = "Gruppe";
-L["Party Context"] = "Gruppe Kontext";
-L["General Party Settings"] = "Allgemeine Gruppeneinstellungen";
-L["Raid"] = "Überfall";
-L["Raid Context"] = "Überfall Kontext";
-L["General Raid Settings"] = "Allgemeine Raid-Einstellungen";
-L["Battleground"] = "Schlachtfeld";
-L["Battleground Context"] = "Schlachtfeld Kontext";
-L["General Battleground Settings"] = "Allgemeine Schlachtfeldeinstellungen";
-L["Context changed to: %s"] = "Der Kontext wurde geändert in:";
-L["NO CONTEXT FOUND!"] = "KEIN KONTEXT GEFUNDEN!";
-L["%s needs %s"] = "%s braucht %s";
-L["Select who should be monitored for each Buff.  If none are selected, the Buff will not be monitored.\n"] = "Wählen Sie aus, wer für jeden Buff überwacht werden soll. Wenn keine ausgewählt ist, wird der Buff nicht überwacht.\n";
-L["Select the buffs that you want to keep on yourself when playing solo.\n"] = "Wählen Sie die Buffs aus, die Sie beim Solo-Spielen behalten möchten.\n";
-L["Cast this instead of %s"] = "Wirf dies anstelle von %s";
-L["Select which context configuration to use. (recommended) Auto-detect will automatically switch the context depending on group size/type, or zone."] = "Wählen Sie die zu verwendende Kontextkonfiguration aus. (empfohlen) Durch die automatische Erkennung wird der Kontext je nach Gruppengröße, Typ oder Zone automatisch umgeschaltet.";
-L["How would you like to be notified of players missing Buffs?"] = "Wie möchten Sie über Spieler informiert werden, denen Buffs fehlen?";
-L["Select the Chat Window to display Easy Buff announcements in."] = "Wählen Sie das Chat-Fenster aus, um Easy Buff-Ankündigungen in anzuzeigen.";
-L["not learned"] = "nicht gelernt";
-L["Myself"] = "Mich selber";
-L["Cast on myself"] = "Wirf mich an";
+
+-- Config Table
+L["General"] = "Allgemein";
+L["Enable"] = "Ermöglichen";
+L["Enables / disables the addon"] = "Aktiviert / deaktiviert das Addon";
+L["Active Spec"] = "Aktive Spez";
+L["All Talent Specs"] = "Alle Talentspezifikationen";
+L["Primary Spec"] = "Primäre Spezifikation";
+L["Secondary Spec"] = "Sekundäre Spezifikation";
+L["Activity Context"] = "Aktivitätskontext";
+L["Select which context configuration to use. (recommended) Auto-detect will automatically switch the context depending on group size/type, or zone."] = "Wählen Sie die zu verwendende Kontextkonfiguration aus. (empfohlen) Die automatische Erkennung wechselt automatisch den Kontext je nach Gruppengröße/-typ oder Zone.";
+L["All Activities"] = "Alle Aktivitäten";
+L["Talent Spec based Config"] = "Talentspezifikationsbasierte Konfiguration";
+L["Define different buff configuration rules to use when your Secondary Talent Spec is active."] = "Definieren Sie verschiedene Buff-Konfigurationsregeln, die verwendet werden, wenn Ihre sekundäre Talentspezifikation aktiv ist.";
+L["Activity based Config"] = "Aktivitätsbasierte Konfiguration";
+L["Define different buff configuration rules for different activities: solo, party, raid, bg."] = "Definiere verschiedene Buff-Konfigurationsregeln für verschiedene Aktivitäten: Solo, Gruppe, Überfallen, Schlachtfeld.";
+L["Monitoring"] = "Überwachung";
 L["Early Monitoring"] = "Frühzeitige Überwachung";
-L["Announce and refresh buffs before they expire."] = "Kündige Buffs an und aktualisiere sie, bevor sie ablaufen.";
-L["Auto-Remove before self-buff"] = "Vor dem Selbstpolieren automatisch entfernen";
-L["Automatically remove buff before applying new buff. Lesser buffs cannot overwrite greater, enabling this feature will ensure refreshing a buff doesn't error. This is only necessary with 'Early Monitoring' enabled."] = "Buff automatisch entfernen, bevor neuer Buff angewendet wird. Kleinere Buffs können nicht größer überschrieben werden. Wenn Sie diese Funktion aktivieren, wird sichergestellt, dass das Aktualisieren eines Buffs nicht fehlerhaft ist. Dies ist nur bei aktivierter 'Frühüberwachung' erforderlich.";
-
--- Classes
-L["Druid"] = "Druide";
-L["Death Knight"] = true;
-L["Hunter"] = "Jäger";
-L["Mage"] = "Magier";
-L["Paladin"] = "Paladin";
-L["Priest"] = "Priester";
-L["Rogue"] = "Schurke";
-L["Shaman"] = "Schamane";
-L["Warlock"] = "Hexenmeister";
-L["Warrior"] = "Krieger";
-
--- Professions
-L["Herbalism"] = "Kräuterkunde";
-L["Mining"] = "Bergbau";
-
--- Spells
-
+L["Auto-Remove before self-buff"] = "Automatisches Entfernen vor dem Selbstbuff";
+L["Automatically remove buff before applying new buff. Lesser buffs cannot overwrite greater, enabling this feature will ensure refreshing a buff doesn't error. This is only necessary with 'Early Monitoring' enabled."] = "Buff automatisch entfernen, bevor neuer Buff angewendet wird. Geringere Buffs können größere nicht überschreiben. Wenn Sie diese Funktion aktivieren, wird sichergestellt, dass das Aktualisieren eines Buffs nicht fehlschlägt. Dies ist nur bei aktiviertem 'Frühzeitige Überwachung' notwendig.";
+L["Announce To"] = "Ankündigen an";
+L["How would you like to be notified of players missing Buffs?"] = "Wie möchtest du benachrichtigt werden, wenn Spieler Buffs vermissen?";
+L["HUD is a moveable frame, click 'Toggle Anchors' and move the frame labeled:"] = "HUD ist ein beweglicher Rahmen, klicken Sie auf 'Anker umschalten' und verschieben Sie den Rahmen mit der Bezeichnung:";
+L["Chat Window"] = "Gesprächsfenster";
+L["HUD"] = "HUD";
+L["Select the Chat Window to display EasyBuff announcements in."] = "Wählen Sie das Chat-Fenster aus, um EasyBuff-Ankündigungen anzuzeigen.";
+L["Announce Activity Context Change"] = "Änderung des Aktivitätskontexts ankündigen";
+L["Enable / disable Activity Context Change announcements."] = "Aktivieren / Deaktivieren von Ankündigungen zum Ändern des Aktivitätskontexts.";
+L["Keybinds"] = "Tastenkombinationen";
+L["Buff Casting bound to key:"] = "Buff-Casting an Schlüssel gebunden:";
+L["Change which key to use to apply buffs."] = "Ändern Sie, welche Taste zum Anwenden von Buffs verwendet werden soll.";
+L["Buff Removal bound to key:"] = "Buff-Entfernung an Schlüssel gebunden:";
+L["Change which key to use to remove unwanted buffs."] = "Ändern Sie, welche Taste verwendet werden soll, um unerwünschte Buffs zu entfernen.";
+L["Solo"] = "Solo";
+L["Party"] = "Gruppe";
+L["Raid"] = "Überfallen";
+L["Battleground"] = "Schlachtfeld";
+L["Solo Activity"] = "Solo-Aktivität";
+L["Party Activity"] = "Gruppenaktivität";
+L["Raid Activity"] = "Überfallen-Aktivität";
+L["Battleground Activity"] = "Schlachtfeld-Aktivität";
+L["Wanted Buffs"] = "Gesuchte Buffs";
+L["Unwanted Buffs"] = "Unerwünschte Buffs";
+L["Add Unwanted Buff"] = "Unerwünschten Buff hinzufügen";
+L["Insert Spell name or id"] = "Name oder ID einfügen von Zauber";
+L["Click to remove"] = "Zum Entfernen anklicken";
+L["Any Role"] = "Jede Rolle";
+L["Tank"] = "Panzer";
+L["Heal"] = "Heilen";
+L["DPS"] = "Schaden";
+L["Myself"] = "Ich selbst";
+L["Configure which buffs you would like to monitor on yourself."] = "Konfigurieren Sie, welche Buffs Sie selbst überwachen möchten.";
+L["Configure which buffs you would like to monitor for this class."] = "Konfigurieren Sie, welche Buffs Sie für diese Klasse überwachen möchten.";
+L["Armor/Aura/Shield"] = "Rüstung/Aura/Schild";
+L["Linked buffs that a player may only have one of."] = "Verknüpfte Buffs, von denen ein Spieler nur einen haben darf.";
+L["Available Buffs"] = "Verfügbare Buffs";
+L["Disable when Resting"] = "Im Ruhezustand deaktivieren";
+L["Disable Monitoring when character is in a 'resting' area."] = "Deaktivieren Sie die Überwachung, wenn sich der Charakter in einem 'Ruhebereich' befindet.";
+L["Instance Only"] = "Nur Instanz";
+L["Disable Monitoring when not in an instance."] = "Deaktivieren Sie die Überwachung, wenn Sie sich nicht in einer Instanz befinden.";
+L["Cast on self only"] = "Nur auf sich selbst wirken";
+L["Disables buff casting on players other than yourself. You will still be notified of other players needed buffs but you will have to manually buff them."] = "Deaktiviert Buff-Casting auf andere Spieler als Sie selbst. Sie werden weiterhin über andere Spieler benachrichtigt, die Buffs benötigen, aber Sie müssen sie manuell buffen.";
+L["Copy Configuration From:"] = "Konfiguration kopieren von:";
+L["Select another Activity Context to copy it's configuration into this Activity Context."] = "Wählen Sie einen anderen Aktivitätskontext aus, um seine Konfiguration in diesen Aktivitätskontext zu kopieren.";
+L["Tracking Ability"] = "Tracking-Fähigkeit";
+L["Select only one."] = "Wählen Sie nur eine aus.";

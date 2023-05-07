@@ -1,103 +1,217 @@
 --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local E, L, V, P, G = unpack(ElvUI);
-local PLAYER_NAME, PLAYER_REALM = UnitName("player");
-local PLAYER_REALM = GetRealmName();
+local EasyBuff = E:GetModule("EasyBuff");
 
 P.EasyBuff = {
-	[PLAYER_REALM] = {
-		[PLAYER_NAME] = {
-			wanted = {
-				general = {
-					enable = true,
-					context = EasyBuff.CFG_CONTEXT_AUTO,
-					announceContextChange = true,
-					announce = EasyBuff.CFG_ANN_HUD,
-					announceWindow = nil,
-					notifyEarly = true,
-					removeExistingBuff = true,
-					keybinding = "MOUSEWHEELDOWN"
-				},
-				context = {
-					solo = {
-						-- This will be auto-populated with your characters buff abilities
-						general = {
-							notResting = false
-						}
-					},
-					party = {
-						general = {
-							selfOnlyCast = false,
-							instanceOnly = false
-						},
-                        role_tank = {
-                            -- This will be auto-populated with your characters buff abilities
-                        },
-                        role_heal = {
-                            -- This will be auto-populated with your characters buff abilities
-                        },
-                        role_dps = {
-                            -- This will be auto-populated with your characters buff abilities
-                        }
-						-- This will be auto-populated with your characters buff abilities
-					},
-					raid = {
-						general = {
-							selfOnlyCast = false,
-							instanceOnly = false
-						},
-                        role_tank = {
-                            -- This will be auto-populated with your characters buff abilities
-                        },
-                        role_heal = {
-                            -- This will be auto-populated with your characters buff abilities
-                        },
-                        role_dps = {
-                            -- This will be auto-populated with your characters buff abilities
-                        }
-						-- This will be auto-populated with your characters buff abilities
-					},
-					bg = {
-						general = {
-							selfOnlyCast = false,
-							instanceOnly = false
-						}
-						-- This will be auto-populated with your characters buff abilities
-					}
-				}
-			},
-			unwanted = {
-				general = {
-					enable = false,
-					autoRemove = true,
-					announce = EasyBuff.CFG_ANN_HUD,
-					announceWindow = nil,
-					removeInCombat = false,
-					keybinding = "CTRL-MOUSEWHEELDOWN"
-				},
-				auras = {
-					-- This list will be populated with additional aura's that you want to be notified about
-					["25895"] = false,
-					["1038"] = false
-				}
-			},
-			tracking = {
-				context = {
-					solo = {
-						-- This will be auto-populated with your characters buff abilities
-					},
-					party = {
-						-- This will be auto-populated with your characters buff abilities
-					},
-					raid = {
-						-- This will be auto-populated with your characters buff abilities
-					},
-					bg = {
-						-- This will be auto-populated with your characters buff abilities
-					}
-				}
-			},
-			consumes = {},
-			weapons = {}
-		}
-	}
+    [EasyBuff.PLAYER_REALM] = {
+        [EasyBuff.PLAYER_NAME] = {
+            [EasyBuff.CFG_GROUP.GLOBAL] = {
+                [EasyBuff.CFG_KEY.ENABLE] = true,
+                [EasyBuff.CFG_KEY.CONTEXT] = EasyBuff.CONTEXT_AUTO,
+                [EasyBuff.CFG_KEY.ANN_LOCATION] = EasyBuff.CFG_ANN_HUD,
+                [EasyBuff.CFG_KEY.ANN_WINDOW] = nil,
+                [EasyBuff.CFG_KEY.ANN_CTX_CHANGE] = true,
+                [EasyBuff.CFG_KEY.ANN_EARLY] = true,
+                [EasyBuff.CFG_KEY.SELF_REMOVE_EXIST] = true,
+                [EasyBuff.CFG_KEY.CFG_BY_SPEC] = true,
+                [EasyBuff.CFG_KEY.CFG_BY_CONTEXT] = true
+            },
+            [EasyBuff.CFG_GROUP.KEYBIND] = {
+                [EasyBuff.CFG_KEY.BIND_CASTBUFF] = "MOUSEWHEELDOWN",
+                [EasyBuff.CFG_KEY.BIND_REMOVEBUFF] = "CTRL-MOUSEWHEELDOWN"
+            },
+            [EasyBuff.TALENT_SPEC_PRIMARY] = {
+                [EasyBuff.CONTEXT.SOLO] = {
+                    [EasyBuff.CFG_GROUP.GENERAL] = {
+                        [EasyBuff.CFG_KEY.DISABLE_RESTING] = false,
+                        [EasyBuff.CFG_KEY.DISABLE_NOINSTANCE] = false,
+                        [EasyBuff.CFG_KEY.SELF_ONLY_CAST] = true,
+                        [EasyBuff.CFG_KEY.CAST_GREATER] = false,
+                        [EasyBuff.CFG_KEY.CAST_GREATER_MIN] = 1
+                    },
+                    [EasyBuff.CFG_GROUP.UNWANTED] = {
+                        
+                    },
+                    [EasyBuff.CFG_GROUP.WANTED] = {
+                        [EasyBuff.PLAYER] = {}
+                    },
+                    [EasyBuff.CFG_GROUP.TRACKING] = {}
+                },
+                [EasyBuff.CONTEXT.PARTY] = {
+                    [EasyBuff.CFG_GROUP.GENERAL] = {
+                        [EasyBuff.CFG_KEY.DISABLE_RESTING] = false,
+                        [EasyBuff.CFG_KEY.DISABLE_NOINSTANCE] = false,
+                        [EasyBuff.CFG_KEY.SELF_ONLY_CAST] = true,
+                        [EasyBuff.CFG_KEY.CAST_GREATER] = false,
+                        [EasyBuff.CFG_KEY.CAST_GREATER_MIN] = 2
+                    },
+                    [EasyBuff.CFG_GROUP.UNWANTED] = {
+                        
+                    },
+                    [EasyBuff.CFG_GROUP.WANTED] = {
+                        [EasyBuff.PLAYER] = {},
+                        DEATHKNIGHT = {},
+                        DRUID = {},
+                        HUNTER = {},
+                        MAGE = {},
+                        PALADIN = {},
+                        PRIEST = {},
+                        ROGUE = {},
+                        SHAMAN = {},
+                        WARLOCK = {},
+                        WARRIOR = {}
+                    },
+                    [EasyBuff.CFG_GROUP.TRACKING] = {}
+                },
+                [EasyBuff.CONTEXT.RAID] = {
+                    [EasyBuff.CFG_GROUP.GENERAL] = {
+                        [EasyBuff.CFG_KEY.DISABLE_RESTING] = false,
+                        [EasyBuff.CFG_KEY.DISABLE_NOINSTANCE] = false,
+                        [EasyBuff.CFG_KEY.SELF_ONLY_CAST] = true,
+                        [EasyBuff.CFG_KEY.CAST_GREATER] = false,
+                        [EasyBuff.CFG_KEY.CAST_GREATER_MIN] = 3
+                    },
+                    [EasyBuff.CFG_GROUP.UNWANTED] = {
+                        
+                    },
+                    [EasyBuff.CFG_GROUP.WANTED] = {
+                        [EasyBuff.PLAYER] = {},
+                        DEATHKNIGHT = {},
+                        DRUID = {},
+                        HUNTER = {},
+                        MAGE = {},
+                        PALADIN = {},
+                        PRIEST = {},
+                        ROGUE = {},
+                        SHAMAN = {},
+                        WARLOCK = {},
+                        WARRIOR = {}
+                    },
+                    [EasyBuff.CFG_GROUP.TRACKING] = {}
+                },
+                [EasyBuff.CONTEXT.BG] = {
+                    [EasyBuff.CFG_GROUP.GENERAL] = {
+                        [EasyBuff.CFG_KEY.DISABLE_RESTING] = false,
+                        [EasyBuff.CFG_KEY.DISABLE_NOINSTANCE] = false,
+                        [EasyBuff.CFG_KEY.SELF_ONLY_CAST] = true,
+                        [EasyBuff.CFG_KEY.CAST_GREATER] = false,
+                        [EasyBuff.CFG_KEY.CAST_GREATER_MIN] = 1
+                    },
+                    [EasyBuff.CFG_GROUP.UNWANTED] = {
+                        
+                    },
+                    [EasyBuff.CFG_GROUP.WANTED] = {
+                        [EasyBuff.PLAYER] = {},
+                        DEATHKNIGHT = {},
+                        DRUID = {},
+                        HUNTER = {},
+                        MAGE = {},
+                        PALADIN = {},
+                        PRIEST = {},
+                        ROGUE = {},
+                        SHAMAN = {},
+                        WARLOCK = {},
+                        WARRIOR = {}
+                    },
+                    [EasyBuff.CFG_GROUP.TRACKING] = {}
+                }
+            },
+            [EasyBuff.TALENT_SPEC_SECONDARY] = {
+                [EasyBuff.CONTEXT.SOLO] = {
+                    [EasyBuff.CFG_GROUP.GENERAL] = {
+                        [EasyBuff.CFG_KEY.DISABLE_RESTING] = false,
+                        [EasyBuff.CFG_KEY.DISABLE_NOINSTANCE] = false,
+                        [EasyBuff.CFG_KEY.SELF_ONLY_CAST] = true,
+                        [EasyBuff.CFG_KEY.CAST_GREATER] = false,
+                        [EasyBuff.CFG_KEY.CAST_GREATER_MIN] = 1
+                    },
+                    [EasyBuff.CFG_GROUP.UNWANTED] = {
+                        
+                    },
+                    [EasyBuff.CFG_GROUP.WANTED] = {
+                        [EasyBuff.PLAYER] = {}
+                    },
+                    [EasyBuff.CFG_GROUP.TRACKING] = {}
+                },
+                [EasyBuff.CONTEXT.PARTY] = {
+                    [EasyBuff.CFG_GROUP.GENERAL] = {
+                        [EasyBuff.CFG_KEY.DISABLE_RESTING] = false,
+                        [EasyBuff.CFG_KEY.DISABLE_NOINSTANCE] = false,
+                        [EasyBuff.CFG_KEY.SELF_ONLY_CAST] = true,
+                        [EasyBuff.CFG_KEY.CAST_GREATER] = false,
+                        [EasyBuff.CFG_KEY.CAST_GREATER_MIN] = 2
+                    },
+                    [EasyBuff.CFG_GROUP.UNWANTED] = {
+                        
+                    },
+                    [EasyBuff.CFG_GROUP.WANTED] = {
+                        [EasyBuff.PLAYER] = {},
+                        DEATHKNIGHT = {},
+                        DRUID = {},
+                        HUNTER = {},
+                        MAGE = {},
+                        PALADIN = {},
+                        PRIEST = {},
+                        ROGUE = {},
+                        SHAMAN = {},
+                        WARLOCK = {},
+                        WARRIOR = {}
+                    },
+                    [EasyBuff.CFG_GROUP.TRACKING] = {}
+                },
+                [EasyBuff.CONTEXT.RAID] = {
+                    [EasyBuff.CFG_GROUP.GENERAL] = {
+                        [EasyBuff.CFG_KEY.DISABLE_RESTING] = false,
+                        [EasyBuff.CFG_KEY.DISABLE_NOINSTANCE] = false,
+                        [EasyBuff.CFG_KEY.SELF_ONLY_CAST] = true,
+                        [EasyBuff.CFG_KEY.CAST_GREATER] = false,
+                        [EasyBuff.CFG_KEY.CAST_GREATER_MIN] = 3
+                    },
+                    [EasyBuff.CFG_GROUP.UNWANTED] = {
+                        
+                    },
+                    [EasyBuff.CFG_GROUP.WANTED] = {
+                        [EasyBuff.PLAYER] = {},
+                        DEATHKNIGHT = {},
+                        DRUID = {},
+                        HUNTER = {},
+                        MAGE = {},
+                        PALADIN = {},
+                        PRIEST = {},
+                        ROGUE = {},
+                        SHAMAN = {},
+                        WARLOCK = {},
+                        WARRIOR = {}
+                    },
+                    [EasyBuff.CFG_GROUP.TRACKING] = {}
+                },
+                [EasyBuff.CONTEXT.BG] = {
+                    [EasyBuff.CFG_GROUP.GENERAL] = {
+                        [EasyBuff.CFG_KEY.DISABLE_RESTING] = false,
+                        [EasyBuff.CFG_KEY.DISABLE_NOINSTANCE] = false,
+                        [EasyBuff.CFG_KEY.SELF_ONLY_CAST] = true,
+                        [EasyBuff.CFG_KEY.CAST_GREATER] = false,
+                        [EasyBuff.CFG_KEY.CAST_GREATER_MIN] = 1
+                    },
+                    [EasyBuff.CFG_GROUP.UNWANTED] = {
+                        
+                    },
+                    [EasyBuff.CFG_GROUP.WANTED] = {
+                        [EasyBuff.PLAYER] = {},
+                        DEATHKNIGHT = {},
+                        DRUID = {},
+                        HUNTER = {},
+                        MAGE = {},
+                        PALADIN = {},
+                        PRIEST = {},
+                        ROGUE = {},
+                        SHAMAN = {},
+                        WARLOCK = {},
+                        WARRIOR = {}
+                    },
+                    [EasyBuff.CFG_GROUP.TRACKING] = {}
+                }
+            }
+        }
+    }
 };
