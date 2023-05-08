@@ -9,38 +9,29 @@ local LSM = E.Libs.LSM;
 function EasyBuff:AnnounceUnbuffedUnits()
     ELVUI_EASYBUFF_ANNOUNCE_FRAME:Clear();
 
-    if (EasyBuff:CanAnnounce()) then
-        if (EasyBuff.wantedQueue ~= nil) then
-            for unitName, buffGroup in pairs(EasyBuff.wantedQueue) do
-                local textColor = "";
-                if (unitName == EasyBuff.PLAYER) then
-                    unitName = EasyBuff.PLAYER_NAME;
-                elseif (not EasyBuff:CanCastOnUnit(unitName)) then
-                    textColor = EasyBuff.RANGE_COLOR;
-                end
-                for groupKey, monitored in pairs(buffGroup) do
-                    local _, enClass = UnitClass(unitName);
-                    EasyBuff:AnnounceBuff(format(L["%s needs %s"].."|r", EasyBuff:Colorize(unitName, EasyBuff.CLASS_COLOR[enClass])..textColor, tostring(monitored.name)));
-                end
+    if (EasyBuff.wantedQueue ~= nil) then
+        for unitName, buffGroup in pairs(EasyBuff.wantedQueue) do
+            local textColor = "";
+            if (unitName == EasyBuff.PLAYER) then
+                unitName = EasyBuff.PLAYER_NAME;
+            elseif (not EasyBuff:CanCastOnUnit(unitName)) then
+                textColor = EasyBuff.RANGE_COLOR;
+            end
+            for groupKey, monitored in pairs(buffGroup) do
+                local _, enClass = UnitClass(unitName);
+                EasyBuff:AnnounceMessage(format(L["%s needs %s"].."|r", EasyBuff:Colorize(unitName, EasyBuff.CLASS_COLOR[enClass])..textColor, tostring(monitored.name)));
             end
         end
-        if (EasyBuff.wantedTracking ~= nil) then
-            EasyBuff:AnnounceBuff(format(L["%s needs %s"].."|r", EasyBuff:Colorize(EasyBuff.PLAYER_NAME, EasyBuff.CLASS_COLOR[EasyBuff.PLAYER_CLASS_KEY]), tostring(EasyBuff.wantedTracking.name)));
-        end
     end
-end
-
---[[
-    Check if we can Announce units in buff queue
-]]--
-function EasyBuff:CanAnnounce()
-    return true;
+    if (EasyBuff.wantedTracking ~= nil) then
+        EasyBuff:AnnounceMessage(format(L["%s needs %s"].."|r", EasyBuff:Colorize(EasyBuff.PLAYER_NAME, EasyBuff.CLASS_COLOR[EasyBuff.PLAYER_CLASS_KEY]), tostring(EasyBuff.wantedTracking.name)));
+    end
 end
 
 --[[
     Announce Buff Message
 ]]--
-function EasyBuff:AnnounceBuff(msg)
+function EasyBuff:AnnounceMessage(msg)
     local location = GetGlobalSettingsValue(EasyBuff.CFG_KEY.ANN_LOCATION);
     if (location == EasyBuff.CFG_ANN_HUD) then
         ELVUI_EASYBUFF_ANNOUNCE_FRAME:AddMessage(msg, 1, 1, 1, 1.0);

@@ -11,6 +11,7 @@ P.EasyBuff = {
                 [EasyBuff.CFG_KEY.ANN_LOCATION] = EasyBuff.CFG_ANN_HUD,
                 [EasyBuff.CFG_KEY.ANN_WINDOW] = nil,
                 [EasyBuff.CFG_KEY.ANN_CTX_CHANGE] = true,
+                [EasyBuff.CFG_KEY.ANN_TLNT_CHANGE] = true,
                 [EasyBuff.CFG_KEY.ANN_EARLY] = true,
                 [EasyBuff.CFG_KEY.SELF_REMOVE_EXIST] = true,
                 [EasyBuff.CFG_KEY.CFG_BY_SPEC] = true,

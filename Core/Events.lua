@@ -138,7 +138,6 @@ end
     verified: talent points change, active spec change
 ]]--
 function EasyBuff:OnTalentUpdate(event)
-    print('EASYBUFF: OnTalentUpdate');
     EasyBuff:SetActiveTalentGroup();
     EasyBuff.rebuildNextScan = true;
 end
@@ -149,7 +148,6 @@ end
     verified: start a group, join a group, leave a group, group size change
 ]]--
 function EasyBuff:OnGroupRosterChange(event)
-    print('EASYBUFF: OnGroupRosterChange');
     EasyBuff:SetActiveContext();
     EasyBuff.rebuildNextScan = true;
 end
@@ -160,7 +158,6 @@ end
     verified: start a group, join a group, leave a group, group type converted
 ]]--
 function EasyBuff:OnGroupStatusChange(event)
-    print('EASYBUFF: OnGroupStatusChange');
     EasyBuff:refreshActiveContext();
     EasyBuff.rebuildNextScan = true;
 end

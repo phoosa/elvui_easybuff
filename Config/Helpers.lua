@@ -64,8 +64,6 @@ function EasyBuff:GetPreferredMonitoredSpell(prefGreater, monitoredSpell)
 
     if (found ~= nil) then
         return found;
-    else
-        print('NOT FOUND FOR: '..monitoredSpell.group);
     end
 
     return monitoredSpell;

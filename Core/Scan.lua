@@ -10,44 +10,65 @@ function EasyBuff:ScanBuffs()
         EasyBuff:BuildMonitoredSpells();
         EasyBuff.rebuildNextScan = false;
     end
-    -- Multi-dimensional list of buffs to apply ["unitName" => ["buffGroup" => MonitoredSpell]]
-    local buffsToAnnounce = nil;
 
-    -- Check yourself first.
-    local missing = EasyBuff:GetMissingBuffs(EasyBuff.PLAYER, EasyBuff:GetUnitRole(EasyBuff.PLAYER), EasyBuff.PLAYER);
-    if (missing) then
-        if (buffsToAnnounce == nil) then
-            buffsToAnnounce = {}
-        end
-        buffsToAnnounce[EasyBuff.PLAYER] = missing;
-    end
+    if (EasyBuff:canScan()) then
+        -- Multi-dimensional list of buffs to apply ["unitName" => ["buffGroup" => MonitoredSpell]]
+        local buffsToAnnounce = nil;
 
-    -- Check Party or Raid members.
-    if (IsInGroup(LE_PARTY_CATEGORY_HOME) or IsInRaid(LE_PARTY_CATEGORY_HOME)) then
-        for groupIndex=1, GetNumGroupMembers() do
-            local unitName, groupRank, partyIndex, unitLevel, _, classKey, unitZone, isOnline, isDead, unitRole, unitIsML = GetRaidRosterInfo(groupIndex);
-            -- Ignore self, Offline/Dead Group Members
-            if (isOnline and not isDead and unitName ~= EasyBuff.PLAYER_NAME) then
-                missing = EasyBuff:GetMissingBuffs(unitName, EasyBuff:GetUnitRole(unitName), classKey);
-                if (missing) then
-                    if (buffsToAnnounce == nil) then
-                        buffsToAnnounce = {}
-                    end
-                    buffsToAnnounce[unitName] = missing;
-                end
+        -- Check yourself first.
+        local missing = EasyBuff:GetMissingBuffs(EasyBuff.PLAYER, EasyBuff:GetUnitRole(EasyBuff.PLAYER), EasyBuff.PLAYER);
+        if (missing) then
+            if (buffsToAnnounce == nil) then
+                buffsToAnnounce = {}
             end
-            groupIndex = groupIndex + 1;
+            buffsToAnnounce[EasyBuff.PLAYER] = missing;
         end
+
+        -- Check Party or Raid members.
+        if (IsInGroup(LE_PARTY_CATEGORY_HOME) or IsInRaid(LE_PARTY_CATEGORY_HOME)) then
+            for groupIndex=1, GetNumGroupMembers() do
+                local unitName, groupRank, partyIndex, unitLevel, _, classKey, unitZone, isOnline, isDead, unitRole, unitIsML = GetRaidRosterInfo(groupIndex);
+                -- Ignore self, Offline/Dead Group Members
+                if (isOnline and not isDead and unitName ~= EasyBuff.PLAYER_NAME) then
+                    missing = EasyBuff:GetMissingBuffs(unitName, EasyBuff:GetUnitRole(unitName), classKey);
+                    if (missing) then
+                        if (buffsToAnnounce == nil) then
+                            buffsToAnnounce = {}
+                        end
+                        buffsToAnnounce[unitName] = missing;
+                    end
+                end
+                groupIndex = groupIndex + 1;
+            end
+        end
+
+        -- Replace the old buff queue with the new list.
+        EasyBuff.wantedQueue = buffsToAnnounce;
+
+        -- Check if we're missing our preffered tracking ability.
+        EasyBuff:CheckMissingTrackingAbility();
+
+        -- Announce Unbuffed Units
+        EasyBuff:AnnounceUnbuffedUnits();
+    end
+end
+
+
+--[[
+    Check if we can Announce units in buff queue
+]]--
+function EasyBuff:canScan()
+    local inInstance, instanceType = IsInInstance();
+
+    if (
+        (GetContextGeneralSettingsValue(EasyBuff.activeTalentSpec, EasyBuff.activeContext, EasyBuff.CFG_KEY.DISABLE_RESTING) and IsResting())
+        or (GetContextGeneralSettingsValue(EasyBuff.activeTalentSpec, EasyBuff.activeContext, EasyBuff.CFG_KEY.DISABLE_NOINSTANCE) and not inInstance)
+    ) then
+        return false;
     end
 
-    -- Replace the old buff queue with the new list.
-    EasyBuff.wantedQueue = buffsToAnnounce;
-
-    -- Check if we're missing our preffered tracking ability.
-    EasyBuff:CheckMissingTrackingAbility();
-
-    -- Announce Unbuffed Units
-    EasyBuff:AnnounceUnbuffedUnits();
+    
+    return true;
 end
 
 

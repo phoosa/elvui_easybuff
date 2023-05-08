@@ -100,14 +100,29 @@ function EasyBuff:InitializeConfig()
                                 get = function(info) return GetGlobalSettingsValue(EasyBuff.CFG_KEY.ANN_WINDOW); end,
                                 set = function(info, val) SetGlobalSettingsValue(EasyBuff.CFG_KEY.ANN_WINDOW, val); end
                             },
+                            spacer = {
+                                order = 3,
+                                name = "",
+                                type = "description",
+                                width = 2
+                            },
                             announceContextChange = {
                                 name = L["Announce Activity Context Change"],
                                 desc = L["Enable / disable Activity Context Change announcements."],
-                                order = 3,
-                                width = 6,
+                                order = 4,
+                                width = 2,
                                 type = "toggle",
                                 get = function(info) return GetGlobalSettingsValue(EasyBuff.CFG_KEY.ANN_CTX_CHANGE); end,
                                 set = function(info, val) SetGlobalSettingsValue(EasyBuff.CFG_KEY.ANN_CTX_CHANGE, val); end
+                            },
+                            announceTalentSpecChange = {
+                                name = L["Announce Talent Spec Context Change"],
+                                desc = L["Enable / disable Talent Spec Context Change announcements."],
+                                order = 5,
+                                width = 2,
+                                type = "toggle",
+                                get = function(info) return GetGlobalSettingsValue(EasyBuff.CFG_KEY.ANN_TLNT_CHANGE); end,
+                                set = function(info, val) SetGlobalSettingsValue(EasyBuff.CFG_KEY.ANN_TLNT_CHANGE, val); end
                             }
                         }
                     },

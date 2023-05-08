@@ -301,6 +301,7 @@ function EasyBuff:GenerateConfig_CastBuffs(context, targetClass, talentSpec)
                         args = {
                             all = {
                                 name = L["Any Role"],
+                                desc = "test test test",
                                 type = "toggle",
                                 tristate = true,
                                 get = function(info) return GetWantedBuffValue(talentSpec, context, targetClass, spell.group); end,

@@ -214,29 +214,33 @@ end
 ]]
 function CopyContextConfiguration(toContext, fromContext)
     for tsId, talentSpec in pairs(EasyBuff.TALENT_SPEC) do
+        local fromConfig = E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][fromContext];
+
         -- General Config
-        for genK,genV in pairs(E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][fromContext][EasyBuff.CFG_GROUP.GENERAL]) do
+        for genK,genV in pairs(fromConfig[EasyBuff.CFG_GROUP.GENERAL]) do
             E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][toContext][EasyBuff.CFG_GROUP.GENERAL][genK] = genV;
         end
+
         -- Unwanted Buffs
         E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][toContext][EasyBuff.CFG_GROUP.UNWANTED] = {};
-        for uwK,uwV in pairs(E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][fromContext][EasyBuff.CFG_GROUP.UNWANTED]) do
-            E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][toContext][EasyBuff.CFG_GROUP.GENERAL][uw] = uwV;
+        for uwK,uwV in pairs(fromConfig[EasyBuff.CFG_GROUP.UNWANTED]) do
+            E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][toContext][EasyBuff.CFG_GROUP.UNWANTED][uw] = uwV;
         end
+
         -- Wanted Buffs (iterate classes in TO context so we don't copy unsupported class configs)
-        for classK,classV in pairs(E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][toContext][EasyBuff.CFG_GROUP.WANTED]) do
+        for classK,_ in pairs(E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][toContext][EasyBuff.CFG_GROUP.WANTED]) do
             -- Empty class configs in TO context
-            E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][fromContext][EasyBuff.CFG_GROUP.WANTED][classK] = {};
+            E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][toContext][EasyBuff.CFG_GROUP.WANTED][classK] = {};
             -- iterate over spells to copy them in
-            if ("table" == type(E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][fromContext][EasyBuff.CFG_GROUP.WANTED][classK])) then
-                for spellK,spellV in pairs(E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][toContext][EasyBuff.CFG_GROUP.WANTED][classK]) do
-                    E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][fromContext][EasyBuff.CFG_GROUP.WANTED][classK][spellK] = spellV;
+            if ("table" == type(fromConfig[EasyBuff.CFG_GROUP.WANTED][classK])) then
+                for spellK,spellV in pairs(fromConfig[EasyBuff.CFG_GROUP.WANTED][classK]) do
+                    E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][toContext][EasyBuff.CFG_GROUP.WANTED][classK][spellK] = spellV;
                 end
             end
         end
+
         -- Tracking Ability
-        -- E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][toContext][EasyBuff.CFG_GROUP.TRACKING] = nil;
-        E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][toContext][EasyBuff.CFG_GROUP.TRACKING] = E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][fromContext][EasyBuff.CFG_GROUP.TRACKING];
+        E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][toContext][EasyBuff.CFG_GROUP.TRACKING] = fromConfig[EasyBuff.CFG_GROUP.TRACKING];
     end
 end
 

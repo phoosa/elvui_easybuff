@@ -205,6 +205,8 @@ EasyBuff.CLASS_SPELLS = {
     },
     MAGE        = {
         -- Arcane Intellect
+        ["61024"] = { rank = 7, group = "AI", greater = false}, -- Dalaran Intellect
+        ["61316"] = { rank = 3, group = "AI", greater = true}, -- Dalaran Brilliance
         ["1459"] = { rank = 1, group = "AI", greater = false},
         ["1460"] = { rank = 2, group = "AI", greater = false},
         ["1461"] = { rank = 3, group = "AI", greater = false},
@@ -212,11 +214,9 @@ EasyBuff.CLASS_SPELLS = {
         ["10157"] = { rank = 5, group = "AI", greater = false},
         ["27126"] = { rank = 6, group = "AI", greater = false},
         ["42995"] = { rank = 7, group = "AI", greater = false},
-        ["61024"] = { rank = 7, group = "AI", greater = false}, -- Dalaran Intellect
         ["23028"] = { rank = 1, group = "AI", greater = true},
         ["27127"] = { rank = 2, group = "AI", greater = true},
         ["43002"] = { rank = 3, group = "AI", greater = true},
-        ["61316"] = { rank = 3, group = "AI", greater = true}, -- Dalaran Brilliance
         -- Ice Armor
         ["7302"] = { rank = 1, group = "ICEARM", greater = false},
         ["7320"] = { rank = 2, group = "ICEARM", greater = false},

@@ -95,6 +95,7 @@ EasyBuff.CFG_KEY = {
     ANN_LOCATION                = "announceLocation",
     ANN_WINDOW                  = "announceWindow",
     ANN_CTX_CHANGE              = "announceContextChange",
+    ANN_TLNT_CHANGE             = "announceTalentSpecChange",
     ANN_EARLY                   = "announceEarly",
     SELF_REMOVE_EXIST           = "removeExistingOnSelf",
     BIND_CASTBUFF               = "castBuff",
@@ -235,7 +236,18 @@ end
     Set the current active talent group
 ]]--
 function EasyBuff:SetActiveTalentGroup()
-    EasyBuff.activeTalentSpec = EasyBuff.TALENT_SPEC[tostring(GetActiveTalentGroup())];
+    local curTalentGroupId = GetActiveTalentGroup();
+    if (EasyBuff.activeTalentSpec ~= EasyBuff.TALENT_SPEC[tostring(curTalentGroupId)]) then
+        EasyBuff.activeTalentSpec = EasyBuff.TALENT_SPEC[tostring(curTalentGroupId)];
+
+        if (GetGlobalSettingsValue(EasyBuff.CFG_KEY.ANN_TLNT_CHANGE)) then
+            local text = L["Primary Spec"];
+            if (curTalentGroupId == 2) then
+                text = L["Secondary Spec"];
+            end
+            EasyBuff:AnnounceMessage(EasyBuff:Colorize(format(L["Talent Spec context changed to %s"], EasyBuff:Colorize(tostring(text), EasyBuff.CHAT_COLOR)), EasyBuff.RANGE_COLOR));
+        end
+    end
 end
 
 --[[
@@ -258,8 +270,7 @@ function EasyBuff:SetActiveContext()
     end
 
     if (EasyBuff.activeContext ~= context and GetGlobalSettingsValue(EasyBuff.CFG_KEY.ANN_CTX_CHANGE)) then
-        -- EasyBuff:AnnounceBuff(format(L["%s needs %s"].."|r", EasyBuff:Colorize(unitName, EasyBuff.CLASS_COLOR[enClass])..textColor, tostring(monitored.name)));
-        EasyBuff:AnnounceBuff(EasyBuff:Colorize(format(L["Activity context changed to %s"].."|r", tostring(context)), EasyBuff.RANGE_COLOR));
+        EasyBuff:AnnounceMessage(EasyBuff:Colorize(format(L["Activity context changed to %s"], EasyBuff:Colorize(tostring(context), EasyBuff.CHAT_COLOR)), EasyBuff.RANGE_COLOR));
     end
 
     EasyBuff.activeContext = context;
