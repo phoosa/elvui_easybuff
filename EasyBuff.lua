@@ -307,7 +307,7 @@ function EasyBuff:canCast()
 end
 
 --[[
-    Can we currently cast on a given unti
+    Can we currently cast on a given unit
 ]]--
 function EasyBuff:CanCastOnUnit(unitName)
     return

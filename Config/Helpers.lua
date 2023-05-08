@@ -47,6 +47,30 @@ end
 
 
 --[[
+    Shuold we Hide the Role-based config toggles for Aura configurations?
+    
+    @return {boolean}
+]]--
+function EasyBuff:ShouldHideAuraRoleOption(talentSpec, context, targetClass, spellGroup)
+    local savedConfig = GetPlayerConfig()[talentSpec][context][EasyBuff.CFG_GROUP.WANTED][targetClass];
+    local checkVal;
+
+    -- If any aura has a mixed config (some roles true, some false), then we shouldn't hide role options.
+    if (EasyBuff.PLAYER_CLASS_KEY and EasyBuff.CLASS_SPELLS_GROUPS[EasyBuff.PLAYER_CLASS_KEY]) then
+        for group, groupCfg in pairs(EasyBuff.CLASS_SPELLS_GROUPS[EasyBuff.PLAYER_CLASS_KEY]) do
+            if (groupCfg.aura and savedConfig[group]) then
+                if (nil == GetWantedBuffValue(talentSpec, context, targetClass, group)) then
+                    return false;
+                end
+            end
+        end
+    end
+
+    return true;
+end
+
+
+--[[
     Get the preferred spell (greater/lesser) for a given monitored spell.
 
     @param prefGreater    {boolean}        Do we prefer Greater spells

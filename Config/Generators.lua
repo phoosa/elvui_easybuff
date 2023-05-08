@@ -310,21 +310,24 @@ function EasyBuff:GenerateConfig_CastBuffs(context, targetClass, talentSpec)
                             tank = {
                                 name = L["Tank"],
                                 type = "toggle",
-                                hidden = function() return GetWantedBuffValue(talentSpec, context, targetClass, spell.group) ~= nil; end,
+                                width = "half",
+                                hidden = function() return EasyBuff:ShouldHideAuraRoleOption(talentSpec, context, targetClass, spell.group); end,
                                 get = function(info) return GetWantedBuffRoleValue(talentSpec, context, targetClass, spell.group, EasyBuff.ROLE.TANK); end,
                                 set = function(info, val) return SetWantedAuraValue(talentSpec, context, targetClass, spell.group, EasyBuff.ROLE.TANK, val); end
                             },
                             heal = {
                                 name = L["Heal"],
                                 type = "toggle",
-                                hidden = function() return GetWantedBuffValue(talentSpec, context, targetClass, spell.group) ~= nil; end,
+                                width = "half",
+                                hidden = function() return EasyBuff:ShouldHideAuraRoleOption(talentSpec, context, targetClass, spell.group); end,
                                 get = function(info) return GetWantedBuffRoleValue(talentSpec, context, targetClass, spell.group, EasyBuff.ROLE.HEALER); end,
                                 set = function(info, val) return SetWantedAuraValue(talentSpec, context, targetClass, spell.group, EasyBuff.ROLE.HEALER, val); end
                             },
                             dps = {
                                 name = L["DPS"],
                                 type = "toggle",
-                                hidden = function() return GetWantedBuffValue(talentSpec, context, targetClass, spell.group) ~= nil; end,
+                                width = "half",
+                                hidden = function() return EasyBuff:ShouldHideAuraRoleOption(talentSpec, context, targetClass, spell.group); end,
                                 get = function(info) return GetWantedBuffRoleValue(talentSpec, context, targetClass, spell.group, EasyBuff.ROLE.DAMAGER); end,
                                 set = function(info, val) return SetWantedAuraValue(talentSpec, context, targetClass, spell.group, EasyBuff.ROLE.DAMAGER, val); end
                             }
@@ -347,6 +350,7 @@ function EasyBuff:GenerateConfig_CastBuffs(context, targetClass, talentSpec)
                             tank = {
                                 name = L["Tank"],
                                 type = "toggle",
+                                width = "half",
                                 hidden = function() return GetWantedBuffValue(talentSpec, context, targetClass, spell.group) ~= nil; end,
                                 get = function(info) return GetWantedBuffRoleValue(talentSpec, context, targetClass, spell.group, EasyBuff.ROLE.TANK); end,
                                 set = function(info, val) return SetWantedBuffValue(talentSpec, context, targetClass, spell.group, EasyBuff.ROLE.TANK, val); end
@@ -354,6 +358,7 @@ function EasyBuff:GenerateConfig_CastBuffs(context, targetClass, talentSpec)
                             heal = {
                                 name = L["Heal"],
                                 type = "toggle",
+                                width = "half",
                                 hidden = function() return GetWantedBuffValue(talentSpec, context, targetClass, spell.group) ~= nil; end,
                                 get = function(info) return GetWantedBuffRoleValue(talentSpec, context, targetClass, spell.group, EasyBuff.ROLE.HEALER); end,
                                 set = function(info, val) return SetWantedBuffValue(talentSpec, context, targetClass, spell.group, EasyBuff.ROLE.HEALER, val); end
@@ -361,6 +366,7 @@ function EasyBuff:GenerateConfig_CastBuffs(context, targetClass, talentSpec)
                             dps = {
                                 name = L["DPS"],
                                 type = "toggle",
+                                width = "half",
                                 hidden = function() return GetWantedBuffValue(talentSpec, context, targetClass, spell.group) ~= nil; end,
                                 get = function(info) return GetWantedBuffRoleValue(talentSpec, context, targetClass, spell.group, EasyBuff.ROLE.DAMAGER); end,
                                 set = function(info, val) return SetWantedBuffValue(talentSpec, context, targetClass, spell.group, EasyBuff.ROLE.DAMAGER, val); end

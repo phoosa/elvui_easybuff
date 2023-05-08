@@ -140,7 +140,8 @@ end
     Only one aura may be active per class/role, so all other aura's will be deactivated if we are activating this one
 ]]--
 function SetWantedAuraValue(talentSpec, context, targetClass, spellGroup, role, value)
-    if (role == nil) then
+    -- set the value for this aura
+    if (nil == role) then
         E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][context][EasyBuff.CFG_GROUP.WANTED][targetClass][spellGroup] = {
             [EasyBuff.ROLE.DAMAGER] = value,
             [EasyBuff.ROLE.HEALER] = value,
@@ -157,18 +158,20 @@ function SetWantedAuraValue(talentSpec, context, targetClass, spellGroup, role, 
         E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][context][EasyBuff.CFG_GROUP.WANTED][targetClass][spellGroup][role] = value;
     end
 
-    -- Deactivate other aura's for this role if we are activating this one.
+    -- Update all other auras if we're activating this one
     if (value == true) then
         local spellGroups = getAvailableSpellAuras();
         for _, group in pairs(spellGroups) do
             if (group ~= spellGroup) then
-                if (nil == role or nil == E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][context][EasyBuff.CFG_GROUP.WANTED][targetClass][group]) then
+                if (role == nil) then
+                    -- set all roles for all other auras to false
                     E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][context][EasyBuff.CFG_GROUP.WANTED][targetClass][group] = {
                         [EasyBuff.ROLE.DAMAGER] = false,
                         [EasyBuff.ROLE.HEALER] = false,
                         [EasyBuff.ROLE.TANK] = false
                     };
                 else
+                    -- set just {role} to false for all other auras
                     E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][context][EasyBuff.CFG_GROUP.WANTED][targetClass][group][role] = false;
                 end
             end
