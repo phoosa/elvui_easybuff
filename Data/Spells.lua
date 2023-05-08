@@ -16,7 +16,13 @@ local EasyBuff = E:GetModule("EasyBuff");
 EasyBuff.CLASS_SPELLS_GROUPS = {
     DEATHKNIGHT = {
         -- Bone Shield
-        BONSHI  = {multi = false, aura = false, selfOnly = true, stacks = 3}
+        BONSHI  = {multi = false, aura = false, selfOnly = true, stacks = 3},
+        -- Blood Presence
+        BLOODP  = {multi = false, aura = true, selfOnly = true, stacks = nil},
+        -- Frost Presence
+        FROSTP  = {multi = false, aura = true, selfOnly = true, stacks = nil},
+        -- Unholy Presence
+        UNHOLP  = {multi = false, aura = true, selfOnly = true, stacks = nil}
     },
     DRUID       = {
         -- Mark of the Wild
@@ -141,7 +147,13 @@ EasyBuff.CLASS_SPELLS = {
     DEATHKNIGHT = {
         -- Bone Shield
         ["49222"] = { rank = 1, group = "BONSHI", greater = false},
-        ["57210"] = { rank = 1, group = "BONSHI", greater = false} -- TODO: this could be just the glyph and not the new spell id when glyphed
+        ["57210"] = { rank = 1, group = "BONSHI", greater = false}, -- TODO: this could be just the glyph and not the new spell id when glyphed
+        -- Blood Presence
+        ["48266"] = { rank = 1, group = "BLOODP", greater = false},
+        -- Frost Presence
+        ["48263"] = { rank = 1, group = "FROSTP", greater = false},
+        -- Unholy Presence
+        ["48265"] = { rank = 1, group = "UNHOLP", greater = false}
     },
     DRUID       = {
         -- Mark of the Wild
