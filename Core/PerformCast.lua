@@ -16,7 +16,7 @@ function EasyBuff:CastNextBuffInQueue()
     if (nil ~= EasyBuff.wantedQueue) then
         local castSelfOnly = GetContextGeneralSettingsValue(EasyBuff.activeTalentSpec, EasyBuff.activeContext, EasyBuff.CFG_KEY.SELF_ONLY_CAST);
         for unitName,spells in pairs(EasyBuff.wantedQueue) do
-            if (not castSelfOnly or unitName == EasyBuff.PLAYER) then
+            if (unitName == EasyBuff.PLAYER or (not castSelfOnly and EasyBuff:CanCastOnUnit(unitName))) then
                 for spellGroup,monitoredSpell in pairs(spells) do
                     buffToCast = monitoredSpell;
                     castTarget = unitName;
