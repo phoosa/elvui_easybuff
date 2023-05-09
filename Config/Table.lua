@@ -151,6 +151,45 @@ function EasyBuff:InitializeConfig()
                                 set = function(info, val) return SaveKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_REMOVEBUFF, val); end
                             }
                         }
+                    },
+                    quickSetup = {
+                        order = 20,
+                        type = "group",
+                        inline = true,
+                        name = L["Quick Setup"],
+                        args = {
+                            desc = {
+                                order = 1,
+                                type = "description",
+                                width = "full",
+                                name = L["Use the field below to apply a preset 'Wanted Buff Monitoring' configuration for all Activity Contexts."],
+                            },
+                            warn = {
+                                order = 2,
+                                type = "description",
+                                width = "full",
+                                fontSize = "medium",
+                                name = EasyBuff:Colorize(L["WARNING: Selecting a Template will erase your current 'Wanted Buff Monitoring' configuration for ALL Activity Contexts and the selected Talent Spec!"], EasyBuff.COLORS.RED),
+                            },
+                            primaryTemplate = {
+                                order = 3,
+                                type = "select",
+                                width = "double",
+                                name = L["Select a Template to load for your 'Primary Talent Spec':"],
+                                values = function() return EasyBuff:GetConfigTemplateOptions(EasyBuff.PLAYER_CLASS_KEY); end,
+                                get = function() return ''; end,
+                                set = function(info, val) return EasyBuff:ApplyConfigTemplate(EasyBuff.TALENT_SPEC_PRIMARY, EasyBuff.PLAYER_CLASS_KEY, val); end
+                            },
+                            secondaryTemplate = {
+                                order = 4,
+                                type = "select",
+                                width = "double",
+                                name = L["Select a Template to load for your 'Secondary Talent Spec':"],
+                                values = function() return EasyBuff:GetConfigTemplateOptions(EasyBuff.PLAYER_CLASS_KEY); end,
+                                get = function() return ''; end,
+                                set = function(info, val) return EasyBuff:ApplyConfigTemplate(EasyBuff.TALENT_SPEC_SECONDARY, EasyBuff.PLAYER_CLASS_KEY, val); end
+                            },
+                        }
                     }
                 }
             },

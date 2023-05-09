@@ -25,3 +25,12 @@ Config\Table.lua
 Config\Generators.lua
 Config\SavedData.lua
 Config\Helpers.lua
+ConfigTemplates\index.lua
+ConfigTemplates\DEATHKNIGHT.lua
+ConfigTemplates\DRUID.lua
+ConfigTemplates\HUNTER.lua
+ConfigTemplates\MAGE.lua
+ConfigTemplates\PALADIN.lua
+ConfigTemplates\PRIEST.lua
+ConfigTemplates\SHAMAN.lua
+ConfigTemplates\WARLOCK.lua
