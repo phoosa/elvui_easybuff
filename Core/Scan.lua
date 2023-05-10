@@ -121,13 +121,13 @@ function EasyBuff:GetMissingBuffs(unit, role, class)
     -- Iterate over the units current buffs.
     local buff = EasyBuff:UnitBuff(unit, index);
     while (buff ~= nil) do
-        -- Are we monitoring this spell for this class and role?
-        local knownSpell = EasyBuff.monitoredSpells[tostring(buff.spellId)];
-        if (knownSpell and knownSpell:isMonitoring(class, role)) then
-            buffsFound[knownSpell.group] = knownSpell;
+        -- Is this a spell that we can cast, and are we monitoring it?
+        local availableSpell = EasyBuff.availableSpells[tostring(buff.spellId)];
+        if (availableSpell and availableSpell:isMonitoring()) then
+            buffsFound[availableSpell.group] = availableSpell;
             -- Is it expiring soon?
             if (EasyBuff:isTimeToNotifyBuff(buff)) then
-                buffsToAnnounce[knownSpell.group] = EasyBuff:GetPreferredMonitoredSpell(castGreater, knownSpell);
+                buffsToAnnounce[availableSpell.group] = EasyBuff:GetPreferredMonitoredSpell(castGreater, availableSpell);
                 local spellName, _, _, _, _, _ = GetSpellInfo(buffsToAnnounce[knownSpell.group].id);
                 buffsToAnnounce[knownSpell.group]:setName(spellName);
             end
@@ -139,7 +139,7 @@ function EasyBuff:GetMissingBuffs(unit, role, class)
 
     -- Iterate over all monitored spells, those we didn't already find should be added to the announce list.
     for k,v in pairs(EasyBuff.monitoredSpells) do
-        if (not buffsFound[v.group] and not buffsToAnnounce[v.group] and v:isMonitoring(class, role)) then
+        if (not buffsFound[v.group] and not buffsToAnnounce[v.group] and v:isMonitoringForRole(class, role)) then
             if (not buffsToAnnounce[v.group]) then
                 buffsToAnnounce[v.group] = EasyBuff:GetPreferredMonitoredSpell(castGreater, v);
                 local spellName, _, _, _, _, _ = GetSpellInfo(buffsToAnnounce[v.group].id);

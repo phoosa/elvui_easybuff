@@ -76,7 +76,7 @@ end
 
     @return {boolean}
 ]]--
-function MonitoredSpell:isMonitoring(class, role)
+function MonitoredSpell:isMonitoringForRole(class, role)
     if (not role or role == "NONE") then
         role = EasyBuff.ROLE.DAMAGER;
     end

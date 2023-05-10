@@ -35,3 +35,18 @@ end
 function AvailableSpell:spellGroup()
     return EasyBuff.CLASS_SPELLS_GROUPS[EasyBuff.PLAYER_CLASS_KEY][self.group];
 end
+
+--[[
+    Check if we're monitoring some other version of this spell
+
+    @return {boolean}
+]]--
+function AvailableSpell:isMonitoring()
+    for spellId,monitoredSpell in pairs(EasyBuff.monitoredSpells) do
+        if (monitoredSpell.group == self.group) then
+            return true;
+        end
+    end
+
+    return false;
+end

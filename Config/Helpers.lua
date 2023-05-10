@@ -71,26 +71,55 @@ end
 
 
 --[[
-    Get the preferred spell (greater/lesser) for a given monitored spell.
+    Get the preferred spell (greater/lesser) for a given available spell.
 
     @param prefGreater    {boolean}        Do we prefer Greater spells
     @param monitoredSpell {MonitoredSpell} Original spell to use to find a preferred version of
 
     @return {MonitoredSpell}
 ]]--
-function EasyBuff:GetPreferredMonitoredSpell(prefGreater, monitoredSpell)
+function EasyBuff:GetPreferredMonitoredSpell(prefGreater, availableSpell)
     local found = nil;
-    if (prefGreater and not monitoredSpell.greater) then
-        found = EasyBuff:GetGreaterMonitoredSpell(monitoredSpell.group);
-    elseif (monitoredSpell.greater and not prefGreater) then
-        found = EasyBuff:GetLesserMonitoredSpell(monitoredSpell.group);
+    if (prefGreater and not availableSpell.greater) then
+        -- Get a Greater version
+        found = EasyBuff:GetGreaterMonitoredSpell(availableSpell.group);
+    elseif (availableSpell.greater and not prefGreater) then
+        -- Get a Lesser version
+        found = EasyBuff:GetLesserMonitoredSpell(availableSpell.group);
+    elseif (not EasyBuff.monitoredSpells[tostring(availableSpell.spellId)]) then
+        -- Get one we can cast, because we don't know this one
+        found = EasyBuff:GetMonitoredSpellFor(availableSpell);
     end
 
     if (found ~= nil) then
         return found;
     end
 
-    return monitoredSpell;
+    return availableSpell;
+end
+
+
+--[[
+    Get a castable spell that matches a given available spell.
+    Attempt to return the same type (greater/lesser), but if none found then return
+    whatever matches the spell group.
+
+    @param availableSpell {MonitoredSpell} availableSpell
+    @return {MonitoredSpell|nil}
+]]--
+function EasyBuff:GetMonitoredSpellFor(availableSpell)
+    local alternate = nil;
+    for spellId,monitoredSpell in pairs(EasyBuff.monitoredSpells) do
+        if (monitoredSpell.group == availableSpell.group) then
+            if (availableSpell.greater == monitoredSpell.greater) then
+                return monitoredSpell;
+            elseif (nil ~= alternate) then
+                alternate = monitoredSpell;
+            end
+        end
+    end
+
+    return alternate;
 end
 
 
