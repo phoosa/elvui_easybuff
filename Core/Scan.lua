@@ -128,8 +128,8 @@ function EasyBuff:GetMissingBuffs(unit, role, class)
             -- Is it expiring soon?
             if (EasyBuff:isTimeToNotifyBuff(buff)) then
                 buffsToAnnounce[availableSpell.group] = EasyBuff:GetPreferredMonitoredSpell(castGreater, availableSpell);
-                local spellName, _, _, _, _, _ = GetSpellInfo(buffsToAnnounce[knownSpell.group].id);
-                buffsToAnnounce[knownSpell.group]:setName(spellName);
+                local spellName, _, _, _, _, _ = GetSpellInfo(buffsToAnnounce[availableSpell.group].id);
+                buffsToAnnounce[availableSpell.group]:setName(spellName);
             end
         end
         -- get next buff
