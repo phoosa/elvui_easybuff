@@ -74,3 +74,16 @@ L["Copy Configuration From:"] = "Konfiguration kopieren von:";
 L["Select another Activity Context to copy it's configuration into this Activity Context."] = "Wählen Sie einen anderen Aktivitätskontext aus, um seine Konfiguration in diesen Aktivitätskontext zu kopieren.";
 L["Tracking Ability"] = "Tracking-Fähigkeit";
 L["Select only one."] = "Wählen Sie nur eine aus.";
+
+-- Weapon Buffs
+L["Enable Weapon Buff Monitoring"] = "Aktivieren Sie die Waffen-Buff-Überwachung";
+L["Rogue and Shaman classes maintain buffs on their weapons, enable this feature to configure and track weapon buff monitoring."] = "Schurken- und Schamanenklassen behalten die Buffs ihrer Waffen bei. Aktivieren Sie diese Funktion, um die Überwachung der Waffen-Buffs zu konfigurieren und zu verfolgen.";
+L["Weapon Buffs"] = "Waffen-Buffs";
+L["Weapon Buff bound to key:"] = "Waffen-Buff an Schlüssel gebunden:";
+L["Change which key to use to buff your weapons."] = "Ändern Sie, welche Taste Sie zum Polieren Ihrer Waffen verwenden möchten.";
+L["Configure which buffs you would like to monitor on your weapons."] = "Konfigurieren Sie, welche Buffs Sie an Ihren Waffen überwachen möchten.";
+L["Main Hand"] = "Haupthand";
+L["Off Hand"] = "Sekundärhand";
+L["There are no trackable weapon buffs for your character at this time."] = "Derzeit gibt es keine nachverfolgbaren Waffen-Buffs für deinen Charakter.";
+L["%s needs %s on Main Hand Weapon"] = "%s benötigt %s an der Haupthandwaffe";
+L["%s needs %s on Off Hand Weapon"] = "%s benötigt %s an der Sekundärhand";

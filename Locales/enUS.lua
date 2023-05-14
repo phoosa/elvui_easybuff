@@ -102,8 +102,7 @@ L["Elemental"] = true;
 L["Fel Armor"] = true;
 L["Demon Armor"] = true;
 
-
--- New
+-- Weapon Buffs
 L["Enable Weapon Buff Monitoring"] = true;
 L["Rogue and Shaman classes maintain buffs on their weapons, enable this feature to configure and track weapon buff monitoring."] = true;
 L["Weapon Buffs"] = true;
