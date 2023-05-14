@@ -93,15 +93,62 @@ function EasyBuff:RemovePlayerBuff(spell)
     end
 end
 
--- --[[
---     Attempt to cancel a Buff (id or name) on the player
 
---     @param spell {string|int} Name or ID of buff to remove
--- ]]--
--- function EasyBuff:RemoveUnwatedBuff(spell)
---     -- CancelUnitBuff(EasyBuff.PLAYER, spell);
---     -- return EasyBuff:UpdatePerformCastButton("cancelaura", spell, EasyBuff.PLAYER);
--- end
+--[[
+    Find the next weapon buff in the queue and attempt to cast it
+    @return {string|nil}  identifier for weapon buffed (@see EasyBuff.CFG_KEY) or nil if none buffed
+]]--
+function EasyBuff:BuffNextWeaponInQueue()
+    if (EasyBuff.wantedWeaponBuffs ~= nil) then
+        if (EasyBuff.wantedWeaponBuffs[EasyBuff.CFG_KEY.MAIN_HAND] ~= nil) then
+            if (EasyBuff:WeaponBuff(
+                EasyBuff.wantedWeaponBuffs[EasyBuff.CFG_KEY.MAIN_HAND].type,
+                EasyBuff.wantedWeaponBuffs[EasyBuff.CFG_KEY.MAIN_HAND].typeId,
+                EasyBuff.EQUIPMENT_SLOT[EasyBuff.CFG_KEY.MAIN_HAND])
+            ) then
+                return EasyBuff.CFG_KEY.MAIN_HAND;
+            end
+        elseif (EasyBuff.wantedWeaponBuffs[EasyBuff.CFG_KEY.OFF_HAND] ~= nil) then
+            if (EasyBuff:WeaponBuff(
+                EasyBuff.wantedWeaponBuffs[EasyBuff.CFG_KEY.OFF_HAND].type,
+                EasyBuff.wantedWeaponBuffs[EasyBuff.CFG_KEY.OFF_HAND].typeId,
+                EasyBuff.EQUIPMENT_SLOT[EasyBuff.CFG_KEY.OFF_HAND])
+            ) then
+                return EasyBuff.CFG_KEY.OFF_HAND;
+            end
+        end
+    end
+
+    return nil;
+end
+
+
+--[[
+    Attempt to execute a macro to buff a weapon
+
+    @param buffType {string} How the buff is applied (one of: EasyBuff.WEAPON_BUFF_TYPE)
+    @param id       {int} ID of the item (in your bag) that you want to use, or spellId (determined by type)
+    @param gearSlot {int} Equipment slot you want to buff (ie: weapons are 16 & 17)
+]]--
+function EasyBuff:WeaponBuff(buffType, id, gearSlot)
+    local success = false;
+    if (buffType == EasyBuff.WEAPON_BUFF_TYPE.ITEM) then
+        success = EasyBuff:UpdatePerformCastButton(
+            "macro",
+            "/use item:"..tostring(id).."\n/use "..tostring(gearSlot).."\n/click StaticPopup1Button1",
+            nil,
+            nil);
+    elseif (buffType == EasyBuff.WEAPON_BUFF_TYPE.SPELL) then
+        success = EasyBuff:UpdatePerformCastButton("spell", id, nil, gearSlot);
+    end
+
+    if (success) then
+        EasyBuff.LastCastTime = GetServerTime();
+        return true;
+    end
+
+    return false;
+end
 
 
 --[[
@@ -111,7 +158,7 @@ end
     @param unit  {string}     Name of unit to cast the spell on
 ]]--
 function EasyBuff:CastSpellOnTarget(spell, unit)
-    if (EasyBuff:UpdatePerformCastButton("spell", spell, unit)) then
+    if (EasyBuff:UpdatePerformCastButton("spell", spell, unit, nil)) then
         EasyBuff.LastCastTime = GetServerTime();
         return true;
     end
@@ -122,18 +169,33 @@ end
 --[[
     Update the action that our PERFORM button will execute.
 
-    @param type  {string}     Type of action to perform (ie: "spell", "cancelaura")
-    @param spell {string|int} Name or ID of spell to cast
-    @param unit  {string}     Name of unit to cast the spell on
+    @param type     {string}      Type of action to perform (ie: "spell", "macro")
+    @param spell    {string|int}  Name or ID of spell to cast (or macrotext if type is macro)
+    @param unit     {string|null} Name of unit to cast the spell on (ignored if macro)
+    @param unitAttr {string|nil}  Value for the target-slot attribute (ie 16, 17)
 
     @return {boolean}
 ]]--
-function EasyBuff:UpdatePerformCastButton(type, spell, unit)
+function EasyBuff:UpdatePerformCastButton(type, spell, unit, targetSlot)
     if (not isCastingSpell()) then
-        ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("type", type);
-        ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("spell", spell);
-        ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("unit", unit);
-        return true;
+        if (unitAttr == nil) then
+            unitAttr = "unit";
+        end
+        if (type == "spell") then
+            ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("type", type);
+            ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("spell", spell);
+            ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("unit", unit);
+            ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("target-slot", targetSlot);
+            ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("macrotext", nil);
+            return true;
+        elseif (type == "macro") then
+            ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("type", type);
+            ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("macrotext", spell);
+            ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("spell", nil);
+            ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("unit", nil);
+            ELVUI_EASYBUFF_PERFORM_BUTTON:SetAttribute("target-slot", nil);
+            return true;
+        end
     end
     return false;
 end

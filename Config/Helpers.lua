@@ -6,14 +6,17 @@ local EasyBuff = E:GetModule("EasyBuff");
 --[[
     Apply Keybind configurations to frame.
 ]]--
-function EasyBuff:ConfigureKeybinds(castBuffBind, removeBuffBind)
+function EasyBuff:ConfigureKeybinds(castBuffBind, removeBuffBind, weaponBuffBind)
     ClearOverrideBindings(ELVUI_EASYBUFF_ANNOUNCE_FRAME);
     if (nil ~= castBuffBind) then
-		SetOverrideBindingClick(ELVUI_EASYBUFF_ANNOUNCE_FRAME, false, castBuffBind, "ELVUI_EASYBUFF_PERFORM_BUTTON", castBuffBind);
-	end
-	if (nil ~= removeBuffBind) then
-		SetOverrideBindingClick(ELVUI_EASYBUFF_ANNOUNCE_FRAME, false, removeBuffBind, "ELVUI_EASYBUFF_PERFORM_BUTTON", removeBuffBind);
-	end
+        SetOverrideBindingClick(ELVUI_EASYBUFF_ANNOUNCE_FRAME, false, castBuffBind, "ELVUI_EASYBUFF_PERFORM_BUTTON", castBuffBind);
+    end
+    if (nil ~= removeBuffBind) then
+        SetOverrideBindingClick(ELVUI_EASYBUFF_ANNOUNCE_FRAME, false, removeBuffBind, "ELVUI_EASYBUFF_PERFORM_BUTTON", removeBuffBind);
+    end
+    if (nil ~= weaponBuffBind) then
+        SetOverrideBindingClick(ELVUI_EASYBUFF_ANNOUNCE_FRAME, false, weaponBuffBind, "ELVUI_EASYBUFF_PERFORM_BUTTON", weaponBuffBind);
+    end
 end
 
 

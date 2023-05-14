@@ -8,6 +8,7 @@ local EasyBuff = E:GetModule("EasyBuff");
 function EasyBuff:ScanBuffs()
     if (EasyBuff.rebuildNextScan) then
         EasyBuff:BuildMonitoredSpells();
+        EasyBuff:BuildMonitoredWeaponBuffs();
         EasyBuff.rebuildNextScan = false;
     end
 
@@ -45,6 +46,9 @@ function EasyBuff:ScanBuffs()
         -- Replace the old buff queue with the new list.
         EasyBuff.wantedQueue = buffsToAnnounce;
 
+        -- Check if we're missing weapon buffs.
+        EasyBuff:CheckMissingWeaponBuffs();
+
         -- Check if we're missing our preffered tracking ability.
         EasyBuff:CheckMissingTrackingAbility();
 
@@ -63,6 +67,7 @@ function EasyBuff:canScan()
     if (
         (GetContextGeneralSettingsValue(EasyBuff.activeTalentSpec, EasyBuff.activeContext, EasyBuff.CFG_KEY.DISABLE_RESTING) and IsResting())
         or (GetContextGeneralSettingsValue(EasyBuff.activeTalentSpec, EasyBuff.activeContext, EasyBuff.CFG_KEY.DISABLE_NOINSTANCE) and not inInstance)
+        or (nil ~= UnitCastingInfo(EasyBuff.PLAYER))
     ) then
         return false;
     end
@@ -95,11 +100,59 @@ end
 
 
 --[[
+    Update wantedWeapon if we're missing or losing our weapon buffs soon.
+]]--
+function EasyBuff:CheckMissingWeaponBuffs()
+    local wantedMH = nil;
+    local wantedOH = nil;
+
+    if (EasyBuff.monitoredWeaponBuffs ~= nil) then
+        if (
+            EasyBuff.monitoredWeaponBuffs[EasyBuff.CFG_KEY.MAIN_HAND] ~= nil
+            or EasyBuff.monitoredWeaponBuffs[EasyBuff.CFG_KEY.OFF_HAND] ~= nil
+        ) then
+            local currentBuffs = EasyBuff:CurrentWeaponBuffs();
+
+            if (EasyBuff:isTimeToNotifyWeapon(currentBuffs[EasyBuff.CFG_KEY.MAIN_HAND], EasyBuff.monitoredWeaponBuffs[EasyBuff.CFG_KEY.MAIN_HAND])) then
+                -- main hand missing buff or expiring soon
+                wantedMH = EasyBuff.monitoredWeaponBuffs[EasyBuff.CFG_KEY.MAIN_HAND];
+            end
+
+            if (EasyBuff:isTimeToNotifyWeapon(currentBuffs[EasyBuff.CFG_KEY.OFF_HAND], EasyBuff.monitoredWeaponBuffs[EasyBuff.CFG_KEY.OFF_HAND])) then
+                -- off hand missing buff or expiring soon
+                wantedOH = EasyBuff.monitoredWeaponBuffs[EasyBuff.CFG_KEY.OFF_HAND];
+            end
+        end
+    end
+    
+    local wanted = nil;
+    if (wantedMH ~= nil or wantedOH ~= nil) then
+        wanted = {
+            [EasyBuff.CFG_KEY.MAIN_HAND] = wantedMH,
+            [EasyBuff.CFG_KEY.OFF_HAND] = wantedOH
+        };
+    end
+
+    EasyBuff.wantedWeaponBuffs = wanted;
+end
+
+
+--[[
     Remove Buff from wanted queue
 ]]--
 function EasyBuff:RemoveBuffFromQueue(unit, spellGroup)
     if (EasyBuff.wantedQueue and EasyBuff.wantedQueue[unit] and EasyBuff.wantedQueue[unit][spellGroup]) then
         EasyBuff.wantedQueue[unit][spellGroup] = nil;
+    end
+end
+
+
+--[[
+    Remove Weapon Buff from weapon queue
+]]--
+function EasyBuff:RemoveWeaponBuffFromQueue(weaponSlot)
+    if (weaponSlot ~= nil and EasyBuff.wantedWeaponBuffs[weaponSlot] ~= nil) then
+        EasyBuff.wantedWeaponBuffs[weaponSlot] = nil;
     end
 end
 
@@ -151,6 +204,7 @@ function EasyBuff:GetMissingBuffs(unit, role, class)
     return buffsToAnnounce;
 end
 
+
 --[[
 	Helper function to get a valid party Role for a given unit
     Defaults to EasyBuff.ROLE.DAMAGER
@@ -163,6 +217,7 @@ function EasyBuff:GetUnitRole(unit)
     end
     return role;
 end
+
 
 --[[
     Get Unit Buff
@@ -205,6 +260,40 @@ function EasyBuff:UnitBuff(unit, index, filter)
     };
 end
 
+
+--[[
+    Get information about weapon enchants
+    Wrapper for GetWeaponEnchantInfo
+]]--
+function EasyBuff:CurrentWeaponBuffs()
+    local hasMainHandEnchant,
+        mainHandExpiration,
+        mainHandCharges,
+        mainHandEnchantID,
+        hasOffHandEnchant,
+        offHandExpiration,
+        offHandCharges,
+        offHandEnchantID = GetWeaponEnchantInfo();
+
+    return {
+        [EasyBuff.CFG_KEY.MAIN_HAND] = {
+            isBuffed      = hasMainHandEnchant,
+            effectId      = mainHandEnchantID,
+            remainingTime = mainHandExpiration,
+            charges       = mainHandCharges,
+            -- itemInfo      = EasyBuff:GetWeaponBuffItemInfo(mainHandEnchantID)
+        },
+        [EasyBuff.CFG_KEY.OFF_HAND] = {
+            isBuffed      = hasOffHandEnchant,
+            effectId      = offHandEnchantID,
+            remainingTime = offHandExpiration,
+            charges       = offHandCharges,
+            -- itemInfo      = EasyBuff:GetWeaponBuffItemInfo(offHandEnchantID)
+        }
+    }
+end
+
+
 --[[
     Evaluate the unitBuff to determine if it qualifies for early notification.
     - Is the buff expiring soon? (@see EasyBuff.EXPIRATION_MINIMUM)
@@ -222,6 +311,33 @@ function EasyBuff:isTimeToNotifyBuff(buff)
         elseif (buff.maxCount > 1 and (3 * buff.count) <= buff.maxCount) then
             return true;
         end
+    end
+
+    return false;
+end
+
+
+--[[
+    Evaluate the unitBuff to determine if it qualifies for early notification.
+    - Is the buff expiring soon? (@see EasyBuff.EXPIRATION_MINIMUM)
+    - Is it a stacking buff and has lost two-thirds of it's stacks?
+
+    @param weaponInfo {object}          @see return value from EasyBuff:CurrentWeaponBuffs
+    @param weaponBuff {WeaponBuff|nil} Weapon Buff we expect to have
+]]--
+function EasyBuff:isTimeToNotifyWeapon(weaponInfo, weaponBuff)
+    if (weaponBuff == nil) then
+        return false;
+    elseif (weaponBuff ~= nil and not weaponInfo.isBuffed) then
+        return true;
+    elseif (tonumber(weaponInfo.effectId) ~= tonumber(weaponBuff.effectId)) then
+        return true;
+    elseif (
+        GetGlobalSettingsValue(EasyBuff.CFG_KEY.ANN_EARLY)
+        and weaponInfo.remainingTime <= EasyBuff.EXPIRATION_MINIMUM
+        -- TODO: Add support for `charges` if necessary
+    ) then
+        return true;
     end
 
     return false;

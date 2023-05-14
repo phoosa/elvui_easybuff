@@ -49,7 +49,7 @@ L["Solo Activity"] = true;
 L["Party Activity"] = true;
 L["Raid Activity"] = true;
 L["Battleground Activity"] = true;
-L["Wanted Buffs"] = true;
+L["Player Buffs"] = true;
 L["Unwanted Buffs"] = true;
 L["Add Unwanted Buff"] = true;
 L["Insert Spell name or id"] = true;
@@ -76,8 +76,8 @@ L["Tracking Ability"] = true;
 L["Select only one."] = true;
 
 -- Configuration Template
-L["Use the field below to apply a preset 'Wanted Buff Monitoring' configuration for all Activity Contexts."] = true;
-L["WARNING: Selecting a Template will erase your current 'Wanted Buff Monitoring' configuration for ALL Activity Contexts and the selected Talent Spec!"] = true;
+L["Use the field below to apply a preset 'Player Buff Monitoring' configuration for all Activity Contexts."] = true;
+L["WARNING: Selecting a Template will erase your current 'Player Buff Monitoring' configuration for ALL Activity Contexts and the selected Talent Spec!"] = true;
 L["Select a Template to load for your 'Primary Talent Spec':"] = true;
 L["Select a Template to load for your 'Secondary Talent Spec':"] = true;
 L["Unholy DPS"] = true;
@@ -101,3 +101,17 @@ L["Enhancement"] = true;
 L["Elemental"] = true;
 L["Fel Armor"] = true;
 L["Demon Armor"] = true;
+
+
+-- New
+L["Enable Weapon Buff Monitoring"] = true;
+L["Rogue and Shaman classes maintain buffs on their weapons, enable this feature to configure and track weapon buff monitoring."] = true;
+L["Weapon Buffs"] = true;
+L["Weapon Buff bound to key:"] = true;
+L["Change which key to use to buff your weapons."] = true;
+L["Configure which buffs you would like to monitor on your weapons."] = true;
+L["Main Hand"] = true;
+L["Off Hand"] = true;
+L["There are no trackable weapon buffs for your character at this time."] = true;
+L["%s needs %s on Main Hand Weapon"] = true;
+L["%s needs %s on Off Hand Weapon"] = true;

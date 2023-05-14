@@ -69,6 +69,15 @@ function EasyBuff:InitializeConfig()
                                 type = "toggle",
                                 get = function(info) return GetGlobalSettingsValue(EasyBuff.CFG_KEY.SELF_REMOVE_EXIST); end,
                                 set = function(info, val) SetGlobalSettingsValue(EasyBuff.CFG_KEY.SELF_REMOVE_EXIST, val); end
+                            },
+                            weaponMonitoring = {
+                                name = L["Enable Weapon Buff Monitoring"],
+                                desc = L["Rogue and Shaman classes maintain buffs on their weapons, enable this feature to configure and track weapon buff monitoring."],
+                                order = 4,
+                                width = 2,
+                                type = "toggle",
+                                get = function(info) return GetGlobalSettingsValue(EasyBuff.CFG_KEY.MONITOR_WEAPONS); end,
+                                set = function(info, val) SetGlobalSettingsValue(EasyBuff.CFG_KEY.MONITOR_WEAPONS, val); end
                             }
                         }
                     },
@@ -136,20 +145,30 @@ function EasyBuff:InitializeConfig()
                                 name = EasyBuff:Colorize(L["Buff Casting bound to key:"], EasyBuff.CHAT_COLOR),
                                 desc = L["Change which key to use to apply buffs."],
                                 order = 1,
-                                width = "double",
+                                width = 2,
                                 type = "keybinding",
                                 get = function(info) return GetKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_CASTBUFF); end,
                                 set = function(info, val) SetKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_CASTBUFF, val); end
                             },
+                            [EasyBuff.CFG_KEY.BIND_WEAPONBUFF] = {
+                                name = EasyBuff:Colorize(L["Weapon Buff bound to key:"], EasyBuff.CHAT_COLOR),
+                                desc = L["Change which key to use to buff your weapons."],
+                                disabled = function() return GetGlobalSettingsValue(EasyBuff.CFG_KEY.MONITOR_WEAPONS) ~= true; end,
+                                order = 2,
+                                width = 2,
+                                type = "keybinding",
+                                get = function(info) return GetKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_WEAPONBUFF); end,
+                                set = function(info, val) return SaveKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_WEAPONBUFF, val); end
+                            },
                             [EasyBuff.CFG_KEY.BIND_REMOVEBUFF] = {
                                 name = EasyBuff:Colorize(L["Buff Removal bound to key:"], EasyBuff.CHAT_COLOR),
                                 desc = L["Change which key to use to remove unwanted buffs."],
-                                order = 2,
-                                width = "double",
+                                order = 3,
+                                width = 2,
                                 type = "keybinding",
-                                get = function(info) return GetKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_REMOVEBUFF); end,
-                                set = function(info, val) return SaveKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_REMOVEBUFF, val); end
+                                get = function(info) return GetKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_REMOVEBUFF); end
                             }
+                              
                         }
                     },
                     quickSetup = {
@@ -162,14 +181,14 @@ function EasyBuff:InitializeConfig()
                                 order = 1,
                                 type = "description",
                                 width = "full",
-                                name = L["Use the field below to apply a preset 'Wanted Buff Monitoring' configuration for all Activity Contexts."],
+                                name = L["Use the field below to apply a preset 'Player Buff Monitoring' configuration for all Activity Contexts."],
                             },
                             warn = {
                                 order = 2,
                                 type = "description",
                                 width = "full",
                                 fontSize = "medium",
-                                name = EasyBuff:Colorize(L["WARNING: Selecting a Template will erase your current 'Wanted Buff Monitoring' configuration for ALL Activity Contexts and the selected Talent Spec!"], EasyBuff.COLORS.RED),
+                                name = EasyBuff:Colorize(L["WARNING: Selecting a Template will erase your current 'Player Buff Monitoring' configuration for ALL Activity Contexts and the selected Talent Spec!"], EasyBuff.COLORS.RED),
                             },
                             primaryTemplate = {
                                 order = 3,

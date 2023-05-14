@@ -15,11 +15,13 @@ P.EasyBuff = {
                 [EasyBuff.CFG_KEY.ANN_EARLY] = true,
                 [EasyBuff.CFG_KEY.SELF_REMOVE_EXIST] = true,
                 [EasyBuff.CFG_KEY.CFG_BY_SPEC] = true,
-                [EasyBuff.CFG_KEY.CFG_BY_CONTEXT] = true
+                [EasyBuff.CFG_KEY.CFG_BY_CONTEXT] = true,
+                [EasyBuff.CFG_KEY.MONITOR_WEAPONS] = false
             },
             [EasyBuff.CFG_GROUP.KEYBIND] = {
                 [EasyBuff.CFG_KEY.BIND_CASTBUFF] = "MOUSEWHEELDOWN",
-                [EasyBuff.CFG_KEY.BIND_REMOVEBUFF] = "CTRL-MOUSEWHEELDOWN"
+                [EasyBuff.CFG_KEY.BIND_REMOVEBUFF] = "CTRL-MOUSEWHEELDOWN",
+                [EasyBuff.CFG_KEY.BIND_WEAPONBUFF] = "SHIFT-MOUSEWHEELDOWN"
             },
             [EasyBuff.TALENT_SPEC_PRIMARY] = {
                 [EasyBuff.CONTEXT.SOLO] = {
@@ -36,7 +38,11 @@ P.EasyBuff = {
                     [EasyBuff.CFG_GROUP.WANTED] = {
                         [EasyBuff.PLAYER] = {}
                     },
-                    [EasyBuff.CFG_GROUP.TRACKING] = {}
+                    [EasyBuff.CFG_GROUP.TRACKING] = {},
+                    [EasyBuff.CFG_GROUP.WEAPON] = {
+                        [EasyBuff.CFG_KEY.MAIN_HAND] = nil,
+                        [EasyBuff.CFG_KEY.OFF_HAND] = nil
+                    }
                 },
                 [EasyBuff.CONTEXT.PARTY] = {
                     [EasyBuff.CFG_GROUP.GENERAL] = {
@@ -62,7 +68,11 @@ P.EasyBuff = {
                         WARLOCK = {},
                         WARRIOR = {}
                     },
-                    [EasyBuff.CFG_GROUP.TRACKING] = {}
+                    [EasyBuff.CFG_GROUP.TRACKING] = {},
+                    [EasyBuff.CFG_GROUP.WEAPON] = {
+                        [EasyBuff.CFG_KEY.MAIN_HAND] = nil,
+                        [EasyBuff.CFG_KEY.OFF_HAND] = nil
+                    }
                 },
                 [EasyBuff.CONTEXT.RAID] = {
                     [EasyBuff.CFG_GROUP.GENERAL] = {
@@ -88,7 +98,11 @@ P.EasyBuff = {
                         WARLOCK = {},
                         WARRIOR = {}
                     },
-                    [EasyBuff.CFG_GROUP.TRACKING] = {}
+                    [EasyBuff.CFG_GROUP.TRACKING] = {},
+                    [EasyBuff.CFG_GROUP.WEAPON] = {
+                        [EasyBuff.CFG_KEY.MAIN_HAND] = nil,
+                        [EasyBuff.CFG_KEY.OFF_HAND] = nil
+                    }
                 },
                 [EasyBuff.CONTEXT.BG] = {
                     [EasyBuff.CFG_GROUP.GENERAL] = {
@@ -114,7 +128,11 @@ P.EasyBuff = {
                         WARLOCK = {},
                         WARRIOR = {}
                     },
-                    [EasyBuff.CFG_GROUP.TRACKING] = {}
+                    [EasyBuff.CFG_GROUP.TRACKING] = {},
+                    [EasyBuff.CFG_GROUP.WEAPON] = {
+                        [EasyBuff.CFG_KEY.MAIN_HAND] = nil,
+                        [EasyBuff.CFG_KEY.OFF_HAND] = nil
+                    }
                 }
             },
             [EasyBuff.TALENT_SPEC_SECONDARY] = {
@@ -132,7 +150,11 @@ P.EasyBuff = {
                     [EasyBuff.CFG_GROUP.WANTED] = {
                         [EasyBuff.PLAYER] = {}
                     },
-                    [EasyBuff.CFG_GROUP.TRACKING] = {}
+                    [EasyBuff.CFG_GROUP.TRACKING] = {},
+                    [EasyBuff.CFG_GROUP.WEAPON] = {
+                        [EasyBuff.CFG_KEY.MAIN_HAND] = nil,
+                        [EasyBuff.CFG_KEY.OFF_HAND] = nil
+                    }
                 },
                 [EasyBuff.CONTEXT.PARTY] = {
                     [EasyBuff.CFG_GROUP.GENERAL] = {
@@ -158,7 +180,11 @@ P.EasyBuff = {
                         WARLOCK = {},
                         WARRIOR = {}
                     },
-                    [EasyBuff.CFG_GROUP.TRACKING] = {}
+                    [EasyBuff.CFG_GROUP.TRACKING] = {},
+                    [EasyBuff.CFG_GROUP.WEAPON] = {
+                        [EasyBuff.CFG_KEY.MAIN_HAND] = nil,
+                        [EasyBuff.CFG_KEY.OFF_HAND] = nil
+                    }
                 },
                 [EasyBuff.CONTEXT.RAID] = {
                     [EasyBuff.CFG_GROUP.GENERAL] = {
@@ -184,7 +210,11 @@ P.EasyBuff = {
                         WARLOCK = {},
                         WARRIOR = {}
                     },
-                    [EasyBuff.CFG_GROUP.TRACKING] = {}
+                    [EasyBuff.CFG_GROUP.TRACKING] = {},
+                    [EasyBuff.CFG_GROUP.WEAPON] = {
+                        [EasyBuff.CFG_KEY.MAIN_HAND] = nil,
+                        [EasyBuff.CFG_KEY.OFF_HAND] = nil
+                    }
                 },
                 [EasyBuff.CONTEXT.BG] = {
                     [EasyBuff.CFG_GROUP.GENERAL] = {
@@ -210,7 +240,11 @@ P.EasyBuff = {
                         WARLOCK = {},
                         WARRIOR = {}
                     },
-                    [EasyBuff.CFG_GROUP.TRACKING] = {}
+                    [EasyBuff.CFG_GROUP.TRACKING] = {},
+                    [EasyBuff.CFG_GROUP.WEAPON] = {
+                        [EasyBuff.CFG_KEY.MAIN_HAND] = nil,
+                        [EasyBuff.CFG_KEY.OFF_HAND] = nil
+                    }
                 }
             }
         }

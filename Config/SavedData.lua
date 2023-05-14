@@ -40,7 +40,11 @@ end
 ]]--
 function SetKeybindSettingsValue(key, value)
     E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][EasyBuff.CFG_GROUP.KEYBIND][key] = value;
-    EasyBuff:ConfigureKeybinds(GetKeybindSettingsValue(BIND_CASTBUFF), GetKeybindSettingsValue(BIND_REMOVEBUFF));
+    EasyBuff:ConfigureKeybinds(
+        GetKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_CASTBUFF),
+        GetKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_REMOVEBUFF),
+        GetKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_WEAPONBUFF)
+    );
 end
 
 
@@ -261,4 +265,27 @@ end
 ]]--
 function SetTrackingConfig(context, talentSpec, value)
     E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][context][EasyBuff.CFG_GROUP.TRACKING] = value;
+end
+
+
+--[[
+    Get Weapon Buff Configuration
+]]--
+function GetWantedWeaponBuffValue(talentSpec, context, weapon)
+    return GetPlayerConfig()[talentSpec][context][EasyBuff.CFG_GROUP.WEAPON][weapon];
+end
+
+
+--[[
+    Set Weapon Buff Configuration
+]]--
+function SetWantedWeaponBuffValue(talentSpec, context, weapon, effectId)
+    if ('table' ~= type(E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][context][EasyBuff.CFG_GROUP.WEAPON])) then
+        E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][context][EasyBuff.CFG_GROUP.WEAPON] = {
+            [EasyBuff.CFG_KEY.MAIN_HAND] = nil,
+            [EasyBuff.CFG_KEY.OFF_HAND] = nil
+        };
+    end
+        
+    E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][context][EasyBuff.CFG_GROUP.WEAPON][weapon] = effectId;
 end

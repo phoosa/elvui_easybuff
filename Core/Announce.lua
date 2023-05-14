@@ -7,11 +7,34 @@ local LSM = E.Libs.LSM;
     Notify the player of the buffs missing from units.
 ]]--
 function EasyBuff:AnnounceUnbuffedUnits()
+    local textColor = "";
     ELVUI_EASYBUFF_ANNOUNCE_FRAME:Clear();
+
+    if (EasyBuff.wantedWeaponBuffs ~= nil) then
+        if (not EasyBuff:CanCastOnUnit(EasyBuff.PLAYER)) then
+            textColor = EasyBuff.RANGE_COLOR;
+        end
+        if (EasyBuff.wantedWeaponBuffs[EasyBuff.CFG_KEY.MAIN_HAND] ~= nil) then
+            EasyBuff:AnnounceMessage(format(
+                L["%s needs %s on %s"].."|r",
+                EasyBuff:Colorize(EasyBuff.PLAYER_NAME, EasyBuff.CLASS_COLOR[EasyBuff.PLAYER_CLASS_KEY])..textColor,
+                tostring(EasyBuff.wantedWeaponBuffs[EasyBuff.CFG_KEY.MAIN_HAND].name),
+                EasyBuff:Colorize(L["Main Hand"], EasyBuff.CLASS_COLOR[EasyBuff.PLAYER_CLASS_KEY])
+            ));
+        end
+        if (EasyBuff.wantedWeaponBuffs[EasyBuff.CFG_KEY.OFF_HAND] ~= nil) then
+            EasyBuff:AnnounceMessage(format(
+                L["%s needs %s on %s"].."|r",
+                EasyBuff:Colorize(EasyBuff.PLAYER_NAME, EasyBuff.CLASS_COLOR[EasyBuff.PLAYER_CLASS_KEY])..textColor,
+                tostring(EasyBuff.wantedWeaponBuffs[EasyBuff.CFG_KEY.OFF_HAND].name),
+                EasyBuff:Colorize(L["Off Hand"], EasyBuff.CLASS_COLOR[EasyBuff.PLAYER_CLASS_KEY])
+            ));
+        end
+    end
 
     if (EasyBuff.wantedQueue ~= nil) then
         for unitName, buffGroup in pairs(EasyBuff.wantedQueue) do
-            local textColor = "";
+            textColor = "";
             if (unitName == EasyBuff.PLAYER) then
                 unitName = EasyBuff.PLAYER_NAME;
             elseif (not EasyBuff:CanCastOnUnit(unitName)) then

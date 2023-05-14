@@ -9,49 +9,13 @@ function EasyBuff:RegisterEvents()
 
     self:RegisterEvent("PLAYER_ENTERING_WORLD",   "OnEnterWorld");
     self:RegisterEvent("SPELLS_CHANGED",          "OnSpellsChanged");
+    self:RegisterEvent("LEARNED_SPELL_IN_TAB",    "OnSpellsChanged");
     self:RegisterEvent("GROUP_JOINED",            "OnGroupStatusChange");
     self:RegisterEvent("GROUP_FORMED",            "OnGroupStatusChange");
     self:RegisterEvent("GROUP_LEFT",              "OnGroupStatusChange");
     self:RegisterEvent("GROUP_ROSTER_UPDATE",     "OnGroupRosterChange");
     self:RegisterEvent("PLAYER_TALENT_UPDATE",    "OnTalentUpdate"); -- fired on talent spec change
     self:RegisterEvent("MINIMAP_UPDATE_TRACKING", "OnTrackingAbilityChanged"); -- fired on tracking ability change, and enter instance
-
-	-- self:RegisterEvent("SPELLS_CHANGED", "InitializePlayerData");
-	-- self:RegisterEvent("PLAYER_ENTERING_WORLD", "UpdateContext");
-	-- self:RegisterEvent("ZONE_CHANGED_NEW_AREA", "UpdateContext");
-	-- self:RegisterEvent("GROUP_JOINED", "UpdateContext");
-	-- self:RegisterEvent("GROUP_FORMED", "UpdateContext");
-	-- self:RegisterEvent("GROUP_LEFT", "UpdateContext");
-	-- self:RegisterEvent("GROUP_ROSTER_UPDATE", "UpdateContext");
-	-- self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", "OnSpellCastSucceeded");
-	-- self:RegisterEvent("UNIT_AURA", "OnUnitAura");
-	-- self:RegisterEvent("PLAYER_REGEN_ENABLED", "OnCombatEnd");
-
-     -- fired on login, and enter dungeon
-    -- self:RegisterEvent("ZONE_CHANGED_NEW_AREA", "OnZoneChangeNewArea"); -- fired on enter dungeon
-    -- self:RegisterEvent("ZONE_CHANGED", "OnZoneChange"); -- fired on tiny area change (like changing a room)
-
-    -- self:RegisterEvent("PLAYER_REGEN_DISABLED", "OnCombatStart"); -- verified
-    -- self:RegisterEvent("PLAYER_REGEN_ENABLED", "OnCombatEnd"); -- verified
-
-    
-
-    -- Context / Roster Changes
-
-    -- self:RegisterEvent("CONVERT_TO_RAID_CONFIRMATION", "OnGroupStatusChange");
-    --self:RegisterEvent("GROUP_ROSTER_UPDATE", "OnGroupChange"); -- fired when dungeon difficulty changes, or player changes role
-
-    -- Living/Dead Changes
-    -- self:RegisterEvent("PLAYER_DEAD", "OnLivingStateChange");
-    -- self:RegisterEvent("PLAYER_ALIVE", "OnLivingStateChange");
-    -- self:RegisterEvent("PLAYER_UNGHOST", "OnLivingStateChange");
-
-    -- Mount/Dismount
-    -- self:RegisterEvent("COMPANION_UPDATE", "OnCompanionUpdate");
-
-    -- Spell/Ability changes
-    -- LEARNED_SPELL_IN_TAB
-    -- CHARACTER_POINTS_CHANGED
 
     -- Button Hooks
     ELVUI_EASYBUFF_PERFORM_BUTTON:SetScript("PreClick", EasyBuff.OnPreClick);
@@ -63,10 +27,20 @@ end
     Before execute button click
 ]]--
 function EasyBuff:OnPreClick(button, down)
-    if (EasyBuff:canCast() and GetKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_CASTBUFF) == button) then
-        local result = EasyBuff:CastNextBuffInQueue();
-        if (result ~= nil) then
-            EasyBuff:RemoveBuffFromQueue(result.unit, result.spellGroup);
+    if (GetKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_CASTBUFF) == button) then
+        if (EasyBuff:canCast()) then
+            local result = EasyBuff:CastNextBuffInQueue();
+            if (result ~= nil) then
+                EasyBuff:RemoveBuffFromQueue(result.unit, result.spellGroup);
+            end
+        end
+    elseif (GetKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_WEAPONBUFF) == button) then
+        if (EasyBuff:canCast()) then
+            -- todo configure button to buff weapon
+            local weaponSlot = EasyBuff:BuffNextWeaponInQueue();
+            if (weaponSlot ~= nil) then
+                EasyBuff:RemoveWeaponBuffFromQueue(weaponSlot);
+            end
         end
     elseif (GetKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_REMOVEBUFF) == button) then
         EasyBuff:RemoveAllUnwantedBuffs();
@@ -104,8 +78,9 @@ function EasyBuff:OnEnterWorld(event)
     EasyBuff:SetActiveTalentGroup();
     EasyBuff:SetActiveContext();
 
-    EasyBuff:InitAvailableSpells();
+    EasyBuff:InitAvailableLists();
     EasyBuff:BuildMonitoredSpells();
+    EasyBuff:BuildMonitoredWeaponBuffs();
 
     BuildTrackingAbilities();
 end
@@ -118,8 +93,9 @@ function EasyBuff:OnSpellsChanged(event)
     EasyBuff:SetActiveTalentGroup();
     EasyBuff:SetActiveContext();
 
-    EasyBuff:InitAvailableSpells();
+    EasyBuff:InitAvailableLists();
     EasyBuff:BuildMonitoredSpells();
+    EasyBuff:BuildMonitoredWeaponBuffs();
 
     BuildTrackingAbilities();
 end

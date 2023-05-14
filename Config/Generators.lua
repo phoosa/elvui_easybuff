@@ -94,7 +94,7 @@ function EasyBuff:GenerateConfig_TalentSpec(context, talentSpec)
             order = 10,
             type = "group",
             childGroups = "tree",
-            name = L["Wanted Buffs"],
+            name = L["Player Buffs"],
             args = {
                 player = {
                     order = 10,
@@ -196,11 +196,11 @@ function EasyBuff:GenerateConfig_TalentSpec(context, talentSpec)
                 }
             }
         },
-        unwanted = {
+        weapon = {
             order = 11,
             type = "group",
-            name = L["Unwanted Buffs"],
-            args = GenerateConfig_Unwanted(talentSpec, context)
+            name = L["Weapon Buffs"],
+            args = EasyBuff:GenerateConfig_WeaponBuffs(context, talentSpec)
         },
         tracking = {
             order = 12,
@@ -222,6 +222,12 @@ function EasyBuff:GenerateConfig_TalentSpec(context, talentSpec)
                     set = function(info, val) return SetTrackingConfig(context, talentSpec, val); end
                 },
             }
+        },
+        unwanted = {
+            order = 13,
+            type = "group",
+            name = L["Unwanted Buffs"],
+            args = GenerateConfig_Unwanted(talentSpec, context)
         }
     };
 end
@@ -301,7 +307,6 @@ function EasyBuff:GenerateConfig_CastBuffs(context, targetClass, talentSpec)
                         args = {
                             all = {
                                 name = L["Any Role"],
-                                desc = "test test test",
                                 type = "toggle",
                                 tristate = true,
                                 get = function(info) return GetWantedBuffValue(talentSpec, context, targetClass, spell.group); end,
@@ -379,6 +384,68 @@ function EasyBuff:GenerateConfig_CastBuffs(context, targetClass, talentSpec)
     end
 
     return config;
+end
+
+
+--[[
+    Generate Configuration Table for Weapon Buffs
+]]--
+function EasyBuff:GenerateConfig_WeaponBuffs(context, talentSpec)
+    if (
+        EasyBuff.availableWeaponBuffs == nil
+        or (EasyBuff.availableWeaponBuffs[EasyBuff.WEAPON_BUFF_TYPE.SPELL] == nil
+        and EasyBuff.availableWeaponBuffs[EasyBuff.WEAPON_BUFF_TYPE.ITEM] == nil)
+    ) then
+        return {
+            NONE = {
+                type = "description",
+                name = L["There are no trackable weapon buffs for your character at this time."]
+            }
+        };
+    end
+
+    local getWeaponBuffValues = function()
+        local weaponBuffOptions = {};
+        for buffType, weaponBuffs in pairs(EasyBuff.availableWeaponBuffs) do
+            if (nil ~= weaponBuffs) then
+                for k, weaponBuff in pairs(weaponBuffs) do
+                    local name = weaponBuff.name;
+                    if (weaponBuff.type == EasyBuff.WEAPON_BUFF_TYPE.SPELL) then
+                        name = format("%s (%s)", weaponBuff.name, tostring(weaponBuff.rank));
+                    end
+                    weaponBuffOptions[weaponBuff.effectId] = name;
+                end
+            end
+        end
+        return weaponBuffOptions;
+    end
+
+    return {
+        mainHand = {
+            order = 1,
+            type = "select",
+            name = L["Main Hand"],
+            desc = L["Configure which buffs you would like to monitor on your weapons."],
+            disabled = function() return GetGlobalSettingsValue(EasyBuff.CFG_KEY.MONITOR_WEAPONS) ~= true; end,
+            width = 2,
+            values = getWeaponBuffValues,
+            sorting = EasyBuff.WEAPON_BUFF_SORT[EasyBuff.PLAYER_CLASS_KEY],
+            get = function(info) return GetWantedWeaponBuffValue(talentSpec, context, EasyBuff.CFG_KEY.MAIN_HAND); end,
+            set = function(info, val) SetWantedWeaponBuffValue(talentSpec, context, EasyBuff.CFG_KEY.MAIN_HAND, val); end
+        },
+        offHand = {
+            order = 2,
+            type = "select",
+            name = L["Off Hand"],
+            desc = L["Configure which buffs you would like to monitor on your weapons."],
+            disabled = function() return GetGlobalSettingsValue(EasyBuff.CFG_KEY.MONITOR_WEAPONS) ~= true; end,
+            width = 2,
+            values = getWeaponBuffValues,
+            sorting = EasyBuff.WEAPON_BUFF_SORT[EasyBuff.PLAYER_CLASS_KEY],
+            get = function(info) return GetWantedWeaponBuffValue(talentSpec, context, EasyBuff.CFG_KEY.OFF_HAND); end,
+            set = function(info, val) SetWantedWeaponBuffValue(talentSpec, context, EasyBuff.CFG_KEY.OFF_HAND, val); end
+        }
+    }
 end
 
 

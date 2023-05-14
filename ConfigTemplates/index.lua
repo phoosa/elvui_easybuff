@@ -70,7 +70,6 @@ end
     @return {array}
 ]]--
 function EasyBuff:ApplyConfigTemplate(talentSpec, class, key)
-    print(tostring(talentSpec));
     if (
         EasyBuff.ConfigTemplate.KEYS[class] ~= nil
         and EasyBuff.ConfigTemplate.KEYS[class][key] ~= nil

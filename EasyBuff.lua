@@ -78,6 +78,7 @@ EasyBuff.CFG_GROUP = {
     GENERAL                     = "general",
     KEYBIND                     = "keybind",
     WANTED                      = "wanted",
+    WEAPON                      = "weapon",
     UNWANTED                    = "unwanted",
     TRACKING                    = "tracking"
 };
@@ -100,21 +101,32 @@ EasyBuff.CFG_KEY = {
     SELF_REMOVE_EXIST           = "removeExistingOnSelf",
     BIND_CASTBUFF               = "castBuff",
     BIND_REMOVEBUFF             = "removeBuff",
+    BIND_WEAPONBUFF             = "weaponBuff",
     DISABLE_RESTING             = "disableResting",
     DISABLE_NOINSTANCE          = "disableNoInstance",
     SELF_ONLY_CAST              = "selfOnlyCast",
+    MONITOR_WEAPONS             = "monitorWeapons",
     CAST_GREATER                = "castGreater",
     CAST_GREATER_MIN            = "castGreaterMin",
     CFG_BY_SPEC                 = "specBasedConfig",
-    CFG_BY_CONTEXT              = "activityBasedConfig"
+    CFG_BY_CONTEXT              = "activityBasedConfig",
+    MAIN_HAND                   = "mainHand",
+    OFF_HAND                    = "offHand",
 };
+EasyBuff.WEAPON_BUFF_TYPE = {
+    ITEM                        = "item",
+    SPELL                       = "spell"
+}
 EasyBuff.CONTEXT_LABELS = {
     SOLO                        = L["Solo Activity"],
     PARTY                       = L["Party Activity"],
     RAID                        = L["Raid Activity"],
     BG                          = L["Battleground Activity"]
 };
-
+EasyBuff.EQUIPMENT_SLOT = {
+    [EasyBuff.CFG_KEY.MAIN_HAND] = 16,
+    [EasyBuff.CFG_KEY.OFF_HAND]  = 17
+};
 
 
 --[[
@@ -123,23 +135,29 @@ EasyBuff.CONTEXT_LABELS = {
 ]]--
 function EasyBuff:Initialize()
     -- Initialize Properties
-    EasyBuff.availableSpells   = {};                    -- {object} Contains a list of the spells we can monitor.
-    EasyBuff.monitoredSpells   = {};                    -- {object} Contains a list of the spells we are actively monitoring for the current talentSpec and context.
-    EasyBuff.activeTalentSpec  = nil;                   -- {string} The name of the currently active talent spec.
-    EasyBuff.activeContext     = EasyBuff.CONTEXT.SOLO; -- {string} The name of the currently active context.
-    EasyBuff.wantedQueue       = nil;                   -- {object} Multi-dimensional list of buffs to apply ["unitName" => ["buffGroup" => MonitoredSpell]]
-    EasyBuff.rebuildNextScan   = false;                 -- {bool} semaphor: rebuild the monitored buff queue on next scan
-    -- EasyBuff.canCast           = true;                  -- {bool} semaphor: indicates the player can cast a spell
-    EasyBuff.TrackingAbilities = {};                    -- {object} Contains a list of 'spell' type tracking abilities available for this player.
-    EasyBuff.activeTracking    = nil;                   -- {int} TextureId of the Active Tracking ability
-    EasyBuff.wantedTracking    = nil;                   -- {object} Contains announcement for missing wanted tracking ability.
+    EasyBuff.availableSpells      = {};                    -- {object} Contains a list of the spells we can monitor.
+    EasyBuff.monitoredSpells      = {};                    -- {object} Contains a list of the spells we are actively monitoring for the current talentSpec and context.
+    EasyBuff.availableWeaponBuffs = nil;                   -- {object} Contains a list of weapon buffs that we can monitor.
+    EasyBuff.monitoredWeaponBuffs = nil;                   -- {object} Contains a list of the weapon buffs we are actively monitoring for the current talentSpec and context.
+    EasyBuff.activeTalentSpec     = nil;                   -- {string} The name of the currently active talent spec.
+    EasyBuff.activeContext        = EasyBuff.CONTEXT.SOLO; -- {string} The name of the currently active context.
+    EasyBuff.wantedQueue          = nil;                   -- {object} Multi-dimensional list of buffs to apply ["unitName" => ["buffGroup" => MonitoredSpell]]
+    EasyBuff.rebuildNextScan      = false;                 -- {bool} semaphor: rebuild the monitored buff queue on next scan
+    EasyBuff.TrackingAbilities    = {};                    -- {object} Contains a list of 'spell' type tracking abilities available for this player.
+    EasyBuff.activeTracking       = nil;                   -- {int} TextureId of the Active Tracking ability
+    EasyBuff.wantedTracking       = nil;                   -- {object} Contains announcement for missing wanted tracking ability.
+    EasyBuff.wantedWeaponBuffs    = nil;                   -- {object} Contains announcement for missing wanted weapon buffs.
 
     -- Register plugin so options are properly inserted when config is loaded
     EP:RegisterPlugin(addonName, EasyBuff.InitializeConfig);
 
     -- Initialize UI Frames
     EasyBuff:InitializeAnnounceFrame();
-    EasyBuff:ConfigureKeybinds(GetKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_CASTBUFF), GetKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_REMOVEBUFF));
+    EasyBuff:ConfigureKeybinds(
+        GetKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_CASTBUFF),
+        GetKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_REMOVEBUFF),
+        GetKeybindSettingsValue(EasyBuff.CFG_KEY.BIND_WEAPONBUFF)
+    );
 
     -- Bind Console Commands.
     --EasyBuff:RegisterChatCommand(EasyBuff.COMMAND, "ChatCommand");
@@ -153,12 +171,14 @@ function EasyBuff:Initialize()
 end
 
 --[[
-    Iterate over Spells in Spell Book to build a concrete list of availableSpells
+    Generate availableSpells and availableWeaponBuffs lists
 ]]--
-function EasyBuff:InitAvailableSpells()
+function EasyBuff:InitAvailableLists()
     local bookTabs = GetNumSpellTabs();
     local totalSpells = 0;
     local available = {};
+    -- Init Weapon Buffs
+    EasyBuff.availableWeaponBuffs = EasyBuff:GetAvailableWeaponBuffs();
 
     for bookTabIndex=1, bookTabs do
         local bookTabName, bookTabTexture, bookTabOffset, bookTabSpellCnt, _, _ = GetSpellTabInfo(bookTabIndex);
@@ -177,12 +197,58 @@ function EasyBuff:InitAvailableSpells()
                     group = classSpell.group,
                     greater = classSpell.greater
                 });
+            elseif (
+                nil ~= EasyBuff.availableWeaponBuffs[EasyBuff.WEAPON_BUFF_TYPE.SPELL]
+                and nil ~= EasyBuff.availableWeaponBuffs[EasyBuff.WEAPON_BUFF_TYPE.SPELL][tostring(spellId)]
+            ) then
+                EasyBuff.availableWeaponBuffs[EasyBuff.WEAPON_BUFF_TYPE.SPELL][tostring(spellId)].known = true;
             end
         end
     end
 
     -- update global list.
     EasyBuff.availableSpells = available;
+end
+
+--[[
+    Generate a list of weapon buffs that the player can utilize
+
+    @return {WeaponBuff[]} returns 2 lists of Weapon Buffs; grouped by type (item, spell)
+]]--
+function EasyBuff:GetAvailableWeaponBuffs()
+    if (EasyBuff.WEAPON_BUFFS[EasyBuff.PLAYER_CLASS_KEY] == nil) then
+        return {
+            [EasyBuff.WEAPON_BUFF_TYPE.ITEM] = nil,
+            [EasyBuff.WEAPON_BUFF_TYPE.SPELL] = nil
+        };
+    end
+
+    local weaponBuffs = {
+        [EasyBuff.WEAPON_BUFF_TYPE.ITEM] = {},
+        [EasyBuff.WEAPON_BUFF_TYPE.SPELL] = {}
+    };
+
+    for effectId, buffConfig in pairs(EasyBuff.WEAPON_BUFFS[EasyBuff.PLAYER_CLASS_KEY]) do
+        local buffType = EasyBuff.WEAPON_BUFF_GROUPS[EasyBuff.PLAYER_CLASS_KEY][buffConfig.group].type;
+        local name = nil;
+
+        if (buffType == EasyBuff.WEAPON_BUFF_TYPE.ITEM) then
+            name = GetItemInfo(buffConfig.id);
+        else
+            name = GetSpellInfo(buffConfig.id);
+        end
+
+        weaponBuffs[buffType][tostring(effectId)] = WeaponBuff:new({
+            effectId = effectId,
+            type     = buffType,
+            typeId   = buffConfig.id,
+            rank     = buffConfig.rank,
+            group    = buffConfig.group,
+            name     = name
+        });
+    end
+
+    return weaponBuffs;
 end
 
 --[[
@@ -230,6 +296,44 @@ function EasyBuff:BuildMonitoredSpells()
     end
 
     EasyBuff.monitoredSpells = monitored;
+end
+
+--[[
+    Build monitoredWeaponBuffs containing WeaponBuff objects for currently tracked Main Hand and Off Hand
+]]--
+function EasyBuff:BuildMonitoredWeaponBuffs()
+    local canMonitor = GetGlobalSettingsValue(EasyBuff.CFG_KEY.MONITOR_WEAPONS);
+    if (not canMonitor or
+        (nil == EasyBuff.availableWeaponBuffs[EasyBuff.WEAPON_BUFF_TYPE.SPELL]
+        and nil == EasyBuff.availableWeaponBuffs[EasyBuff.WEAPON_BUFF_TYPE.ITEM])
+    ) then
+        EasyBuff.monitoredWeaponBuffs = nil;
+    else
+        local monitoredCfg = GetPlayerConfig()[EasyBuff.activeTalentSpec][EasyBuff.activeContext][EasyBuff.CFG_GROUP.WEAPON];
+
+        local monitor = {
+            [EasyBuff.CFG_KEY.MAIN_HAND] = nil,
+            [EasyBuff.CFG_KEY.OFF_HAND] = nil
+        };
+
+        if (nil ~= monitoredCfg[EasyBuff.CFG_KEY.MAIN_HAND]) then
+            if (nil ~= EasyBuff.availableWeaponBuffs[EasyBuff.WEAPON_BUFF_TYPE.SPELL][monitoredCfg[EasyBuff.CFG_KEY.MAIN_HAND]]) then
+                monitor[EasyBuff.CFG_KEY.MAIN_HAND] = EasyBuff.availableWeaponBuffs[EasyBuff.WEAPON_BUFF_TYPE.SPELL][monitoredCfg[EasyBuff.CFG_KEY.MAIN_HAND]];
+            elseif (nil ~= EasyBuff.availableWeaponBuffs[EasyBuff.WEAPON_BUFF_TYPE.ITEM][monitoredCfg[EasyBuff.CFG_KEY.MAIN_HAND]]) then
+                monitor[EasyBuff.CFG_KEY.MAIN_HAND] = EasyBuff.availableWeaponBuffs[EasyBuff.WEAPON_BUFF_TYPE.ITEM][monitoredCfg[EasyBuff.CFG_KEY.MAIN_HAND]];
+            end
+        end
+
+        if (nil ~= monitoredCfg[EasyBuff.CFG_KEY.OFF_HAND]) then
+            if (nil ~= EasyBuff.availableWeaponBuffs[EasyBuff.WEAPON_BUFF_TYPE.SPELL][monitoredCfg[EasyBuff.CFG_KEY.OFF_HAND]]) then
+                monitor[EasyBuff.CFG_KEY.OFF_HAND] = EasyBuff.availableWeaponBuffs[EasyBuff.WEAPON_BUFF_TYPE.SPELL][monitoredCfg[EasyBuff.CFG_KEY.OFF_HAND]];
+            elseif (nil ~= EasyBuff.availableWeaponBuffs[EasyBuff.WEAPON_BUFF_TYPE.ITEM][monitoredCfg[EasyBuff.CFG_KEY.OFF_HAND]]) then
+                monitor[EasyBuff.CFG_KEY.OFF_HAND] = EasyBuff.availableWeaponBuffs[EasyBuff.WEAPON_BUFF_TYPE.ITEM][monitoredCfg[EasyBuff.CFG_KEY.OFF_HAND]];
+            end
+        end
+
+        EasyBuff.monitoredWeaponBuffs = monitor;
+    end
 end
 
 --[[
