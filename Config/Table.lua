@@ -77,7 +77,7 @@ function EasyBuff:InitializeConfig()
                                 width = 2,
                                 type = "toggle",
                                 get = function(info) return GetGlobalSettingsValue(EasyBuff.CFG_KEY.MONITOR_WEAPONS); end,
-                                set = function(info, val) SetGlobalSettingsValue(EasyBuff.CFG_KEY.MONITOR_WEAPONS, val); end
+                                set = function(info, val) SetGlobalSettingsValue(EasyBuff.CFG_KEY.MONITOR_WEAPONS, val); EasyBuff:BuildMonitoredWeaponBuffs(); end
                             }
                         }
                     },

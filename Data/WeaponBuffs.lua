@@ -15,7 +15,8 @@ EasyBuff.WEAPON_BUFF_GROUPS = {
         INSTANT = { type = EasyBuff.WEAPON_BUFF_TYPE.ITEM },
         WOUND   = { type = EasyBuff.WEAPON_BUFF_TYPE.ITEM },
         CRIPPL  = { type = EasyBuff.WEAPON_BUFF_TYPE.ITEM },
-        MIND    = { type = EasyBuff.WEAPON_BUFF_TYPE.ITEM }
+        MIND    = { type = EasyBuff.WEAPON_BUFF_TYPE.ITEM },
+        ANEST   = { type = EasyBuff.WEAPON_BUFF_TYPE.ITEM }
     },
     SHAMAN = {
         FLAME   = { type = EasyBuff.WEAPON_BUFF_TYPE.SPELL },
@@ -46,40 +47,40 @@ EasyBuff.WEAPON_BUFF_GROUPS = {
 EasyBuff.WEAPON_BUFFS = {
     ROGUE = {
         -- Deadly Poison
-        ["d1"] = { rank = 1, group = "DEADLY", id = 2892 },
-        ["d2"] = { rank = 2, group = "DEADLY", id = 2893 },
-        ["d3"] = { rank = 3, group = "DEADLY", id = 8984 },
-        ["d4"] = { rank = 4, group = "DEADLY", id = 8985 },
-        ["d5"] = { rank = 5, group = "DEADLY", id = 20844 },
-        ["d6"] = { rank = 6, group = "DEADLY", id = 22053 },
-        ["d7"] = { rank = 7, group = "DEADLY", id = 22054 },
-        ["d8"] = { rank = 8, group = "DEADLY", id = 43232 },
-        ["d9"] = { rank = 9, group = "DEADLY", id = 43233 },
+        ["7"] = { rank = 1, group = "DEADLY", id = 2892 },
+        ["8"] = { rank = 2, group = "DEADLY", id = 2893 },
+        ["626"] = { rank = 3, group = "DEADLY", id = 8984 },
+        ["627"] = { rank = 4, group = "DEADLY", id = 8985 },
+        ["2630"] = { rank = 5, group = "DEADLY", id = 20844 },
+        ["2642"] = { rank = 6, group = "DEADLY", id = 22053 },
+        ["2643"] = { rank = 7, group = "DEADLY", id = 22054 },
+        ["3770"] = { rank = 8, group = "DEADLY", id = 43232 },
+        ["3771"] = { rank = 9, group = "DEADLY", id = 43233 },
         -- Instant Poison
         ["323"] = { rank = 1, group = "INSTANT", id = 6947 },
-        ["h1"] = { rank = 2, group = "INSTANT", id = 6949 },
-        ["h2"] = { rank = 3, group = "INSTANT", id = 6950 },
-        ["h3"] = { rank = 4, group = "INSTANT", id = 8926 },
-        ["h4"] = { rank = 5, group = "INSTANT", id = 8927 },
-        ["h5"] = { rank = 6, group = "INSTANT", id = 8928 },
-        ["h6"] = { rank = 7, group = "INSTANT", id = 21927 },
-        ["h7"] = { rank = 8, group = "INSTANT", id = 43230 },
-        ["h8"] = { rank = 9, group = "INSTANT", id = 43231 },
+        ["324"] = { rank = 2, group = "INSTANT", id = 6949 },
+        ["325"] = { rank = 3, group = "INSTANT", id = 6950 },
+        ["623"] = { rank = 4, group = "INSTANT", id = 8926 },
+        ["624"] = { rank = 5, group = "INSTANT", id = 8927 },
+        ["625"] = { rank = 6, group = "INSTANT", id = 8928 },
+        ["2641"] = { rank = 7, group = "INSTANT", id = 21927 },
+        ["3768"] = { rank = 8, group = "INSTANT", id = 43230 },
+        ["3769"] = { rank = 9, group = "INSTANT", id = 43231 },
         -- Wound Poison
-        ["w1"] = { rank = 1, group = "WOUND", id = 10918 },
-        ["w2"] = { rank = 2, group = "WOUND", id = 10920 },
-        ["w3"] = { rank = 3, group = "WOUND", id = 10921 },
-        ["w4"] = { rank = 4, group = "WOUND", id = 10922 },
-        ["w5"] = { rank = 5, group = "WOUND", id = 22055 },
-        ["w6"] = { rank = 6, group = "WOUND", id = 43234 },
-        ["w7"] = { rank = 7, group = "WOUND", id = 43235 },
+        ["703"] = { rank = 1, group = "WOUND", id = 10918 },
+        ["704"] = { rank = 2, group = "WOUND", id = 10920 },
+        ["705"] = { rank = 3, group = "WOUND", id = 10921 },
+        ["706"] = { rank = 4, group = "WOUND", id = 10922 },
+        ["2644"] = { rank = 5, group = "WOUND", id = 22055 },
+        ["3772"] = { rank = 6, group = "WOUND", id = 43234 },
+        ["3773"] = { rank = 7, group = "WOUND", id = 43235 },
         -- Crippling Poison
-        ["c1"] = { rank = 1, group = "CRIPPL", id = 3775 },
-        ["c2"] = { rank = 2, group = "CRIPPL", id = 3776 },
+        ["22"] = { rank = 1, group = "CRIPPL", id = 3775 },
         -- Mind-numbing Poison
-        ["m1"] = { rank = 1, group = "MIND", id = 5237 },
-        ["m2"] = { rank = 2, group = "MIND", id = 6951 },
-        ["m3"] = { rank = 3, group = "MIND", id = 9186 }
+        ["35"] = { rank = 1, group = "MIND", id = 5237 },
+        -- Anesthetic Poison
+        ["2640"] = { rank = 1, group = "ANEST", id = 21835 },
+        ["3774"] = { rank = 2, group = "ANEST", id = 43237 }
     },
     SHAMAN = {
         -- Flametongue
@@ -161,43 +162,44 @@ EasyBuff.WEAPON_BUFFS = {
     -- }
 };
 
+
 EasyBuff.WEAPON_BUFF_SORT = {
     ROGUE = {
+        -- Anesthetic Poison
+        "2640",
+        "3774",
+        -- Crippling Poison
+        "22",
         -- Deadly Poison
-        "d1",
-        "d2",
-        "d3",
-        "d4",
-        "d5",
-        "d6",
-        "d7",
-        "d8",
-        "d9",
+        "7",
+        "8",
+        "626",
+        "627",
+        "2630",
+        "2642",
+        "2643",
+        "3770",
+        "3771",
         -- Instant Poison
         "323",
-        "h1",
-        "h2",
-        "h3",
-        "h4",
-        "h5",
-        "h6",
-        "h7",
-        "h8",
-        -- Wound Poison
-        "w1",
-        "w2",
-        "w3",
-        "w4",
-        "w5",
-        "w6",
-        "w7",
-        -- Crippling Poison
-        "c1",
-        "c2",
+        "324",
+        "325",
+        "623",
+        "624",
+        "625",
+        "2641",
+        "3768",
+        "3769",
         -- Mind-numbing Poison
-        "m1",
-        "m2",
-        "m3"
+        "35",
+        -- Wound Poison
+        "703",
+        "704",
+        "705",
+        "706",
+        "2644",
+        "3772",
+        "3773"
     },
     SHAMAN = {
         -- Flametongue
