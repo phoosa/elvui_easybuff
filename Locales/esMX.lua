@@ -3,6 +3,7 @@ local L = ElvUI[1].Libs.ACL:NewLocale("ElvUI_EasyBuff", "esMX");
 
 -- Messages
 L["%s needs %s"] = "%s necesita %s";
+L["YOU HAVE %d UNWANTED BUFFS!"] = "¡TIENES %d MEJORAS NO DESEADAS!";
 L["Activity context changed to %s"] = "Contexto de la actividad cambió a %s";
 L["Talent Spec context changed to %s"] = "Contexto de Especialización de talentos cambió a %s";
 L["Announcements"] = "Anuncios";

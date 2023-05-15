@@ -6,6 +6,7 @@ local EasyBuff = E:GetModule("EasyBuff");
     Scan units for missing buffs, then update our Announcement frame
 ]]--
 function EasyBuff:ScanBuffs()
+    EasyBuff:TryDebug('SCAN', 'rebuild monitor:'..tostring(EasyBuff.rebuildNextScan));
     if (EasyBuff.rebuildNextScan) then
         EasyBuff:BuildMonitoredSpells();
         EasyBuff:BuildMonitoredWeaponBuffs();
@@ -23,6 +24,9 @@ function EasyBuff:ScanBuffs()
                 buffsToAnnounce = {}
             end
             buffsToAnnounce[EasyBuff.PLAYER] = missing;
+            EasyBuff:TryDebug('SCAN PLAYER DONE', 'Player missing buffs');
+        else
+            EasyBuff:TryDebug('SCAN PLAYER DONE', 'Player not missing buffs');
         end
 
         -- Check Party or Raid members.
@@ -37,6 +41,9 @@ function EasyBuff:ScanBuffs()
                             buffsToAnnounce = {}
                         end
                         buffsToAnnounce[unitName] = missing;
+                        EasyBuff:TryDebug('SCAN PLAYER DONE', tostring(unitName)..' missing buffs');
+                    else
+                        EasyBuff:TryDebug('SCAN PLAYER DONE', tostring(unitName)..' not missing buffs');
                     end
                 end
                 groupIndex = groupIndex + 1;
@@ -51,6 +58,9 @@ function EasyBuff:ScanBuffs()
 
         -- Check if we're missing our preffered tracking ability.
         EasyBuff:CheckMissingTrackingAbility();
+
+        -- Check for unwanted buffs.
+        EasyBuff:CheckUnwatedBuffs();
 
         -- Announce Unbuffed Units
         EasyBuff:AnnounceUnbuffedUnits();
@@ -72,8 +82,34 @@ function EasyBuff:canScan()
         return false;
     end
 
-    
     return true;
+end
+
+
+--[[
+    Update the Unwanted Buff count
+]]--
+function EasyBuff:CheckUnwatedBuffs()
+    local allUnwanted = GetUnwantedBuffs(EasyBuff.activeTalentSpec, EasyBuff.activeContext);
+
+    local count = 0;
+
+    if (allUnwanted) then
+        -- Iterate over the units current buffs.
+        local index = 1;
+        local buff = EasyBuff:UnitBuff(EasyBuff.PLAYER, index);
+        while (buff ~= nil) do
+            -- Is this a spell we're trying to remove?
+            if (allUnwanted[tostring(buff.name)]) then
+                count = count + 1;
+            end
+            -- get next buff
+            index = index + 1;
+            buff = EasyBuff:UnitBuff(EasyBuff.PLAYER, index);
+        end
+    end
+
+    EasyBuff.unwatedBuffs = count;
 end
 
 
@@ -81,6 +117,7 @@ end
     Update wantedTracking if we're not currently tracking what the config says we should.
 ]]--
 function EasyBuff:CheckMissingTrackingAbility()
+    EasyBuff:TryDebug('SCAN TRACKING', '');
     local preferred = GetTrackingConfig(EasyBuff.activeContext, EasyBuff.activeTalentSpec);
     if (preferred ~= nil) then
         preferred = tonumber(preferred);
@@ -90,10 +127,12 @@ function EasyBuff:CheckMissingTrackingAbility()
         for k, track in pairs(EasyBuff.TrackingAbilities) do
             if (track.textureId == preferred) then
                 EasyBuff.wantedTracking = track;
+                EasyBuff:TryDebug('SCAN TRACKING DONE', 'missing/incorrect tracking');
                 return;
             end
         end
     else
+        EasyBuff:TryDebug('SCAN TRACKING DONE', 'correct tracking');
         EasyBuff.wantedTracking = nil;
     end
 end
@@ -103,6 +142,7 @@ end
     Update wantedWeapon if we're missing or losing our weapon buffs soon.
 ]]--
 function EasyBuff:CheckMissingWeaponBuffs()
+    EasyBuff:TryDebug('SCAN WEAPONS', '');
     local wantedMH = nil;
     local wantedOH = nil;
 
@@ -116,11 +156,17 @@ function EasyBuff:CheckMissingWeaponBuffs()
             if (EasyBuff:isTimeToNotifyWeapon(currentBuffs[EasyBuff.CFG_KEY.MAIN_HAND], EasyBuff.monitoredWeaponBuffs[EasyBuff.CFG_KEY.MAIN_HAND])) then
                 -- main hand missing buff or expiring soon
                 wantedMH = EasyBuff.monitoredWeaponBuffs[EasyBuff.CFG_KEY.MAIN_HAND];
+                EasyBuff:TryDebug('SCAN MH-WEAPON DONE', 'missing/incorrect buff');
+            else
+                EasyBuff:TryDebug('SCAN MH-WEAPON DONE', 'correct buff');
             end
 
             if (EasyBuff:isTimeToNotifyWeapon(currentBuffs[EasyBuff.CFG_KEY.OFF_HAND], EasyBuff.monitoredWeaponBuffs[EasyBuff.CFG_KEY.OFF_HAND])) then
                 -- off hand missing buff or expiring soon
                 wantedOH = EasyBuff.monitoredWeaponBuffs[EasyBuff.CFG_KEY.OFF_HAND];
+                EasyBuff:TryDebug('SCAN OH-WEAPON DONE', 'missing/incorrect buff');
+            else
+                EasyBuff:TryDebug('SCAN OH-WEAPON DONE', 'correct buff');
             end
         end
     end

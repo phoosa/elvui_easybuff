@@ -4,10 +4,30 @@ local EasyBuff = E:GetModule("EasyBuff");
 
 
 --[[
+    Colorize the name of the current context tab
+]]--
+function EasyBuff:ColorNameForContextTab(context, text)
+    if (context == EasyBuff.activeContext) then
+        return EasyBuff:Colorize(text, EasyBuff.COLORS.BLUE);
+    end
+    return text;
+end
+
+
+--[[
     Generate Configuration Table for a given context
     @return {object}
 ]]--
 function EasyBuff:GenerateConfig_Context(context)
+    local primaryName = L["Primary Spec"];
+    local secondaryName = L["Secondary Spec"];
+
+    if (EasyBuff.activeTalentSpec == EasyBuff.TALENT_SPEC_SECONDARY) then
+        secondaryName = EasyBuff:Colorize(secondaryName, EasyBuff.COLORS.BLUE);
+    else
+        primaryName = EasyBuff:Colorize(primaryName, EasyBuff.COLORS.BLUE);
+    end
+
     return {
         clone = {
             order = 0,
@@ -30,14 +50,15 @@ function EasyBuff:GenerateConfig_Context(context)
             order = 1,
             type = "group",
             childGroups = "tab",
-            name = L["Primary Spec"],
+            name = primaryName,
             args = EasyBuff:GenerateConfig_TalentSpec(context, EasyBuff.TALENT_SPEC_PRIMARY)
         },
         secondarySpec = {
             order = 2,
             type = "group",
             childGroups = "tab",
-            name = L["Secondary Spec"],
+            disabled = function() return 1 == GetNumTalentGroups(); end,
+            name = secondaryName,
             args = EasyBuff:GenerateConfig_TalentSpec(context, EasyBuff.TALENT_SPEC_SECONDARY)
         }
     }
@@ -232,27 +253,6 @@ function EasyBuff:GenerateConfig_TalentSpec(context, talentSpec)
     };
 end
 
-
---[[
-    Generate Configuration Table for a given class
-    @return {object}
-]]--
-function EasyBuff:GenerateConfig_Class(context, targetClass)
-    return {
-        primarySpec = {
-            order = 1,
-            type = "group",
-            name = L["Primary Spec"],
-            args = EasyBuff:GenerateConfig_CastBuffs(context, targetClass, EasyBuff.TALENT_SPEC_PRIMARY)
-        },
-        secondarySpec = {
-            order = 2,
-            type = "group",
-            name = L["Secondary Spec"],
-            args = EasyBuff:GenerateConfig_CastBuffs(context, targetClass, EasyBuff.TALENT_SPEC_SECONDARY)
-        }
-    };
-end
 
 --[[
     Generate Configuration Table for Castable Buffs

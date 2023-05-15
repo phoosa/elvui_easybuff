@@ -22,6 +22,7 @@ EasyBuff.PLAYER_REALM           = GetRealmName();
 EasyBuff.PLAYER_CLASS,
   EasyBuff.PLAYER_CLASS_KEY     = UnitClass(EasyBuff.PLAYER);
 -- System Logic
+EasyBuff.DEBUG_ENABLED          = false;
 EasyBuff.EXPIRATION_PERCENT     = .1;  -- notify when buff reaches this percent of buff duration remaining
 EasyBuff.EXPIRATION_BUFFER      = 3;   -- seconds to add to percent to account for shorter buffs
 EasyBuff.EXPIRATION_MINIMUM     = 180; -- minimum time remaining (in seconds) before notifying about an expiring buff
@@ -147,6 +148,7 @@ function EasyBuff:Initialize()
     EasyBuff.activeTracking       = nil;                   -- {int} TextureId of the Active Tracking ability
     EasyBuff.wantedTracking       = nil;                   -- {object} Contains announcement for missing wanted tracking ability.
     EasyBuff.wantedWeaponBuffs    = nil;                   -- {object} Contains announcement for missing wanted weapon buffs.
+    EasyBuff.unwatedBuffs         = 0;                     -- {int} The total number of unwanted buffs you currently have
 
     -- Register plugin so options are properly inserted when config is loaded
     EP:RegisterPlugin(addonName, EasyBuff.InitializeConfig);
@@ -160,7 +162,8 @@ function EasyBuff:Initialize()
     );
 
     -- Bind Console Commands.
-    --EasyBuff:RegisterChatCommand(EasyBuff.COMMAND, "ChatCommand");
+    EasyBuff:RegisterChatCommand(EasyBuff.COMMAND, "ConsoleCommand");
+
     -- Bind Event Handlers.
     EasyBuff:RegisterEvents()
 

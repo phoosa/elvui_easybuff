@@ -1,6 +1,6 @@
 ## Interface: 30401
 ## Author: Phoosa
-## Version: 2.1.2
+## Version: 2.1.3
 ## Title: |cff1784d1ElvUI Classic|r Easy Buff
 ## Notes: Never forget to rebuff yourself or your party again.  EasyBuff monitors buffs, provides notifications when a buff is missing or expiring soon, and allows you to quickly reapply them with a mousewheel scroll.
 ## RequiredDeps: ElvUI
@@ -22,6 +22,7 @@ Core\Announce.lua
 Core\Events.lua
 Core\Monitor.lua
 Core\Scan.lua
+Core\Console.lua
 Core\PerformCast.lua
 Config\Table.lua
 Config\Generators.lua

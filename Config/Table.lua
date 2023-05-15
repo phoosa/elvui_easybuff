@@ -216,28 +216,28 @@ function EasyBuff:InitializeConfig()
                 order = 10,
                 type = "group",
                 childGroups = "tab",
-                name = L["Solo Activity"],
+                name = EasyBuff:ColorNameForContextTab(EasyBuff.CONTEXT.SOLO, L["Solo Activity"]),
                 args = EasyBuff:GenerateConfig_Context(EasyBuff.CONTEXT.SOLO)
             },
             PARTY = {
                 order = 11,
                 type = "group",
                 childGroups = "tab",
-                name = L["Party Activity"],
+                name = EasyBuff:ColorNameForContextTab(EasyBuff.CONTEXT.PARTY, L["Party Activity"]),
                 args = EasyBuff:GenerateConfig_Context(EasyBuff.CONTEXT.PARTY)
             },
             RAID = {
                 order = 12,
                 type = "group",
                 childGroups = "tab",
-                name = L["Raid Activity"],
+                name = EasyBuff:ColorNameForContextTab(EasyBuff.CONTEXT.RAID, L["Raid Activity"]),
                 args = EasyBuff:GenerateConfig_Context(EasyBuff.CONTEXT.RAID)
             },
             BG = {
                 order = 13,
                 type = "group",
                 childGroups = "tab",
-                name = L["Battleground Activity"],
+                name = EasyBuff:ColorNameForContextTab(EasyBuff.CONTEXT.BG, L["Battleground Activity"]),
                 args = EasyBuff:GenerateConfig_Context(EasyBuff.CONTEXT.BG)
             }
         }

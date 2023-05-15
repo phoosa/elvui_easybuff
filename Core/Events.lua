@@ -8,7 +8,7 @@ local EasyBuff = E:GetModule("EasyBuff");
 function EasyBuff:RegisterEvents()
 
     self:RegisterEvent("PLAYER_ENTERING_WORLD",   "OnEnterWorld");
-    self:RegisterEvent("SPELLS_CHANGED",          "OnSpellsChanged");
+    -- self:RegisterEvent("SPELLS_CHANGED",          "OnSpellsChanged");
     self:RegisterEvent("LEARNED_SPELL_IN_TAB",    "OnSpellsChanged");
     self:RegisterEvent("GROUP_JOINED",            "OnGroupStatusChange");
     self:RegisterEvent("GROUP_FORMED",            "OnGroupStatusChange");
@@ -70,6 +70,7 @@ end
     verified: fired on login, and enter dungeon
 ]]--
 function EasyBuff:OnEnterWorld(event)
+    EasyBuff:TryDebug('Entered World', 'Update Name, Class, TalentGroup, Activity, Available Spells, Monitored Spells. Tracking');
     -- Ensure we have the correct player identity.
     EasyBuff.PLAYER_NAME, EasyBuff.PLAYER_REALM      = UnitName(EasyBuff.PLAYER);
     EasyBuff.PLAYER_REALM                            = GetRealmName();
@@ -90,6 +91,7 @@ end
     On Player Spells Changed
 ]]--
 function EasyBuff:OnSpellsChanged(event)
+    EasyBuff:TryDebug('Spell Changed', 'Update TalentGroup, Activity, Available Spells, Monitored Spells, Tracking');
     EasyBuff:SetActiveTalentGroup();
     EasyBuff:SetActiveContext();
 
@@ -105,6 +107,7 @@ end
     Handle updates to the Tracking ability
 ]]--
 function EasyBuff:OnTrackingAbilityChanged(event)
+    EasyBuff:TryDebug('Tracking Changed', 'Update Tracking Abilities');
     BuildTrackingAbilities();
 end
 
@@ -114,6 +117,7 @@ end
     verified: talent points change, active spec change
 ]]--
 function EasyBuff:OnTalentUpdate(event)
+    EasyBuff:TryDebug('Talents Changed', 'Update TalentGroup; Rebuild Monitored Spells on next scan.');
     EasyBuff:SetActiveTalentGroup();
     EasyBuff.rebuildNextScan = true;
 end
@@ -124,6 +128,7 @@ end
     verified: start a group, join a group, leave a group, group size change
 ]]--
 function EasyBuff:OnGroupRosterChange(event)
+    EasyBuff:TryDebug('Group Roster Changed', 'Update Activity; Rebuild Monitored Spells on next scan.');
     EasyBuff:SetActiveContext();
     EasyBuff.rebuildNextScan = true;
 end
@@ -134,6 +139,7 @@ end
     verified: start a group, join a group, leave a group, group type converted
 ]]--
 function EasyBuff:OnGroupStatusChange(event)
+    EasyBuff:TryDebug('Group Changed', 'Update Activity; Rebuild Monitored Spells on next scan.');
     EasyBuff:refreshActiveContext();
     EasyBuff.rebuildNextScan = true;
 end

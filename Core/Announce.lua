@@ -49,6 +49,10 @@ function EasyBuff:AnnounceUnbuffedUnits()
     if (EasyBuff.wantedTracking ~= nil) then
         EasyBuff:AnnounceMessage(format(L["%s needs %s"].."|r", EasyBuff:Colorize(EasyBuff.PLAYER_NAME, EasyBuff.CLASS_COLOR[EasyBuff.PLAYER_CLASS_KEY]), tostring(EasyBuff.wantedTracking.name)));
     end
+
+    if (EasyBuff.unwatedBuffs > 0) then
+        EasyBuff:AnnounceMessage(EasyBuff:Colorize(format(L["YOU HAVE %d UNWANTED BUFFS!"], EasyBuff.unwatedBuffs), EasyBuff.COLORS.RED));
+    end
 end
 
 --[[
@@ -99,5 +103,21 @@ function EasyBuff:PrintToChat(msg, window)
     if (window ~= nil) then
         -- @NOTICE: Bypassing Ace:Print because it prepends the addon name
         _G["ChatFrame"..window]:AddMessage(format("%s %s", EasyBuff:Colorize("[EasyBuff]", EasyBuff.CHAT_COLOR), tostring(msg)));
+    end
+end
+
+--[[
+    Print a Console Message
+]]--
+function EasyBuff:ConsolePrint(msg)
+    print(format("%s %s", EasyBuff:Colorize("[EasyBuff]", EasyBuff.CHAT_COLOR), tostring(msg)));
+end
+
+--[[
+    Print a Debug Message if Debug is Enabled
+]]--
+function EasyBuff:TryDebug(event, msg)
+    if (EasyBuff.DEBUG_ENABLED) then
+        print(EasyBuff:Colorize('[DEBUG] ', EasyBuff.COLORS.RED)..EasyBuff:Colorize(event, EasyBuff.COLORS.BLUE)..' '..msg);
     end
 end
