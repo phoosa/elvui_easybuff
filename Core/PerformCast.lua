@@ -177,7 +177,7 @@ end
     @return {boolean}
 ]]--
 function EasyBuff:UpdatePerformCastButton(type, spell, unit, targetSlot)
-    if (not isCastingSpell()) then
+    if (not isCastingSpell() and not InCombatLockdown()) then
         if (unitAttr == nil) then
             unitAttr = "unit";
         end

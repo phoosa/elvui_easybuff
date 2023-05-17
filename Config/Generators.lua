@@ -298,10 +298,9 @@ function EasyBuff:GenerateConfig_CastBuffs(context, targetClass, talentSpec)
                 or (spell:spellGroup().multi and ((canCastGreater and spell.greater) or (not canCastGreater and not spell.greater)))
             ) then
                 -- Add spell to aura or group config if it hasn't already been added
-                if (spell:spellGroup().aura and not config.auras.args[spell.group]) then
-                    local name, _, _, _, _, _ = GetSpellInfo(spell.id);
+                if (spell:spellGroup().aura and nil == config.auras.args[spell.group]) then
                     config.auras.args[spell.group] = {
-                        name = name,
+                        name = spell.name,
                         type = "group",
                         inline = true,
                         args = {
@@ -337,8 +336,8 @@ function EasyBuff:GenerateConfig_CastBuffs(context, targetClass, talentSpec)
                                 set = function(info, val) return SetWantedAuraValue(talentSpec, context, targetClass, spell.group, EasyBuff.ROLE.DAMAGER, val); end
                             }
                         }
-                    }
-                elseif (not spell:spellGroup().aura and not config.buffs.args[spell.group]) then
+                    };
+                elseif (not spell:spellGroup().aura and nil == config.buffs.args[spell.group]) then
                     local name, _, _, _, _, _ = GetSpellInfo(spell.id);
                     config.buffs.args[spell.group] = {
                         name = name,

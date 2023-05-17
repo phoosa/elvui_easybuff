@@ -241,7 +241,10 @@ function CopyContextConfiguration(toContext, fromContext)
             -- iterate over spells to copy them in
             if ("table" == type(fromConfig[EasyBuff.CFG_GROUP.WANTED][classK])) then
                 for spellK,spellV in pairs(fromConfig[EasyBuff.CFG_GROUP.WANTED][classK]) do
-                    E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][toContext][EasyBuff.CFG_GROUP.WANTED][classK][spellK] = spellV;
+                    E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][toContext][EasyBuff.CFG_GROUP.WANTED][classK][spellK] = {};
+                    for roleK,roleV in pairs(spellV) do
+                        E.db.EasyBuff[EasyBuff.PLAYER_REALM][EasyBuff.PLAYER_NAME][talentSpec][toContext][EasyBuff.CFG_GROUP.WANTED][classK][spellK][roleK] = roleV;
+                    end
                 end
             end
         end

@@ -38,13 +38,17 @@ end
 
 --[[
     Check if we're monitoring some other version of this spell
-
+    Optionally include class and role to check if we're monitoring specifically for them
     @return {boolean}
 ]]--
-function AvailableSpell:isMonitoring()
+function AvailableSpell:isMonitoring(class, role)
     for spellId,monitoredSpell in pairs(EasyBuff.monitoredSpells) do
         if (monitoredSpell.group == self.group) then
-            return true;
+            if (class ~= nil and role ~= nil) then
+                return monitoredSpell:isMonitoringForRole(class, role);
+            else
+                return true;
+            end
         end
     end
 

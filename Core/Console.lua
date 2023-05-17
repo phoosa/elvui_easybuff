@@ -35,7 +35,7 @@ function ConsoleHelp()
     for k,v in pairs(EasyBuff.ConsoleCommands) do
         EasyBuff:ConsolePrint(format('    %s     %s', EasyBuff:Colorize(k, EasyBuff.COLORS.ORANGE), v.desc));
     end
-    EasyBuff:ConsolePrint('Example: '..EasyBuff:Colorize(format('/%s m', EasyBuff.COMMAND), EasyBuff.COLORS.ORANGE));
+    EasyBuff:ConsolePrint('Example: '..EasyBuff:Colorize(format('/%s mon', EasyBuff.COMMAND), EasyBuff.COLORS.ORANGE));
 end
 
 
@@ -207,23 +207,23 @@ end
 -- Command Map
 --
 EasyBuff.ConsoleCommands = {
-    h = {
+    help = {
         desc = "Show this menu.",
         func = ConsoleHelp
     },
-    d = {
+    debug = {
         desc = "Toggle debug mode to see events and processing",
         func = ConsoleDebug
     },
-    a = {
+    avail = {
         desc = "Show the list of Spells, Tracking, and Weapon Buffs that are available for monitoring for you character",
         func = ConsoleAvail
     },
-    m = {
+    mon = {
         desc = "Show the list of Spells, Tracking, and Weapon Buffs that are currently being monitored",
         func = ConsoleMonitor
     },
-    s = {
+    stat = {
         desc = "Show current Status information, such as Context, Talent Spec, etc.",
         func = ConsoleStatus
     }

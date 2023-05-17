@@ -194,11 +194,13 @@ function EasyBuff:InitAvailableLists()
             local _, spellId = GetSpellBookItemInfo(spellIndex, BOOKTYPE_SPELL);
             local classSpell = EasyBuff.CLASS_SPELLS[EasyBuff.PLAYER_CLASS_KEY][tostring(spellId)];
             if (classSpell) then
+                local name = GetSpellInfo(spellId);
                 available[tostring(spellId)] = AvailableSpell:new({
-                    id = spellId,
-                    rank = classSpell.rank,
-                    group = classSpell.group,
-                    greater = classSpell.greater
+                    id      = spellId,
+                    rank    = classSpell.rank,
+                    group   = classSpell.group,
+                    greater = classSpell.greater,
+                    name    = name
                 });
             elseif (
                 nil ~= EasyBuff.availableWeaponBuffs[EasyBuff.WEAPON_BUFF_TYPE.SPELL]
@@ -293,6 +295,7 @@ function EasyBuff:BuildMonitoredSpells()
                 rank    = avail.rank,
                 group   = avail.group,
                 greater = avail.greater,
+                name    = avail.name,
                 rules   = rulesBySpellGroup[avail.group]
             });
         end

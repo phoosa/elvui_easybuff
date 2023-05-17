@@ -222,7 +222,7 @@ function EasyBuff:GetMissingBuffs(unit, role, class)
     while (buff ~= nil) do
         -- Is this a spell that we can cast, and are we monitoring it?
         local availableSpell = EasyBuff.availableSpells[tostring(buff.spellId)];
-        if (availableSpell and availableSpell:isMonitoring()) then
+        if (availableSpell and availableSpell:isMonitoring(class, role)) then
             buffsFound[availableSpell.group] = availableSpell;
             -- Is it expiring soon?
             if (EasyBuff:isTimeToNotifyBuff(buff)) then
